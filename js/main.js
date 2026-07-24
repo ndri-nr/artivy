@@ -22,9 +22,10 @@ const positions = new Float32Array(numParticles * 3);
 const colors = new Float32Array(numParticles * 3);
 const scales = new Float32Array(numParticles);
 
-// Use brand colors for particles: #ff6b6b (coral) and #4ecdc4 (teal)
+// Brand colors: coral -> yellow -> teal for a richer 3-stop gradient
 const color1 = new THREE.Color(0xff6b6b);
-const color2 = new THREE.Color(0x4ecdc4);
+const color2 = new THREE.Color(0xfeca57);
+const color3 = new THREE.Color(0x4ecdc4);
 
 let i = 0;
 for (let ix = 0; ix < AMOUNTX; ix++) {
@@ -33,11 +34,13 @@ for (let ix = 0; ix < AMOUNTX; ix++) {
         positions[i * 3] = ix * SEPARATION - ((AMOUNTX * SEPARATION) / 2); // x
         positions[i * 3 + 1] = 0; // y (will be animated)
         positions[i * 3 + 2] = iy * SEPARATION - ((AMOUNTY * SEPARATION) / 2); // z
-        
-        // Interpolate colors based on X and Z position
+
+        // Interpolate colors across coral -> yellow -> teal based on X/Z position
         const mixRatio = (ix / AMOUNTX) * 0.5 + (iy / AMOUNTY) * 0.5;
-        const mixedColor = color1.clone().lerp(color2, mixRatio);
-        
+        const mixedColor = mixRatio < 0.5
+            ? color1.clone().lerp(color2, mixRatio * 2)
+            : color2.clone().lerp(color3, (mixRatio - 0.5) * 2);
+
         colors[i * 3] = mixedColor.r;
         colors[i * 3 + 1] = mixedColor.g;
         colors[i * 3 + 2] = mixedColor.b;
@@ -135,3 +138,44 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// --- UI polish: scroll-reveal + 3D card tilt ---
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Scroll-reveal: reveal elements as they enter the viewport
+const revealEls = document.querySelectorAll('.reveal');
+if (reduceMotion || !('IntersectionObserver' in window)) {
+    revealEls.forEach((el) => el.classList.add('in-view'));
+} else {
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                io.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.15 });
+    revealEls.forEach((el) => io.observe(el));
+}
+
+// 3D tilt on game cards (pointer devices only)
+const canTilt = window.matchMedia('(hover: hover)').matches && !reduceMotion;
+if (canTilt) {
+    const MAX_TILT = 9; // degrees
+    document.querySelectorAll('.card').forEach((card) => {
+        card.addEventListener('mousemove', (e) => {
+            const r = card.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width;   // 0..1
+            const py = (e.clientY - r.top) / r.height;   // 0..1
+            const rotY = (px - 0.5) * 2 * MAX_TILT;
+            const rotX = (0.5 - py) * 2 * MAX_TILT;
+            card.style.transform =
+                `rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-8px)`;
+            card.style.setProperty('--mx', `${px * 100}%`);
+            card.style.setProperty('--my', `${py * 100}%`);
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+}

@@ -12,14 +12,49 @@ body {
     overflow-x: hidden;
 }
 
+/* Animated gradient mesh, sits behind the Three.js canvas (canvas is z-index:-1) */
+body::before {
+    content: "";
+    position: fixed;
+    inset: -20%;
+    z-index: -2;
+    background:
+        radial-gradient(40vw 40vw at 15% 20%, rgba(255, 107, 107, 0.35), transparent 60%),
+        radial-gradient(45vw 45vw at 85% 25%, rgba(78, 205, 196, 0.32), transparent 60%),
+        radial-gradient(50vw 50vw at 50% 90%, rgba(254, 202, 87, 0.30), transparent 60%),
+        linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+    background-size: 200% 200%;
+    animation: meshShift 18s ease-in-out infinite;
+}
+
+@keyframes meshShift {
+    0%   { background-position: 0% 0%, 100% 0%, 50% 100%, 0 0; }
+    50%  { background-position: 100% 50%, 0% 60%, 40% 0%, 0 0; }
+    100% { background-position: 0% 0%, 100% 0%, 50% 100%, 0 0; }
+}
+
 /* Typography and Variables */
 :root {
     --primary-color: #ff6b6b; /* Vibrant coral/pink */
     --secondary-color: #4ecdc4; /* Vibrant teal */
     --accent-color: #feca57; /* Vibrant yellow */
+    --accent-deep: #7048e8;    /* deep violet for contrast/CTAs */
     --glass-bg: rgba(255, 255, 255, 0.7);
     --glass-border: rgba(255, 255, 255, 0.5);
     --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+}
+
+/* Scroll-reveal (opt-in via .reveal; JS adds .in-view) */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
+                transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: var(--reveal-delay, 0s);
+}
+.reveal.in-view {
+    opacity: 1;
+    transform: none;
 }
 
 h1, h2, h3 {
@@ -89,22 +124,24 @@ h1, h2, h3 {
     position: absolute;
     background-color: var(--glass-bg);
     backdrop-filter: blur(20px);
-    min-width: 160px;
+    min-width: 170px;
     box-shadow: var(--glass-shadow);
     border: 1px solid var(--glass-border);
     border-radius: 12px;
     z-index: 1;
     top: 100%;
     left: -20px;
+    padding: 16px 6px 6px 6px;
     overflow: hidden;
 }
 
 .dropdown-content a {
     color: #4a5568;
-    padding: 12px 20px;
+    padding: 11px 18px;
     text-decoration: none;
     display: block;
     font-weight: 600;
+    border-radius: 8px;
     transition: background 0.3s, color 0.3s;
 }
 
@@ -138,37 +175,98 @@ h1, h2, h3 {
 }
 
 .hero-content h1 {
-    font-size: 4rem;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    line-height: 1.05;
     color: #2d3748;
     margin-bottom: 20px;
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-deep), var(--secondary-color), var(--primary-color));
+    background-size: 300% 100%;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
+    animation: gradientText 8s linear infinite;
+}
+
+@keyframes gradientText {
+    to { background-position: 300% 0; }
 }
 
 .hero p {
-    font-size: 1.3rem;
+    font-size: clamp(1.05rem, 2.2vw, 1.35rem);
     margin-bottom: 35px;
     color: #4a5568;
     font-weight: 600;
 }
 
+/* Entrance on the container so it never fights the h1 gradient animation */
+.hero-content {
+    animation: heroRise 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes heroRise {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: none; }
+}
+
 .cta-button {
+    position: relative;
     display: inline-block;
     padding: 15px 40px;
     font-size: 1.2rem;
     font-weight: 800;
     color: white;
-    background: linear-gradient(45deg, var(--primary-color), #ff8e8e);
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-deep));
     text-decoration: none;
     border-radius: 50px;
-    box-shadow: 0 10px 20px rgba(255, 107, 107, 0.3);
+    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(112, 72, 232, 0.3);
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
 }
 
+/* Shine sweep on hover */
+.cta-button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -60%;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+}
+.cta-button:hover::after { left: 120%; }
+
 .cta-button:hover {
     transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 15px 25px rgba(255, 107, 107, 0.4);
+    box-shadow: 0 15px 30px rgba(112, 72, 232, 0.45);
+}
+
+/* Hero badge chips */
+.hero-badges {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 30px;
+}
+.hero-badges span {
+    padding: 8px 18px;
+    border-radius: 30px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: #4a5568;
+    font-weight: 700;
+    font-size: 0.9rem;
+    box-shadow: var(--glass-shadow);
+    animation: floatChip 4s ease-in-out infinite;
+}
+.hero-badges span:nth-child(2) { animation-delay: 0.6s; }
+.hero-badges span:nth-child(3) { animation-delay: 1.2s; }
+
+@keyframes floatChip {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
 }
 
 /* Games Section */
@@ -190,20 +288,48 @@ h1, h2, h3 {
     flex-wrap: wrap;
 }
 
+.game-cards {
+    perspective: 1200px;
+}
+
 .card {
+    position: relative;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: 25px;
     width: 380px;
+    max-width: 100%;
     overflow: hidden;
     backdrop-filter: blur(15px);
     box-shadow: var(--glass-shadow);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    transition: transform 0.25s ease, box-shadow 0.3s ease;
+    will-change: transform;
 }
 
+/* Cursor-tracked sheen; JS sets --mx/--my to the pointer position */
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%),
+                rgba(255, 255, 255, 0.55), transparent 45%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 2;
+}
+.card:hover::before { opacity: 1; }
+
 .card:hover {
-    transform: translateY(-15px);
-    box-shadow: 0 20px 40px rgba(31, 38, 135, 0.15);
+    box-shadow: 0 30px 55px rgba(31, 38, 135, 0.22);
+}
+
+/* Icon lifts toward viewer for parallax depth (root cards only) */
+.card .game-icon {
+    transform: translateZ(40px);
+    transition: transform 0.25s ease;
 }
 
 .card-image {
@@ -289,6 +415,50 @@ h1, h2, h3 {
     box-shadow: 0 6px 12px rgba(0,0,0,0.08);
 }
 
+/* Why Artivy — feature strip */
+.features-section {
+    padding: 20px 50px 40px;
+}
+.feature-tiles {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    max-width: 1080px;
+    margin: 0 auto;
+}
+.feature-tile {
+    flex: 1 1 260px;
+    max-width: 340px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    box-shadow: var(--glass-shadow);
+    padding: 32px 28px;
+    text-align: center;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+}
+.feature-tile:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(31, 38, 135, 0.15);
+}
+.feature-tile .feature-emoji {
+    font-size: 2.6rem;
+    display: block;
+    margin-bottom: 14px;
+}
+.feature-tile h3 {
+    font-size: 1.3rem;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+.feature-tile p {
+    color: #718096;
+    font-weight: 600;
+    line-height: 1.55;
+}
+
 /* Footer */
 footer {
     text-align: center;
@@ -299,13 +469,34 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .hero-content h1 {
-        font-size: 3rem;
-    }
     .navbar {
         padding: 15px 20px;
     }
     .nav-links {
         display: none;
     }
+    .hero-content {
+        padding: 36px 26px;
+    }
+    .games-section,
+    .features-section {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+/* Disable tilt/parallax where hover isn't available (touch) */
+@media (hover: none) {
+    .card .game-icon { transform: none; }
+}
+
+/* Respect reduced-motion: kill entrance/loop animations */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+    }
+    .reveal { opacity: 1; transform: none; }
+    .hero-content { opacity: 1; }
 }

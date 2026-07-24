@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artivy | Next-Gen Game Publisher</title>
-    <meta name="description" content="Artivy is a futuristic game publisher bringing you titles like Pawdoku.">
+    <title>Artivy | Beautifully Crafted Mobile Games</title>
+    <meta name="description" content="Artivy is a mobile game publisher crafting relaxing, beautifully designed games like Pawdoku and Kata·Word — free to play and made for everyone.">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
@@ -24,6 +24,7 @@
                 <a href="#games" class="dropbtn">Games ▾</a>
                 <div class="dropdown-content">
                     <a href="pawdoku/index.html">Pawdoku</a>
+                    <a href="kata_word/index.html">Kata·Word</a>
                 </div>
             </li>
             <li><a href="#about">About</a></li>
@@ -33,25 +34,63 @@
     <!-- Main Content -->
     <main id="home" class="hero">
         <div class="hero-content">
-            <h1>BRINGING JOY TO YOUR FINGERTIPS</h1>
-            <p>Artivy is a premier mobile game publisher. We partner with brilliant developers to launch addictive, relaxing, and beautifully designed games for players worldwide.</p>
+            <h1>Little Games, Big Joy</h1>
+            <p>Artivy crafts relaxing, beautifully designed mobile games — the kind you actually look forward to opening. Simple to pick up, easy on the eyes, and free to play.</p>
             <a href="#games" class="cta-button">Explore Games</a>
+            <div class="hero-badges">
+                <span>✦ Beautifully designed</span>
+                <span>✦ Play offline</span>
+                <span>✦ Free to play</span>
+            </div>
         </div>
     </main>
 
+    <!-- Why Artivy -->
+    <section class="features-section">
+        <div class="feature-tiles">
+            <div class="feature-tile reveal">
+                <span class="feature-emoji">🎨</span>
+                <h3>Made with care</h3>
+                <p>Clean, minimalist visuals and thoughtful details in every screen — no clutter, no noise.</p>
+            </div>
+            <div class="feature-tile reveal" style="--reveal-delay:0.12s">
+                <span class="feature-emoji">🌙</span>
+                <h3>Relaxing &amp; offline</h3>
+                <p>Unwind anywhere. Our games work fully offline, so there's nothing between you and the fun.</p>
+            </div>
+            <div class="feature-tile reveal" style="--reveal-delay:0.24s">
+                <span class="feature-emoji">💛</span>
+                <h3>Free for everyone</h3>
+                <p>Every title is free to play and built for all ages — pick one up in seconds.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Games Section -->
     <section id="games" class="games-section">
-        <h2>Featured Games</h2>
+        <h2 class="reveal">Featured Games</h2>
         <div class="game-cards">
-            <div class="card">
+            <div class="card reveal">
                 <div class="card-image">
                     <img src="assets/pawdoku-icon.png" alt="Pawdoku" class="game-icon">
                 </div>
                 <div class="card-content">
                     <h3>Pawdoku</h3>
-                    <p>Dive into a purr-fect blend of logic and relaxation! Pawdoku is a charming feline-themed puzzle game that will challenge your mind and melt your heart.</p>
+                    <p>A purr-fect blend of logic and calm. Solve cat-themed Sudoku puzzles at your own pace — cozy visuals, no timers, just you and the grid.</p>
                     <div class="card-links">
                         <a href="pawdoku/index.html">View Game Info</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card reveal" style="--reveal-delay:0.12s">
+                <div class="card-image">
+                    <img src="assets/kata_word-icon.png" alt="Kata·Word" class="game-icon">
+                </div>
+                <div class="card-content">
+                    <h3>Kata·Word</h3>
+                    <p>Crack a new word every day, or play as long as you like. Guess in 4–6 letters across English and Bahasa Indonesia — with streaks, trophies, and unlockable themes.</p>
+                    <div class="card-links">
+                        <a href="kata_word/index.html">View Game Info</a>
                     </div>
                 </div>
             </div>
