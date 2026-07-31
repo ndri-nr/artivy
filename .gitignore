@@ -1,0 +1,3 @@
+# Finder metadata. Pushing it to this repo publishes it: every file here is
+# deployed to GitHub Pages as-is.
+.DS_Store
