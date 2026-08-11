@@ -242,6 +242,33 @@ h1, h2, h3 {
     box-shadow: 0 15px 30px rgba(112, 72, 232, 0.45);
 }
 
+/* Official Google Play badge, used as Google supplies it. Their brand guidelines
+   require the badge artwork unmodified and forbid recreating the Play logo, so
+   this is an <img> of assets/google-play-badge.png rather than an inline SVG
+   dressed up as one of the site's gradient pills.
+
+   No padding here: the badge PNG already contains the clear space Google
+   mandates, which is why the file is 646x250 rather than the ratio of the pill
+   you can see. Height only, width auto, so the artwork is never distorted.
+   Hover lifts the badge without touching the artwork itself — no scale, no
+   filter, nothing that would count as modifying it. Defined once here so the
+   game pages cannot drift apart. */
+.play-badge {
+    display: inline-block;
+    margin-top: 10px;
+    transition: transform 0.3s ease;
+}
+
+.play-badge img {
+    display: block;
+    height: 80px;
+    width: auto;
+}
+
+.play-badge:hover {
+    transform: translateY(-4px);
+}
+
 /* Hero badge chips */
 .hero-badges {
     display: flex;

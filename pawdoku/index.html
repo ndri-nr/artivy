@@ -122,14 +122,13 @@
         <h1>Pawdoku</h1>
         <p>A purr-fect puzzle experience, and not the one you are expecting: there are no numbers. Place one cat in every row, every column and every colour region, with no two cats touching — not even diagonally. Every board is checked to have exactly one solution, so a puzzle can always be reasoned out and never guessed. Levels are endless and grow with you, from 5×5 up to 9×9, and it all works offline.</p>
         
-        <!-- Reuses .cta-button from ../css/styles.css rather than Google's Play
-             badge image: the badge is a fixed-size raster that would sit oddly
-             above the pill buttons below, and it would be the only artwork on the
-             site whose look we do not control. The container is already
-             text-align: center and .cta-button is inline-block, so this needs no
-             CSS of its own. rel="noopener" because it opens a new tab. -->
+        <!-- Google's own badge asset, unmodified, as their brand guidelines require.
+             Styling is .play-badge in ../css/styles.css. rel="noopener" because it
+             opens a new tab. -->
         <a href="https://play.google.com/store/apps/details?id=id.artivy.pawdoku"
-           class="cta-button" target="_blank" rel="noopener">Download on Google Play</a>
+           class="play-badge" target="_blank" rel="noopener">
+            <img src="../assets/google-play-badge.png" alt="Get it on Google Play">
+        </a>
 
         <div class="game-links-grid">
             <a href="privacy-policy.html" class="game-link-card">Privacy Policy</a>
