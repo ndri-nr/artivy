@@ -82,6 +82,50 @@ export function checkPlacement(puzzle, cats, target) {
     return null;
 }
 
+/* ---------- what a tap does ---------- */
+
+/*
+ * Four cell states, and the distinction that matters is between the two crosses. `BLOCKED` is
+ * the player's own note, toggled freely. `LOCKED` is the red cross left behind by summoning a
+ * cat where there is none: it costs a life and it is permanent.
+ */
+export const EMPTY = 0;
+export const CAT = 1;
+export const BLOCKED = 2;
+export const LOCKED = 3;
+
+/** A single tap only ever moves the player's own note. Cats and locked cells are fixed. */
+export function toggleNote(states, cell) {
+    if (states[cell] === CAT || states[cell] === LOCKED) return false;
+    states[cell] = states[cell] === BLOCKED ? EMPTY : BLOCKED;
+    return true;
+}
+
+/**
+ * Summoning a cat, which is judged against the *solution* and not against the cats already on
+ * the board.
+ *
+ * That is the whole difficulty of the game and it is easy to get subtly wrong: a cell can be
+ * perfectly legal given everything placed so far and still not be where the cat goes. Judging
+ * by legality would let a player fill the board with locally-fine guesses and only discover
+ * the contradiction at the end; judging by the solution costs them a life on the spot.
+ */
+export function summon(puzzle, states, cell) {
+    if (states[cell] === CAT || states[cell] === LOCKED) return 'ignored';
+    if (puzzle.solution.includes(cell)) {
+        states[cell] = CAT;
+        return 'cat';
+    }
+    states[cell] = LOCKED;
+    return 'wrong';
+}
+
+export function catsIn(states) {
+    const out = [];
+    for (let cell = 0; cell < states.length; cell++) if (states[cell] === CAT) out.push(cell);
+    return out;
+}
+
 export function isSolved(puzzle, cats) {
     if (cats.length !== puzzle.n) return false;
     const seen = new Set();

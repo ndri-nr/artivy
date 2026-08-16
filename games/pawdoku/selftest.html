@@ -34,9 +34,9 @@
 
     <script type="module">
         import {
-            DAILY_SIZE, MAX_HEARTS,
-            boardSizeForLevel, checkPlacement, colOf, countSolutions, dateKey,
-            findSolutions, generate, isSolved, kingAdjacent, rowOf,
+            BLOCKED, CAT, DAILY_SIZE, EMPTY, LOCKED, MAX_HEARTS,
+            boardSizeForLevel, catsIn, checkPlacement, colOf, countSolutions, dateKey,
+            findSolutions, generate, isSolved, kingAdjacent, rowOf, summon, toggleNote,
         } from './model.js';
 
         const out = document.getElementById('out');
@@ -210,6 +210,57 @@
             return found.length === 1 && [...found[0]].sort((a, b) => a - b).join() ===
                 [...solution].sort((a, b) => a - b).join();
         })());
+
+        /* --- what a tap actually does --- */
+
+        section('taps');
+
+        const tapBoard = generate(5, 4242);
+        const right = tapBoard.solution[0];
+        // A cell that is not in the solution and yet breaks no rule against the one cat that
+        // will be on the board — no shared row, column or region, and not touching it. That
+        // combination is the whole point of the checks below, so it is searched for with the
+        // same function those checks use rather than approximated.
+        const wrong = [...Array(25).keys()].find((cell) =>
+            !tapBoard.solution.includes(cell)
+            && checkPlacement(tapBoard, [right], cell) === null);
+        check('there is a cell that looks legal but is not the answer', wrong !== undefined);
+
+        let states = new Array(25).fill(EMPTY);
+
+        toggleNote(states, wrong);
+        check('a tap marks the player\'s own cross, it does not place a cat',
+            states[wrong] === BLOCKED);
+        toggleNote(states, wrong);
+        check('and tapping again takes it back', states[wrong] === EMPTY);
+
+        check('summoning where the solution has a cat places one',
+            summon(tapBoard, states, right) === 'cat' && states[right] === CAT);
+        check('a cat ignores further taps', toggleNote(states, right) === false
+            && states[right] === CAT);
+        check('and cannot be summoned twice', summon(tapBoard, states, right) === 'ignored');
+
+        /*
+         * The rule this pins down is the one that was got wrong first time round: a cat is
+         * judged against the solution, not against whether it clashes with the cats already
+         * on the board. `wrong` breaks no rule yet — it shares no row, column or region with
+         * anything placed, and touches nothing — and it is still not where the cat goes.
+         */
+        check('the wrong cell would pass a legality check against the board so far',
+            checkPlacement(tapBoard, catsIn(states), wrong) === null);
+        check('but summoning there is refused anyway, because it is not in the solution',
+            summon(tapBoard, states, wrong) === 'wrong');
+        check('and it leaves a locked cross rather than an empty cell',
+            states[wrong] === LOCKED);
+        check('a locked cross cannot be tapped away — that is what makes it cost something',
+            toggleNote(states, wrong) === false && states[wrong] === LOCKED);
+        check('nor summoned over', summon(tapBoard, states, wrong) === 'ignored');
+
+        states = new Array(25).fill(EMPTY);
+        for (const cell of tapBoard.solution) summon(tapBoard, states, cell);
+        check('summoning the whole solution wins', isSolved(tapBoard, catsIn(states)));
+        check('and catsIn finds exactly those cats',
+            catsIn(states).join() === [...tapBoard.solution].sort((a, b) => a - b).join());
 
         /* --- the level curve --- */
 

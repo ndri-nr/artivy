@@ -120,39 +120,55 @@ body.gpaw::before {
     font: inherit;
     line-height: 1;
     cursor: pointer;
-    /* Cells are tapped rapidly; without this a quick double tap zooms the page. */
-    touch-action: manipulation;
+    /* A second tap within 200ms is the game's own gesture, and dragging paints across cells,
+       so the browser must not claim either as a zoom or a scroll. */
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
     font-size: calc(100cqw / var(--cells) * 0.6);
-}
-
-.gpaw .cell:disabled {
-    cursor: default;
 }
 
 .gpaw .cell .mark {
     pointer-events: none;
 }
 
-.gpaw .cell .blocked {
-    font-size: 0.6em;
-    color: rgba(60, 47, 38, 0.5);
+/* The player's own note: quiet, and clearly theirs to take back. */
+.gpaw .cell .cross {
+    font-size: 0.55em;
+    color: rgba(60, 47, 38, 0.45);
     font-weight: 800;
 }
 
-/* A rejected cat is refused rather than placed, so the only thing telling the player what
-   happened is this. It has to be unmissable. */
+/*
+ * The cross left by summoning a cat where there is none. It cost a life and it cannot be
+ * cleared, so it has to read as the game's mark rather than the player's — heavier, red, and
+ * ringed so it is still distinguishable where the region colour is itself reddish.
+ */
+.gpaw .cell .cross.locked {
+    font-size: 0.7em;
+    color: #b03a2e;
+    background: rgba(255, 255, 255, 0.82);
+    border-radius: 50%;
+    width: 0.95em;
+    height: 0.95em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .gpaw .cell.rejected {
     animation: paw-reject 340ms ease-out;
+}
+
+.gpaw .cell.landed {
+    animation: paw-settle 260ms ease-out;
 }
 
 @keyframes paw-reject {
     0%, 100% { transform: none; }
     25% { transform: scale(0.9); }
     50% { transform: scale(1.06); }
-}
-
-.gpaw .cell.solved-cat {
-    animation: paw-settle 260ms ease-out;
 }
 
 @keyframes paw-settle {
