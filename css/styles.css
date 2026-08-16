@@ -400,10 +400,6 @@ h1, h2, h3 {
     }
 }
 
-.game-cards {
-    perspective: 1200px;
-}
-
 .card {
     flex: 0 0 380px;
     position: relative;
@@ -415,36 +411,17 @@ h1, h2, h3 {
     overflow: hidden;
     backdrop-filter: blur(15px);
     box-shadow: var(--glass-shadow);
-    transform-style: preserve-3d;
-    transition: transform 0.25s ease, box-shadow 0.3s ease;
-    will-change: transform;
+    /*
+     * No hover effect. A cursor sheen and a lift came before the tilt did, and each read worse
+     * than the last on a card whose whole surface is already the link. What tells you it is
+     * tappable is the pointer over it, not the card moving away from it.
+     */
+    transition: box-shadow 0.3s ease;
 }
 
-/* A fixed sheen along the top edge. It was cursor-tracked, from the same handler as the tilt. */
-.card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%),
-                rgba(255, 255, 255, 0.55), transparent 45%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    z-index: 2;
-}
-.card:hover::before { opacity: 1; }
-
-/* Straight up, the same amount every time and from any direction — the whole hover state. */
+/* Nothing moves. A slightly deeper shadow is the whole hover state. */
 .card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 30px 55px rgba(31, 38, 135, 0.22);
-}
-
-/* Icon lifts toward viewer for parallax depth (root cards only) */
-.card .game-icon {
-    transform: translateZ(40px);
-    transition: transform 0.25s ease;
+    box-shadow: 0 18px 38px rgba(31, 38, 135, 0.16);
 }
 
 .card-image {
@@ -561,11 +538,6 @@ footer {
         padding-left: 20px;
         padding-right: 20px;
     }
-}
-
-/* Disable tilt/parallax where hover isn't available (touch) */
-@media (hover: none) {
-    .card .game-icon { transform: none; }
 }
 
 /* Respect reduced-motion: kill entrance/loop animations */
@@ -712,12 +684,6 @@ footer {
        description below it is what the player actually reads. */
     .card-image {
         height: 150px;
-    }
-
-    /* The parallax lift is a pointer-device flourish, and on the shorter banner it is also
-       the last few pixels that pushed the icon over the edge. */
-    .card .game-icon {
-        transform: none;
     }
 
     .card-content p {
