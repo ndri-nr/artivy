@@ -1,7 +1,11 @@
 /*
- * The browser build of Kata·Word: board, keyboard, saving and the two modes. The rules —
- * scoring, the daily word, streaks — are in model.js, which has no DOM in it and is checked
- * by selftest.html.
+ * The browser build of Kata·Word: board, keyboard and saving. The rules — scoring the guess,
+ * drawing a word, the win streak — are in model.js, which has no DOM in it and is checked by
+ * selftest.html.
+ *
+ * One mode. The app's daily challenge is not here, so there is no "free play" to distinguish
+ * it from either: it is just the game. The streak counts consecutive words solved rather than
+ * consecutive days.
  */
 
 import { storage, isPersistent } from '../js/storage.js';
@@ -9,9 +13,6 @@ import {
     LANGUAGES,
     MAX_GUESSES,
     WORD_LENGTHS,
-    computeStreaks,
-    dailyIndex,
-    dateKey,
     evaluateGuess,
     loadGuessSet,
     loadList,
@@ -21,8 +22,8 @@ import {
 
 const KEY_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 
-/* How many recent Free Play words to steer away from. Long enough that a session does not
-   repeat itself, short enough that a heavy player is not slowly locked out of the list. */
+/* How many recent words to steer away from. Long enough that a session does not repeat
+   itself, short enough that a heavy player is not slowly locked out of the list. */
 const RECENT_MEMORY = 40;
 
 const save = storage('kata_word');
@@ -35,8 +36,6 @@ const bestEl = document.getElementById('best');
 const winsEl = document.getElementById('wins');
 const langSelect = document.getElementById('lang');
 const lengthSelect = document.getElementById('length');
-const dailyButton = document.getElementById('mode-daily');
-const freeButton = document.getElementById('mode-free');
 const sheet = document.getElementById('sheet');
 const sheetTitle = document.getElementById('sheet-title');
 const sheetText = document.getElementById('sheet-text');
@@ -46,7 +45,6 @@ const sheetAction = document.getElementById('sheet-action');
 let lang = LANGUAGES.some((entry) => entry.code === save.get('lang', 'en'))
     ? save.get('lang', 'en') : 'en';
 let length = WORD_LENGTHS.includes(save.get('length', 5)) ? save.get('length', 5) : 5;
-let mode = save.get('mode', 'daily') === 'free' ? 'free' : 'daily';
 
 let answer = '';
 let guesses = [];
@@ -57,26 +55,19 @@ let busy = false;
 
 /* ---------- saved state ---------- */
 
-function dailySlot(day = new Date()) {
-    return `daily.${lang}.${length}.${dateKey(day)}`;
-}
-
-function freeSlot() {
-    return `free.${lang}.${length}`;
+function slot() {
+    return `game.${lang}.${length}`;
 }
 
 function readStats() {
     const stats = save.get('stats', null);
-    if (!stats || typeof stats !== 'object') return { played: 0, wins: 0 };
+    if (!stats || typeof stats !== 'object') return { played: 0, wins: 0, streak: 0, best: 0 };
     return {
         played: Number(stats.played) || 0,
         wins: Number(stats.wins) || 0,
+        streak: Number(stats.streak) || 0,
+        best: Number(stats.best) || 0,
     };
-}
-
-function readWonDays() {
-    const days = save.get('wonDays', []);
-    return Array.isArray(days) ? days.filter(Number.isInteger) : [];
 }
 
 /** Guesses are trusted only as far as they are strings of the right length. */
@@ -98,8 +89,6 @@ function buildBoard() {
         for (let column = 0; column < length; column++) {
             const tile = document.createElement('div');
             tile.className = 'tile';
-            tile.dataset.row = row;
-            tile.dataset.column = column;
             boardEl.appendChild(tile);
         }
     }
@@ -145,10 +134,9 @@ function renderKeyboard() {
 }
 
 function renderStats() {
-    const { current: streak, best } = computeStreaks(readWonDays(), new Date());
     const stats = readStats();
-    streakEl.textContent = String(streak);
-    bestEl.textContent = String(best);
+    streakEl.textContent = String(stats.streak);
+    bestEl.textContent = String(stats.best);
     winsEl.textContent = `${stats.wins}/${stats.played}`;
 }
 
@@ -199,12 +187,10 @@ function shake() {
 
 function showSheet(won) {
     sheetTitle.textContent = won ? 'Solved' : 'Out of tries';
-    sheetText.textContent = won
-        ? `In ${guesses.length} of ${MAX_GUESSES}.`
-        : 'The word was';
+    sheetText.textContent = won ? `In ${guesses.length} of ${MAX_GUESSES}.` : 'The word was';
     sheetWord.textContent = answer;
     sheetWord.hidden = won;
-    sheetAction.textContent = mode === 'daily' ? 'Free play' : 'Next word';
+    sheetAction.textContent = 'Next word';
     sheet.hidden = false;
 }
 
@@ -212,22 +198,20 @@ function finish(won) {
     finished = true;
 
     const stats = readStats();
-    save.set('stats', { played: stats.played + 1, wins: stats.wins + (won ? 1 : 0) });
+    // A streak of consecutive words solved. Zeroed by a loss rather than decremented, which
+    // is the only reading of "streak" that means anything.
+    const streak = won ? stats.streak + 1 : 0;
+    save.set('stats', {
+        played: stats.played + 1,
+        wins: stats.wins + (won ? 1 : 0),
+        streak,
+        best: Math.max(stats.best, streak),
+    });
 
-    if (mode === 'daily' && won) {
-        // A set, so replaying a day cannot inflate the streak, and so back-filling a past day
-        // later still lands in the right place — computeStreaks reads the whole set.
-        const days = new Set(readWonDays());
-        days.add(dateKey(new Date()));
-        save.set('wonDays', [...days]);
-    }
-
-    if (mode === 'free') {
-        const recent = [answer, ...(save.get('recent', []) || [])]
-            .filter((word) => typeof word === 'string')
-            .slice(0, RECENT_MEMORY);
-        save.set('recent', recent);
-    }
+    const recent = [answer, ...(save.get('recent', []) || [])]
+        .filter((word) => typeof word === 'string')
+        .slice(0, RECENT_MEMORY);
+    save.set('recent', recent);
 
     persist();
     renderStats();
@@ -238,12 +222,10 @@ function finish(won) {
 function persist() {
     save.set('lang', lang);
     save.set('length', length);
-    save.set('mode', mode);
-    const record = { answer, guesses, finished };
-    save.set(mode === 'daily' ? dailySlot() : freeSlot(), record);
+    save.set(slot(), { answer, guesses, finished });
 }
 
-async function submit() {
+function submit() {
     if (finished || busy) return;
 
     if (current.length !== length) {
@@ -282,7 +264,7 @@ function backspace() {
     renderBoard();
 }
 
-/* ---------- starting a game ---------- */
+/* ---------- starting a word ---------- */
 
 async function start(nextWord = false) {
     busy = true;
@@ -296,25 +278,20 @@ async function start(nextWord = false) {
 
     try {
         guessSet = await loadGuessSet(lang, length);
+        const pool = await loadList(lang, 'answers', length);
+        const saved = nextWord ? null : save.get(slot(), null);
 
-        if (mode === 'daily') {
-            const pool = await loadList(lang, 'daily', length);
-            answer = pool[dailyIndex(new Date(), pool.length)];
-        } else {
-            const pool = await loadList(lang, 'answers', length);
-            const saved = nextWord ? null : save.get(freeSlot(), null);
-            answer = saved && typeof saved.answer === 'string' && saved.answer.length === length
-                ? saved.answer
-                : pickWord(pool, Date.now() & 0x7fffffff, new Set(save.get('recent', []) || []));
-        }
-    } catch (error) {
+        answer = saved && typeof saved.answer === 'string' && saved.answer.length === length
+            ? saved.answer
+            : pickWord(pool, Date.now() & 0x7fffffff, new Set(save.get('recent', []) || []));
+    } catch {
         // A failed fetch is the one thing that can leave this page with no game at all.
         say('Could not load the word list. Check your connection and reload.');
         busy = false;
         return;
     }
 
-    const saved = save.get(mode === 'daily' ? dailySlot() : freeSlot(), null);
+    const saved = save.get(slot(), null);
     if (saved && saved.answer === answer) {
         guesses = usableGuesses(saved.guesses);
         finished = saved.finished === true
@@ -328,15 +305,8 @@ async function start(nextWord = false) {
     renderStats();
     persist();
 
-    if (finished) {
-        const won = guesses.includes(answer);
-        say(mode === 'daily'
-            ? (won ? 'Today\'s word is done. Come back tomorrow.' : `Today's word was ${answer.toUpperCase()}.`)
-            : (won ? 'Solved.' : `The word was ${answer.toUpperCase()}.`));
-        showSheet(won);
-    } else {
-        say(mode === 'daily' ? 'Today\'s word. Six tries.' : 'Guess the word in six tries.');
-    }
+    if (finished) showSheet(guesses.includes(answer));
+    else say('Guess the word in six tries.');
 }
 
 /* ---------- input ---------- */
@@ -365,17 +335,6 @@ window.addEventListener('keydown', (event) => {
     }
 });
 
-function setMode(next) {
-    if (mode === next) return;
-    mode = next;
-    dailyButton.setAttribute('aria-pressed', String(next === 'daily'));
-    freeButton.setAttribute('aria-pressed', String(next === 'free'));
-    start();
-}
-
-dailyButton.addEventListener('click', () => setMode('daily'));
-freeButton.addEventListener('click', () => setMode('free'));
-
 langSelect.addEventListener('change', () => {
     lang = langSelect.value;
     start();
@@ -386,13 +345,8 @@ lengthSelect.addEventListener('change', () => {
     start();
 });
 
-sheetAction.addEventListener('click', () => {
-    if (mode === 'daily') {
-        setMode('free');
-    } else {
-        start(true);
-    }
-});
+document.getElementById('skip').addEventListener('click', () => start(true));
+sheetAction.addEventListener('click', () => start(true));
 
 document.getElementById('sheet-close').addEventListener('click', () => {
     sheet.hidden = true;
@@ -415,9 +369,6 @@ for (const size of WORD_LENGTHS) {
     option.selected = size === length;
     lengthSelect.appendChild(option);
 }
-
-dailyButton.setAttribute('aria-pressed', String(mode === 'daily'));
-freeButton.setAttribute('aria-pressed', String(mode === 'free'));
 
 if (!isPersistent()) document.getElementById('warning').hidden = false;
 

@@ -16,7 +16,6 @@ import {
     isValid,
     place,
     removeAt,
-    solutionFor,
     solved,
 } from './model.js';
 
@@ -40,7 +39,6 @@ const difficultyRow = document.getElementById('difficulty');
 let difficulty = difficultyFor(save.get('difficulty', 'easy'));
 let level = 1;
 let board = null;
-let hintsUsed = 0;
 
 /* The clock counts up and has no limit: it starts on the first block, stops on the solve, and
    there is no fail state. `elapsed` is what has already been banked; `startedAt` is null
@@ -65,8 +63,8 @@ function formatTime(total) {
 }
 
 function startClock() {
-    // Refuses to start while the tab is hidden. A hint arriving from a background tab would
-    // otherwise start the clock and charge the player for time they were not looking at it.
+    // Refuses to start while the tab is hidden, so a player is never charged for time
+    // they were not looking at the board.
     if (startedAt !== null || document.hidden) return;
     startedAt = now();
 }
@@ -111,7 +109,6 @@ function persist() {
         level,
         blocks: board.blocks,
         elapsed: Math.round(elapsed + (startedAt === null ? 0 : now() - startedAt)),
-        hints: hintsUsed,
     });
 }
 
@@ -218,7 +215,6 @@ function renderDifficulties() {
 
 function load(restore = null) {
     board = boardFor(difficulty, level);
-    hintsUsed = restore ? (Number(restore.hints) || 0) : 0;
     elapsed = restore ? (Number(restore.elapsed) || 0) : 0;
     startedAt = null;
 
@@ -254,8 +250,7 @@ function finish(record = true) {
 
     overlayText.innerHTML = '';
     const line = document.createElement('span');
-    line.textContent = `${formatTime(total)}`
-        + (hintsUsed > 0 ? ` · ${hintsUsed} hint${hintsUsed === 1 ? '' : 's'}` : '');
+    line.textContent = formatTime(total);
     overlayText.appendChild(line);
     if (beaten) {
         const flag = document.createElement('span');
@@ -354,29 +349,6 @@ document.getElementById('clear').addEventListener('click', () => {
 });
 
 document.getElementById('skip').addEventListener('click', nextLevel);
-
-/*
- * The hint places one rectangle from the generator's own partition — recomputed from the level
- * number, so no solver and no stored solution. It is *an* answer, not *the* answer, so it can
- * disagree with a correct rectangle the player drew; placing overwrites for that reason.
- *
- * Free here, unlike the Android build where it is the price of a rewarded ad. There is no ad
- * to charge on the web yet. If ads arrive, this is the button that has to decide again.
- */
-document.getElementById('hint').addEventListener('click', () => {
-    if (!overlayEl.hidden) return;
-
-    const answer = solutionFor(difficulty, level);
-    const missing = answer.find((candidate) => !board.blocks.some((drawn) =>
-        drawn.x === candidate.x && drawn.y === candidate.y
-        && drawn.w === candidate.w && drawn.h === candidate.h));
-    if (!missing) return;
-
-    place(board, missing.x, missing.y,
-        missing.x + missing.w - 1, missing.y + missing.h - 1);
-    hintsUsed += 1;
-    afterChange();
-});
 
 /* ---------- boot ---------- */
 

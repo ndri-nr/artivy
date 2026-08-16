@@ -1,13 +1,11 @@
 /*
- * Kata·Word's rules: guess scoring, the deterministic daily word, and streaks.
- * No DOM here, which is what makes selftest.html possible.
+ * Kata·Word's rules: scoring a guess, and drawing the next word. No DOM here, which is what
+ * makes selftest.html possible.
  *
- * The daily word is deliberately the *same word the Android app shows* on the same date.
- * That is worth having — a daily challenge everyone shares stops being one if the website
- * and the app disagree — and unlike Rekta's generator it costs almost nothing: the whole
- * mechanism is a 32-bit hash of yyyyMMdd indexing a word list, and the word lists here are
- * copies of the app's. Both halves have to stay in step: changing daily_*.txt, or changing
- * this hash, moves the word for every future date on one platform only.
+ * There is no daily challenge in the browser build, so the date hash the app uses to pick one
+ * is not here either — and with it went the only reason this file had to stay bit-for-bit
+ * compatible with the Dart side. The word lists are still copies of the app's, because they
+ * are the output of a filtering pipeline with real judgement in it.
  */
 
 export const MAX_GUESSES = 6;
@@ -65,90 +63,10 @@ export function mergeKeyboard(keyboard, guess, statuses) {
     }
 }
 
-/* ---------- the daily word ---------- */
-
-/** Local date as an integer, 2026-07-24 becomes 20260724. */
-export function dateKey(date) {
-    return date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
-}
+/* ---------- drawing a word ---------- */
 
 /**
- * A stable hash of the date key, so consecutive days land far apart in the list.
- *
- * `Math.imul` is doing the load-bearing work: it is a true 32-bit multiply, and the plain
- * `a * b & 0xFFFFFFFF` it replaces loses precision past 2^53. The Dart side splits the
- * multiply into 16-bit halves for the same reason, and the two agree exactly — which is what
- * keeps the daily word identical on the website and in the app.
- */
-function hashDateKey(key) {
-    let x = key >>> 0;
-    x = Math.imul(x ^ (x >>> 16), 0x45d9f3b) >>> 0;
-    x = Math.imul(x ^ (x >>> 16), 0x45d9f3b) >>> 0;
-    x = (x ^ (x >>> 16)) >>> 0;
-    return x & 0x7fffffff;
-}
-
-export function dailyIndex(date, listLength) {
-    return hashDateKey(dateKey(date)) % listLength;
-}
-
-/* ---------- streaks ---------- */
-
-function dayFromKey(key) {
-    return new Date(Math.floor(key / 10000), (Math.floor(key / 100) % 100) - 1, key % 100);
-}
-
-function daysBetween(a, b) {
-    const from = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-    const to = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
-    return Math.round((to - from) / 86400000);
-}
-
-/**
- * Recomputes both streaks from the set of won dates, rather than incrementing a counter.
- *
- * That is the whole point: a streak that is incremented in place cannot account for a day
- * filled in later, and it drifts the first time a write is missed. Recomputing is
- * order-independent, so back-filling a past day counts for the run it belongs to.
- *
- * The current run is allowed to end at yesterday as well as today, so it does not collapse
- * the moment midnight passes and before today has been played.
- */
-export function computeStreaks(wonDateKeys, referenceNow) {
-    const won = new Set(wonDateKeys);
-    if (won.size === 0) return { current: 0, best: 0 };
-
-    const days = [...won].map(dayFromKey).sort((a, b) => a - b);
-
-    let best = 1;
-    let run = 1;
-    for (let i = 1; i < days.length; i++) {
-        run = daysBetween(days[i - 1], days[i]) === 1 ? run + 1 : 1;
-        if (run > best) best = run;
-    }
-
-    const today = new Date(referenceNow.getFullYear(), referenceNow.getMonth(),
-        referenceNow.getDate());
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    let cursor = null;
-    if (won.has(dateKey(today))) cursor = today;
-    else if (won.has(dateKey(yesterday))) cursor = yesterday;
-
-    let current = 0;
-    while (cursor && won.has(dateKey(cursor))) {
-        current++;
-        cursor = new Date(cursor.getFullYear(), cursor.getMonth(), cursor.getDate() - 1);
-    }
-
-    return { current, best };
-}
-
-/* ---------- free play ---------- */
-
-/**
- * A word for Free Play, avoiding ones played recently.
+ * The next word, avoiding ones played recently.
  *
  * Without `avoid` a regular player meets a repeat far sooner than the list size suggests:
  * the draw has no memory, so the first collision is expected after roughly sqrt(pi n / 2)

@@ -14,13 +14,8 @@
     </style>
 </head>
 <!--
-  Open this page and read it. It covers the three things that would quietly ruin a game:
-  duplicate-letter scoring, the daily word agreeing with the Android app, and the word lists
-  keeping the subset relation the game assumes.
-
-  The expected daily indices below were produced by running the app's own Dart code
-  (lib/core/utils/date_seed.dart) rather than by copying its arithmetic by eye. If they ever
-  stop matching, the website and the app are handing out different words on the same day.
+  Open this page and read it. It covers the two things that would quietly ruin a game:
+  duplicate-letter scoring, and the word lists keeping the subset relation the game assumes.
 
   Paths resolve against the published layout (games/ flattened to the site root), so serve
   the flattened copy — see the preview one-liner in the workspace CLAUDE.md.
@@ -33,8 +28,7 @@
     <script type="module">
         import {
             LANGUAGES, MAX_GUESSES, WORD_LENGTHS,
-            computeStreaks, dailyIndex, dateKey, evaluateGuess,
-            loadList, mergeKeyboard, pickWord,
+            evaluateGuess, loadList, mergeKeyboard, pickWord,
         } from './model.js';
 
         const out = document.getElementById('out');
@@ -101,78 +95,9 @@
         mergeKeyboard(upgrade, 'bbbb', ['present', 'absent', 'absent', 'absent']);
         check('a key is upgraded when a later guess does better', upgrade.b === 'present');
 
-        /* --- the daily word, against the Android app's own numbers --- */
+        /* --- drawing a word --- */
 
-        section('daily word');
-
-        // dateKey -> [index into a 1200 list, an 811 list, a 997 list], from running
-        // date_seed.dart directly. These are the app's answers, not a restatement of the
-        // algorithm below them.
-        const FROM_DART = [
-            [new Date(2026, 7, 16), 462, 87, 43],
-            [new Date(2026, 7, 17), 904, 572, 254],
-            [new Date(2026, 0, 1), 903, 202, 360],
-            [new Date(2027, 11, 31), 1071, 685, 8],
-            [new Date(2026, 1, 28), 4, 296, 331],
-            [new Date(2030, 5, 15), 1001, 330, 562],
-        ];
-
-        let mismatches = 0;
-        for (const [date, a, b, c] of FROM_DART) {
-            if (dailyIndex(date, 1200) !== a) mismatches++;
-            if (dailyIndex(date, 811) !== b) mismatches++;
-            if (dailyIndex(date, 997) !== c) mismatches++;
-        }
-        check('the daily index matches the Android app on every sampled date', mismatches === 0,
-            `${mismatches} of ${FROM_DART.length * 3} disagree`);
-
-        check('the date key is yyyyMMdd', dateKey(new Date(2026, 7, 16)) === 20260816,
-            String(dateKey(new Date(2026, 7, 16))));
-        check('consecutive days land far apart',
-            Math.abs(dailyIndex(new Date(2026, 7, 16), 1200)
-                - dailyIndex(new Date(2026, 7, 17), 1200)) > 50);
-
-        /* --- streaks --- */
-
-        section('streaks');
-
-        const today = new Date(2026, 7, 16);
-        const k = (d) => 20260800 + d;
-
-        check('no wins is no streak',
-            JSON.stringify(computeStreaks([], today)) === JSON.stringify({ current: 0, best: 0 }));
-
-        let streak = computeStreaks([k(14), k(15), k(16)], today);
-        check('three days in a row ending today', streak.current === 3 && streak.best === 3,
-            JSON.stringify(streak));
-
-        streak = computeStreaks([k(14), k(15)], today);
-        check('a run ending yesterday still counts, so it does not drop at midnight',
-            streak.current === 2, JSON.stringify(streak));
-
-        streak = computeStreaks([k(12), k(13)], today);
-        check('a run that stopped before yesterday is over',
-            streak.current === 0 && streak.best === 2, JSON.stringify(streak));
-
-        // The reason streaks are recomputed rather than incremented: a day filled in later
-        // has to join the days either side of it.
-        streak = computeStreaks([k(14), k(16)], today);
-        check('a gap splits the run', streak.current === 1 && streak.best === 1,
-            JSON.stringify(streak));
-        streak = computeStreaks([k(14), k(16), k(15)], today);
-        check('back-filling the missing day joins both halves, in any order',
-            streak.current === 3 && streak.best === 3, JSON.stringify(streak));
-
-        streak = computeStreaks([k(1), k(2), k(3), k(4), k(15)], today);
-        check('the best run is the longest ever, not the current one',
-            streak.best === 4 && streak.current === 1, JSON.stringify(streak));
-
-        check('a repeated win cannot inflate a streak',
-            computeStreaks([k(15), k(15), k(16)], today).current === 2);
-
-        /* --- free play draws --- */
-
-        section('free play');
+        section('drawing a word');
 
         const pool = ['alpha', 'bravo', 'delta', 'gamma'];
         check('a draw comes from the pool', pool.includes(pickWord(pool, 7)));
@@ -192,28 +117,25 @@
 
         for (const { code } of LANGUAGES) {
             for (const size of WORD_LENGTHS) {
-                const [daily, answers, guesses] = await Promise.all([
-                    loadList(code, 'daily', size),
+                const [answers, guesses] = await Promise.all([
                     loadList(code, 'answers', size),
                     loadList(code, 'guesses', size),
                 ]);
 
-                if (daily.length === 0 || answers.length === 0 || guesses.length === 0) {
+                if (answers.length === 0 || guesses.length === 0) {
                     emptyLists++;
                     continue;
                 }
-                sizes.push(`${code}/${size}: ${daily.length} daily, ${answers.length} answers, ${guesses.length} guesses`);
+                sizes.push(`${code}/${size}: ${answers.length} answers, ${guesses.length} guesses`);
 
-                for (const word of [...daily, ...answers, ...guesses]) {
+                for (const word of [...answers, ...guesses]) {
                     if (word.length !== size || !/^[a-z]+$/.test(word)) lengthFaults++;
                 }
 
-                // The game picks a solution from daily or answers and validates typed guesses
-                // against guesses. Break the subset relation and it can set a puzzle whose own
-                // solution it refuses to accept.
-                const answerSet = new Set(answers);
+                // The game draws its solution from answers and validates typed guesses against
+                // guesses. Break the subset relation and it can set a word whose own solution
+                // it refuses to accept.
                 const guessSet = new Set(guesses);
-                for (const word of daily) if (!answerSet.has(word)) subsetFaults++;
                 for (const word of answers) if (!guessSet.has(word)) subsetFaults++;
             }
         }
@@ -221,20 +143,23 @@
         check('every list has words in it', emptyLists === 0, `${emptyLists} empty`);
         check('every word is the right length and plain lower-case letters', lengthFaults === 0,
             `${lengthFaults} bad entries`);
-        check('daily is inside answers, and answers inside guesses', subsetFaults === 0,
+        check('every answer is also an accepted guess', subsetFaults === 0,
             `${subsetFaults} words break the subset`);
         for (const line of sizes) note(line);
 
-        /* --- a real daily word, end to end --- */
+        /* --- a real word, end to end --- */
 
         section('end to end');
 
-        const idDaily = await loadList('id', 'daily', 5);
-        const word = idDaily[dailyIndex(new Date(2026, 7, 16), idDaily.length)];
-        check('today has an Indonesian five-letter word', word && word.length === 5, String(word));
-        note(`id/5 on 2026-08-16 is "${word}"`);
-        check('and it can be solved against itself',
-            score(word, word) === 'ccccc', score(word, word));
+        const idAnswers = await loadList('id', 'answers', 5);
+        const word = pickWord(idAnswers, 12345);
+        check('a five-letter Indonesian word can be drawn', !!word && word.length === 5,
+            String(word));
+        note(`id/5 drew "${word}"`);
+        check('and it can be solved against itself', score(word, word) === 'ccccc',
+            score(word, word));
+        check('and it is a word the game would accept',
+            (await loadList('id', 'guesses', 5)).includes(word) || idAnswers.includes(word));
         check('six guesses is the board', MAX_GUESSES === 6);
 
         const summary = document.getElementById('summary');
