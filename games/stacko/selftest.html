@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>StackO! self-check</title>
+    <style>
+        body { font: 14px/1.6 ui-monospace, monospace; padding: 24px; background: #060a1c; color: #eaf3ff; }
+        h1 { font-size: 1rem; margin: 0 0 12px 0; }
+        h2 { font-size: 0.8rem; margin: 16px 0 4px 0; color: #7fa0c8; font-weight: 600; }
+        .pass { color: #3de0ff; }
+        .fail { color: #ff5c6e; font-weight: 700; }
+        .note { color: #7fa0c8; }
+        #summary { margin-top: 16px; font-weight: 700; }
+    </style>
+</head>
+<!--
+  Open this page and read it.
+
+  The whole game is one subtraction — the overlap of two intervals — and everything a player
+  cares about hangs off it: how much width they keep, whether the drop counted as perfect,
+  whether the run just ended. It is also the kind of arithmetic that stays plausible while
+  being wrong by half a slab, so it is checked here rather than judged by eye.
+
+  Paths resolve against the published layout (games/ flattened to the site root), so serve the
+  flattened copy — see the preview one-liner in the workspace CLAUDE.md.
+-->
+<body>
+    <h1>StackO! self-check</h1>
+    <div id="out"></div>
+    <div id="summary">running…</div>
+
+    <script type="module">
+        import {
+            BASE_SIZE, COMBO_BONUS_MAX, MOVE_RANGE, PERFECT_REGROW,
+            PERFECT_TOL, advance, colourFor, drop, newRun, speedFor,
+        } from './model.js';
+
+        const out = document.getElementById('out');
+        let failures = 0;
+
+        function section(title) {
+            const line = document.createElement('h2');
+            line.textContent = title;
+            out.appendChild(line);
+        }
+
+        function check(name, condition, detail = '') {
+            const line = document.createElement('div');
+            line.className = condition ? 'pass' : 'fail';
+            line.textContent = `${condition ? 'ok  ' : 'FAIL'} ${name}`
+                + (detail && !condition ? ` — ${detail}` : '');
+            out.appendChild(line);
+            if (!condition) failures++;
+        }
+
+        function note(text) {
+            const line = document.createElement('div');
+            line.className = 'note';
+            line.textContent = `    ${text}`;
+            out.appendChild(line);
+        }
+
+        const near = (a, b, tol = 1e-9) => Math.abs(a - b) <= tol;
+        const top = (run) => run.blocks[run.blocks.length - 1];
+
+        /** Puts the moving slab at an exact offset from the block below, then drops it. */
+        function dropAt(run, offset) {
+            const t = top(run);
+            if (run.axis === 0) run.moving.x = t.x + offset;
+            else run.moving.z = t.z + offset;
+            return drop(run);
+        }
+
+        /* --- the slice --- */
+
+        section('the slice');
+
+        let run = newRun();
+        check('a run starts with the foundation already placed', run.blocks.length === 1);
+        check('and it is full width', near(top(run).w, BASE_SIZE));
+
+        let result = dropAt(run, 2);
+        check('an offset drop is sliced, not perfect', result.result === 'sliced');
+        check('the landed block keeps exactly the overlap',
+            near(top(run).w, BASE_SIZE - 2), `w=${top(run).w}`);
+        check('and sits halfway between the two', near(top(run).x, 1), `x=${top(run).x}`);
+
+        // The two pieces have to account for the whole slab: nothing appears, nothing vanishes.
+        check('the slice is the part that hung over',
+            near(result.slice.w, 2), `slice w=${result.slice.w}`);
+        check('kept plus sliced equals the slab that was dropped',
+            near(top(run).w + result.slice.w, BASE_SIZE));
+        check('and the slice sits outside the kept block, on the overhang side',
+            result.slice.x > top(run).x + top(run).w / 2 - 1e-9);
+
+        // The same in the other direction, because the sign of the offset decides which side
+        // is cut and it is easy to get exactly one of the two branches right.
+        run = newRun();
+        result = dropAt(run, -3);
+        check('a negative offset slices the other side',
+            near(top(run).w, BASE_SIZE - 3) && near(top(run).x, -1.5),
+            `w=${top(run).w} x=${top(run).x}`);
+        check('and its slice is on that side too', result.slice.x < top(run).x);
+
+        /* --- the axis alternates --- */
+
+        section('axes');
+
+        run = newRun();
+        check('the first slab travels on x', run.axis === 0);
+        dropAt(run, 1);
+        check('the next travels on z', run.axis === 1);
+        check('a drop on x left the z extent untouched', near(top(run).d, BASE_SIZE));
+        dropAt(run, 1);
+        check('and a drop on z narrows d instead',
+            near(top(run).d, BASE_SIZE - 1), `d=${top(run).d}`);
+        check('back to x for the third', run.axis === 0);
+
+        /* --- perfect --- */
+
+        section('perfect drops');
+
+        run = newRun();
+        result = dropAt(run, PERFECT_TOL);
+        check('a drop just inside the tolerance is perfect', result.result === 'perfect');
+        check('and it snaps true rather than keeping the offset', near(top(run).x, 0),
+            `x=${top(run).x}`);
+        check('a perfect loses nothing at all', top(run).w >= BASE_SIZE - 1e-9);
+        check('and nothing is sliced off', result.slice === null || result.slice === undefined);
+
+        run = newRun();
+        result = dropAt(run, PERFECT_TOL + 0.001);
+        check('a hair outside the tolerance is not perfect', result.result === 'sliced');
+
+        // Regrow only shows once there is something to win back.
+        run = newRun();
+        dropAt(run, 2);
+        const narrowed = top(run).w;
+        dropAt(run, 0);
+        check('a perfect wins width back',
+            near(top(run).d, Math.min(BASE_SIZE, BASE_SIZE + PERFECT_REGROW)) && top(run).w >= narrowed,
+            `w=${top(run).w}`);
+        check('but never past full width', top(run).w <= BASE_SIZE + 1e-9);
+
+        /* --- missing --- */
+
+        section('missing');
+
+        run = newRun();
+        result = dropAt(run, BASE_SIZE);
+        check('an offset equal to the full width is a miss', result.result === 'miss');
+        check('and the run is over', run.over === true);
+        check('with a reason worth showing', run.reason.length > 0);
+        note(`reason: "${run.reason}"`);
+
+        run = newRun();
+        result = dropAt(run, BASE_SIZE - 0.01);
+        check('a hair less than the full width still lands', result.result === 'sliced');
+        check('leaving a sliver rather than nothing', top(run).w > 0, `w=${top(run).w}`);
+
+        run = newRun();
+        run.over = true;
+        check('dropping after the run ended does nothing', drop(run).result === 'none');
+
+        /* --- scoring --- */
+
+        section('scoring');
+
+        run = newRun();
+        dropAt(run, 1);
+        check('a sliced block still scores', run.score === 1, String(run.score));
+
+        run = newRun();
+        dropAt(run, 0);
+        check('the first perfect pays two — the block and its streak of one',
+            run.score === 2, String(run.score));
+        dropAt(run, 0);
+        check('the second pays three', run.score === 5, String(run.score));
+
+        // The cap is the point: a streak of twenty should feel great, not break the scoring.
+        run = newRun();
+        for (let i = 0; i < COMBO_BONUS_MAX + 6; i++) dropAt(run, 0);
+        check('the streak bonus stops climbing at the cap',
+            run.combo > COMBO_BONUS_MAX, `combo=${run.combo}`);
+        const lastGain = (() => {
+            const scoreBefore = run.score;
+            dropAt(run, 0);
+            return run.score - scoreBefore;
+        })();
+        check('so a very long streak still pays the capped amount',
+            lastGain === 1 + COMBO_BONUS_MAX, String(lastGain));
+
+        run = newRun();
+        dropAt(run, 0);
+        dropAt(run, 3);
+        check('a sliced drop resets the streak', run.combo === 0);
+        check('but the best is remembered', run.bestCombo === 1);
+
+        /* --- the slab's travel --- */
+
+        section('travel');
+
+        run = newRun();
+        check('the slab starts a full travel out', near(run.moving.x, MOVE_RANGE));
+        check('and heads back towards the tower', run.moving.dir === -1);
+
+        // Walk it far enough to turn round twice, in small steps, and confirm it never
+        // escapes the range it is supposed to sweep.
+        let minSeen = Infinity;
+        let maxSeen = -Infinity;
+        for (let i = 0; i < 4000; i++) {
+            advance(run, 1 / 120);
+            minSeen = Math.min(minSeen, run.moving.x);
+            maxSeen = Math.max(maxSeen, run.moving.x);
+        }
+        check('it stays inside its travel, both ends',
+            minSeen >= -MOVE_RANGE - 1e-6 && maxSeen <= MOVE_RANGE + 1e-6,
+            `${minSeen.toFixed(3)} .. ${maxSeen.toFixed(3)}`);
+        check('and actually reaches both ends rather than creeping',
+            minSeen < -MOVE_RANGE + 0.5 && maxSeen > MOVE_RANGE - 0.5,
+            `${minSeen.toFixed(3)} .. ${maxSeen.toFixed(3)}`);
+
+        check('the slab speeds up as the tower grows',
+            speedFor(40) > speedFor(0));
+        check('then holds, so it never becomes unreadable',
+            near(speedFor(45), speedFor(500)));
+
+        /* --- colour --- */
+
+        section('colour');
+
+        check('a colour comes out as a usable css value', /^rgb\(\d+, \d+, \d+\)$/.test(colourFor(0)));
+        check('neighbouring blocks differ, so a tower is a band and not a wall',
+            colourFor(0) !== colourFor(3));
+        check('and the band cycles rather than running off the wheel',
+            colourFor(0) === colourFor(24));
+        note(`first six: ${[0, 1, 2, 3, 4, 5].map((i) => colourFor(i)).join('  ')}`);
+
+        /* --- a whole run --- */
+
+        section('a whole run');
+
+        run = newRun();
+        let steps = 0;
+        while (!run.over && steps < 200) {
+            // Alternate a perfect and a small slice, which is roughly how a run actually goes.
+            dropAt(run, steps % 2 === 0 ? 0 : 0.6);
+            steps++;
+        }
+        check('a long run neither ends early nor grows a block out of nothing',
+            run.blocks.every((b) => b.w > 0 && b.d > 0 && b.w <= BASE_SIZE + 1e-9));
+        check('and every block sits somewhere on the one below', run.blocks.every((b, i) => {
+            if (i === 0) return true;
+            const below = run.blocks[i - 1];
+            return Math.abs(b.x - below.x) <= (b.w + below.w) / 2 + 1e-9
+                && Math.abs(b.z - below.z) <= (b.d + below.d) / 2 + 1e-9;
+        }));
+        note(`${run.placed} blocks, score ${run.score}, best streak ${run.bestCombo}`);
+
+        const summary = document.getElementById('summary');
+        const checks = out.querySelectorAll('.pass, .fail').length;
+        summary.className = failures === 0 ? 'pass' : 'fail';
+        summary.textContent = failures === 0
+            ? `all ${checks} checks passed`
+            : `${failures} of ${checks} checks FAILED`;
+    </script>
+</body>
+</html>

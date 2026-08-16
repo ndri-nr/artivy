@@ -1,0 +1,224 @@
+/*
+ * StackO!'s look: a synthwave sky with the tower drawn on a canvas in front of it.
+ *
+ * The sky is CSS, not canvas. It never changes and never animates, so repainting it every
+ * frame alongside the tower would be work for nothing — the canvas clears to transparent and
+ * the gradient shows through.
+ */
+
+.gstacko {
+    --ink: #060a1c;
+    --sky-top: #04060f;
+    --sky-bottom: #0d1440;
+    --cyan: #3de0ff;
+    --magenta: #ff5cc8;
+    --text-primary: #eaf3ff;
+    --text-secondary: #7fa0c8;
+
+    /* Measured by adding up the parts at 375px wide: bar, panel, ad slot and the gaps. */
+    --play-chrome-stacked: 300px;
+}
+
+body.gstacko {
+    background: linear-gradient(180deg, #0a1030 0%, #060a1c 100%);
+    color: var(--text-primary);
+}
+
+/* The site's animated mesh is built for the light pages and fights the neon here. */
+body.gstacko::before {
+    display: none;
+}
+
+.gstacko .play-bar .play-home,
+.gstacko .play-bar a.play-quiet {
+    color: var(--text-secondary);
+}
+
+.gstacko .play-bar a.play-quiet:hover {
+    background: rgba(61, 224, 255, 0.12);
+    color: var(--text-primary);
+}
+
+.gstacko .play-title {
+    color: var(--text-primary);
+    font-size: 1.3rem;
+    white-space: nowrap;
+}
+
+.gstacko .stat {
+    background: rgba(10, 16, 48, 0.8);
+    border: 1px solid rgba(61, 224, 255, 0.28);
+    border-radius: 10px;
+    padding: 4px 9px;
+    min-width: 52px;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.gstacko .stat-label {
+    display: block;
+    font-size: 0.58rem;
+    letter-spacing: 0.09em;
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+.gstacko .stat-value {
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.gstacko .play-button {
+    background: rgba(61, 224, 255, 0.1);
+    border-color: rgba(61, 224, 255, 0.35);
+    color: var(--text-primary);
+}
+
+.gstacko .play-button:hover:not(:disabled) {
+    background: rgba(61, 224, 255, 0.2);
+}
+
+.gstacko .play-button[aria-pressed="true"] {
+    background: var(--cyan);
+    border-color: transparent;
+    color: #04060e;
+}
+
+.gstacko .play-hint {
+    color: var(--text-secondary);
+}
+
+.gstacko .play-warning {
+    color: #ffd9dd;
+    background: rgba(255, 92, 110, 0.16);
+}
+
+/* ---------- the tower ---------- */
+
+.gstacko .play-board {
+    --board-max: 460px;
+    /* Portrait, like the app: the tower grows upwards and the slab's travel is what sets the
+       width, so a tall frame wastes nothing. */
+    --board-ratio: 0.66;
+
+    background:
+        radial-gradient(120% 70% at 50% 100%, rgba(255, 92, 200, 0.16), transparent 60%),
+        linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bottom) 100%);
+    border: 1px solid rgba(61, 224, 255, 0.22);
+    border-radius: 14px;
+    overflow: hidden;
+    /* The tap surface for the whole game. Without this the first drag scrolls the page
+       instead of dropping a slab. */
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+}
+
+/* The horizon line, drawn once in CSS rather than every frame on the canvas. */
+.gstacko .play-board::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 62%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(61, 224, 255, 0.35), transparent);
+}
+
+.gstacko canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+}
+
+/* ---------- result card ---------- */
+
+.gstacko .sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(4, 6, 15, 0.72);
+}
+
+.gstacko .sheet[hidden] {
+    display: none;
+}
+
+.gstacko .sheet-card {
+    background: #0c1236;
+    border: 1px solid rgba(61, 224, 255, 0.3);
+    border-radius: 18px;
+    padding: 26px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.gstacko .sheet-card h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+    color: var(--cyan);
+}
+
+.gstacko .sheet-card p {
+    margin: 0 0 16px 0;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.gstacko .sheet-card .play-row {
+    justify-content: center;
+}
+
+.gstacko .sheet-card .play-button {
+    background: var(--cyan);
+    border-color: transparent;
+    color: #04060e;
+}
+
+.gstacko .sheet-card .play-button.ghost {
+    background: transparent;
+    border-color: rgba(61, 224, 255, 0.35);
+    color: var(--text-secondary);
+}
+
+/*
+ * The one instruction the game needs, on the board where the player is looking rather than
+ * in the panel above it. It goes as soon as they drop their first slab — an instruction that
+ * outstays the moment it was needed is just something in the way.
+ */
+.gstacko .board-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 34%;
+    margin: 0;
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: rgba(234, 243, 255, 0.9);
+    text-shadow: 0 0 18px rgba(61, 224, 255, 0.75);
+    pointer-events: none;
+    animation: stacko-hint 1.8s ease-in-out infinite;
+    transition: opacity 0.3s ease;
+}
+
+.gstacko .board-hint.gone {
+    opacity: 0;
+    animation: none;
+}
+
+@keyframes stacko-hint {
+    50% {
+        opacity: 0.45;
+    }
+}

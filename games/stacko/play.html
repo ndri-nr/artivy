@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Play StackO! in your browser. A neon slab slides in over the tower — tap to drop it, and whatever hangs over the edge is sliced away. Three modes, no account, no download.">
+    <meta name="theme-color" content="#060a1c">
+    <title>Play StackO! - Artivy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/play.css?v=BUILD">
+    <link rel="stylesheet" href="game.css?v=BUILD">
+
+    <!-- AdSense, on every page as Google's setup requires. The meta tag is what links the
+         site to the account; the script is what would serve an advert. Neither places one by
+         itself: Auto ads are off, and the game pages take a hand-placed unit in the slot
+         play.css reserves below the board. -->
+    <meta name="google-adsense-account" content="ca-pub-8668013395284480">
+    <script async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
+        crossorigin="anonymous"></script>
+</head>
+<!-- main.js is deliberately not loaded: it is the home page's Three.js particle field, and
+     this is the one game here with a render loop of its own to compete with. -->
+<body class="playing gstacko">
+    <div class="play-bar">
+        <a class="play-home" href="../index.html">
+            <img src="../assets/logo.svg" alt="Artivy">
+        </a>
+        <span class="play-spacer"></span>
+        <a class="play-quiet" href="index.html">About</a>
+        <a class="play-quiet" href="privacy-policy.html">Privacy</a>
+        <a class="play-quiet" href="terms-and-conditions.html">Terms</a>
+    </div>
+
+    <main class="play-stage" id="stage">
+        <div class="play-panel">
+            <div class="play-row">
+                <h1 class="play-title">StackO!</h1>
+                <span class="play-spacer"></span>
+                <div class="stat">
+                    <span class="stat-label">SCORE</span>
+                    <span class="stat-value" id="score">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">BEST</span>
+                    <span class="stat-value" id="best">0</span>
+                </div>
+                <!-- Always here, not only on the game-over card. Closing that card used to
+                     leave a finished run with nothing on screen that could start another. -->
+                <button class="play-button" id="restart">New run</button>
+            </div>
+
+            <p class="play-hint" id="status">Tap to drop.</p>
+            <p class="play-warning" id="warning" hidden>
+                This browser is not letting the page save, so your best scores will not survive
+                a reload.
+            </p>
+        </div>
+
+        <div class="play-board" id="board" role="application" aria-label="StackO! tower">
+            <canvas id="scene"></canvas>
+            <!-- On the board, where the player is looking, not in the panel above it. Gone
+                 the moment they drop their first slab: it has done its job by then. -->
+            <p class="board-hint" id="hint">Tap to drop</p>
+        </div>
+
+        <!-- Ad slot, empty on purpose: no AdSense unit is placed yet. The height is reserved
+             so switching one on later cannot shove the tower around. -->
+        <div class="play-ad" id="ad"></div>
+    </main>
+
+    <div class="sheet" id="sheet" hidden>
+        <div class="sheet-card">
+            <h2 id="sheet-title"></h2>
+            <p id="sheet-text"></p>
+            <div class="play-row">
+                <button class="play-button" id="sheet-action"></button>
+                <button class="play-button ghost" id="sheet-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="play.js?v=BUILD"></script>
+</body>
+</html>
