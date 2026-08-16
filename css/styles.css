@@ -176,8 +176,15 @@ h1, h2, h3 {
 
 .hero-content h1 {
     /* Was clamp(2.8rem, 7vw, 5.5rem) — 88px on a wide screen, which read as shouting. */
-    font-size: clamp(2.1rem, 5vw, 3.4rem);
-    line-height: 1.05;
+    font-size: clamp(1.85rem, 6vw, 3.4rem);
+    line-height: 1.1;
+    /*
+     * On a phone the line breaks whatever the size, and left alone it broke after "Big",
+     * dropping "Joy" onto a line of its own. `balance` splits it evenly instead —
+     * "Little Games," / "Big Joy" — so two lines read as a decision rather than a widow.
+     * Browsers without it just wrap as before.
+     */
+    text-wrap: balance;
     color: #2d3748;
     margin-bottom: 20px;
     background: linear-gradient(90deg, var(--primary-color), var(--accent-deep), var(--secondary-color), var(--primary-color));
