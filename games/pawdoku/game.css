@@ -1,0 +1,215 @@
+/*
+ * Pawdoku's look: warm cream, flat region colours, espresso grout. The region palette is the
+ * Android build's, and it is picked rather than generated — the rose is warm so it does not
+ * collapse onto the blues, there is exactly one red and one green, and the light and dark
+ * entries alternate so neighbours stay apart at a glance.
+ *
+ * The palette lives in JS as well, because a region's colour is chosen by index at runtime.
+ */
+
+.gpaw {
+    --cream: #fbf6ee;
+    --grout: #4a3b30;
+    --ink: #3c2f26;
+    --muted: #8a7768;
+    --heart: #e0795c;
+
+    /*
+     * Measured at 375px wide: 461px of panel, status line, ad slot and gaps, plus slack. On a
+     * tall phone the board is limited by width long before this matters, but on a 667px
+     * screen it is this number that keeps the page from overflowing — and it has to be at
+     * least the real figure, since declaring less than the chrome actually takes lets the
+     * board grow into space that is not there.
+     */
+    --play-chrome-stacked: 465px;
+}
+
+body.gpaw {
+    background: var(--cream);
+    color: var(--ink);
+}
+
+/* The site's animated mesh is built for the marketing pages and muddies the board colours. */
+body.gpaw::before {
+    display: none;
+}
+
+.gpaw .play-bar .play-home,
+.gpaw .play-bar a.play-quiet {
+    color: var(--muted);
+}
+
+.gpaw .play-title {
+    color: var(--ink);
+    font-size: 1.3rem;
+    white-space: nowrap;
+}
+
+.gpaw .stat {
+    background: #fff;
+    border: 1px solid #e6dcd0;
+    border-radius: 10px;
+    padding: 4px 9px;
+    min-width: 50px;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.gpaw .stat-label {
+    display: block;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.gpaw .stat-value {
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.gpaw .hearts {
+    font-size: 1.05rem;
+    letter-spacing: 2px;
+    color: var(--heart);
+}
+
+.gpaw .hearts .spent {
+    opacity: 0.22;
+}
+
+.gpaw .play-button {
+    background: #fff;
+    border-color: #e6dcd0;
+    color: var(--ink);
+}
+
+.gpaw .play-button[aria-pressed="true"] {
+    background: var(--ink);
+    border-color: transparent;
+    color: var(--cream);
+}
+
+.gpaw .play-hint {
+    color: var(--muted);
+}
+
+/* ---------- the board ---------- */
+
+.gpaw .play-board {
+    --board-max: 460px;
+    display: grid;
+    grid-template-columns: repeat(var(--cells), 1fr);
+    grid-template-rows: repeat(var(--cells), 1fr);
+    gap: 2px;
+    padding: 3px;
+    background: var(--grout);
+    border-radius: 10px;
+    /* Sizes the cat and the cross against the board, so a 5x5 gets big markers and a 9x9
+       small ones with no JavaScript involved. */
+    container-type: size;
+}
+
+.gpaw .cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    line-height: 1;
+    cursor: pointer;
+    /* Cells are tapped rapidly; without this a quick double tap zooms the page. */
+    touch-action: manipulation;
+    font-size: calc(100cqw / var(--cells) * 0.6);
+}
+
+.gpaw .cell:disabled {
+    cursor: default;
+}
+
+.gpaw .cell .mark {
+    pointer-events: none;
+}
+
+.gpaw .cell .blocked {
+    font-size: 0.6em;
+    color: rgba(60, 47, 38, 0.5);
+    font-weight: 800;
+}
+
+/* A rejected cat is refused rather than placed, so the only thing telling the player what
+   happened is this. It has to be unmissable. */
+.gpaw .cell.rejected {
+    animation: paw-reject 340ms ease-out;
+}
+
+@keyframes paw-reject {
+    0%, 100% { transform: none; }
+    25% { transform: scale(0.9); }
+    50% { transform: scale(1.06); }
+}
+
+.gpaw .cell.solved-cat {
+    animation: paw-settle 260ms ease-out;
+}
+
+@keyframes paw-settle {
+    from { scale: 0.6; opacity: 0.4; }
+}
+
+/* ---------- result card ---------- */
+
+.gpaw .sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(60, 47, 38, 0.55);
+}
+
+.gpaw .sheet[hidden] {
+    display: none;
+}
+
+.gpaw .sheet-card {
+    background: var(--cream);
+    border-radius: 18px;
+    padding: 26px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(60, 47, 38, 0.3);
+}
+
+.gpaw .sheet-card h2 {
+    margin: 0 0 6px 0;
+    font-size: 1.5rem;
+    color: var(--ink);
+}
+
+.gpaw .sheet-card p {
+    margin: 0 0 14px 0;
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.gpaw .sheet-card .play-row {
+    justify-content: center;
+}
+
+.gpaw .sheet-card .play-button {
+    background: var(--ink);
+    border-color: transparent;
+    color: var(--cream);
+}
+
+.gpaw .sheet-card .play-button.ghost {
+    background: transparent;
+    border-color: #e6dcd0;
+    color: var(--muted);
+}

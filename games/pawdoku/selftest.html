@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pawdoku self-check</title>
+    <style>
+        body { font: 14px/1.6 ui-monospace, monospace; padding: 24px; background: #1b1713; color: #fbf6ee; }
+        h1 { font-size: 1rem; margin: 0 0 12px 0; }
+        h2 { font-size: 0.8rem; margin: 16px 0 4px 0; color: #b8a99a; font-weight: 600; }
+        .pass { color: #7cc6a9; }
+        .fail { color: #e0795c; font-weight: 700; }
+        .note { color: #b8a99a; }
+        #summary { margin-top: 16px; font-weight: 700; }
+    </style>
+</head>
+<!--
+  Open this page and read it.
+
+  A puzzle generator is the worst thing to leave unchecked: it runs unattended, every board is
+  different, and a board with two solutions looks exactly like a hard board right up until a
+  player deduces correctly and is told they are wrong. Uniqueness is checked here on every
+  board it makes, not sampled.
+
+  It also times generation, because the 9x9 refinement loop is the one part of this site that
+  could plausibly need a worker thread.
+
+  Paths resolve against the published layout (games/ flattened to the site root), so serve the
+  flattened copy — see the preview one-liner in the workspace CLAUDE.md.
+-->
+<body>
+    <h1>Pawdoku self-check</h1>
+    <div id="out"></div>
+    <div id="summary">running…</div>
+
+    <script type="module">
+        import {
+            DAILY_SIZE, MAX_HEARTS,
+            boardSizeForLevel, checkPlacement, colOf, countSolutions, dateKey,
+            findSolutions, generate, isSolved, kingAdjacent, rowOf,
+        } from './model.js';
+
+        const out = document.getElementById('out');
+        let failures = 0;
+
+        function section(title) {
+            const line = document.createElement('h2');
+            line.textContent = title;
+            out.appendChild(line);
+        }
+
+        function check(name, condition, detail = '') {
+            const line = document.createElement('div');
+            line.className = condition ? 'pass' : 'fail';
+            line.textContent = `${condition ? 'ok  ' : 'FAIL'} ${name}`
+                + (detail && !condition ? ` — ${detail}` : '');
+            out.appendChild(line);
+            if (!condition) failures++;
+        }
+
+        function note(text) {
+            const line = document.createElement('div');
+            line.className = 'note';
+            line.textContent = `    ${text}`;
+            out.appendChild(line);
+        }
+
+        /* --- the rules --- */
+
+        section('rules');
+
+        const n = 5;
+        check('a cell does not touch itself', kingAdjacent(0, 0, n) === false);
+        check('side by side touches', kingAdjacent(0, 1, n) === true);
+        check('diagonally touches, which is the rule people forget',
+            kingAdjacent(0, n + 1, n) === true);
+        check('a knight\'s move apart does not touch', kingAdjacent(0, n + 2, n) === false);
+        check('wrapping around a row edge does not touch',
+            kingAdjacent(n - 1, n, n) === false, 'last of row 0 vs first of row 1');
+
+        const flat = { n: 3, regions: [0, 0, 1, 0, 1, 1, 2, 2, 2] };
+        check('two cats in one row is a row violation',
+            checkPlacement(flat, [0], 1) === 'row');
+        check('two cats in one column is a column violation',
+            checkPlacement(flat, [0], 6) === 'column');
+        // Cells 1 and 3 share region 0 but sit in different rows and columns, so region is
+        // the first rule they break. Using cells 0 and 3 would report 'column' instead — they
+        // share one — which says nothing about the region check.
+        check('two cats in one region is a region violation',
+            checkPlacement(flat, [1], 3) === 'region');
+        check('an untouched, unshared cell is legal',
+            checkPlacement({ n: 3, regions: [0, 0, 1, 0, 1, 1, 2, 2, 2] }, [0], 5) === null);
+
+        check('an incomplete board is not solved', isSolved(flat, [0]) === false);
+
+        /* --- generation, and uniqueness on every board --- */
+
+        section('generation');
+
+        const SEEDS = 12;
+        let failedToBuild = 0;
+        let notUnique = 0;
+        let solutionWrong = 0;
+        let regionFaults = 0;
+        const timings = {};
+
+        for (const size of [5, 6, 7, 8, 9]) {
+            const started = performance.now();
+
+            for (let seed = 1; seed <= SEEDS; seed++) {
+                const puzzle = generate(size, seed * 7919);
+                if (!puzzle) { failedToBuild++; continue; }
+
+                // Exactly one solution. This is the whole promise of the generator.
+                if (countSolutions(size, puzzle.regions, 3) !== 1) notUnique++;
+
+                // And the solution it kept is a real one.
+                if (!isSolved(puzzle, puzzle.solution)) solutionWrong++;
+
+                // Regions: n of them, each non-empty, each 4-connected.
+                const cellsByRegion = Array.from({ length: size }, () => []);
+                for (let cell = 0; cell < size * size; cell++) {
+                    const id = puzzle.regions[cell];
+                    if (id < 0 || id >= size) { regionFaults++; continue; }
+                    cellsByRegion[id].push(cell);
+                }
+                for (const cells of cellsByRegion) {
+                    if (cells.length === 0) { regionFaults++; continue; }
+                    const seen = new Set([cells[0]]);
+                    const stack = [cells[0]];
+                    while (stack.length) {
+                        const cell = stack.pop();
+                        const row = rowOf(cell, size);
+                        const column = colOf(cell, size);
+                        const around = [];
+                        if (row > 0) around.push(cell - size);
+                        if (row < size - 1) around.push(cell + size);
+                        if (column > 0) around.push(cell - 1);
+                        if (column < size - 1) around.push(cell + 1);
+                        for (const next of around) {
+                            if (puzzle.regions[next] === puzzle.regions[cell] && !seen.has(next)) {
+                                seen.add(next);
+                                stack.push(next);
+                            }
+                        }
+                    }
+                    if (seen.size !== cells.length) regionFaults++;
+                }
+            }
+
+            timings[size] = Math.round(performance.now() - started);
+        }
+
+        const boards = SEEDS * 5;
+        check(`${boards} boards were all built`, failedToBuild === 0, `${failedToBuild} gave up`);
+        check('every board has exactly one solution', notUnique === 0,
+            `${notUnique} are ambiguous or impossible`);
+        check('every board\'s stored solution really solves it', solutionWrong === 0,
+            `${solutionWrong} wrong`);
+        check('every region is non-empty and in one piece', regionFaults === 0,
+            `${regionFaults} faults`);
+
+        /* --- speed, because this is the one page that could need a worker --- */
+
+        section('speed');
+
+        for (const size of [5, 6, 7, 8, 9]) {
+            note(`${size}x${size}: ${timings[size]}ms for ${SEEDS} boards `
+                + `(${Math.round(timings[size] / SEEDS)}ms each)`);
+        }
+        const worst = Math.round(timings[9] / SEEDS);
+        check('the hardest board size generates fast enough to stay on the main thread',
+            worst < 250, `${worst}ms for a 9x9, which would visibly stall a tap`);
+
+        /* --- same seed, same board --- */
+
+        section('determinism');
+
+        const first = generate(7, 12345);
+        const again = generate(7, 12345);
+        check('the same seed builds the same board',
+            JSON.stringify(first.regions) === JSON.stringify(again.regions));
+        check('and the same solution',
+            JSON.stringify(first.solution) === JSON.stringify(again.solution));
+
+        const other = generate(7, 12346);
+        check('a different seed builds a different board',
+            JSON.stringify(first.regions) !== JSON.stringify(other.regions));
+
+        const daily = generate(DAILY_SIZE, dateKey(new Date(2026, 7, 16)));
+        check('today\'s daily board is a real one', daily !== null && daily.n === DAILY_SIZE);
+        check('and it is unique too', countSolutions(DAILY_SIZE, daily.regions, 3) === 1);
+        check('the date key is yyyyMMdd', dateKey(new Date(2026, 7, 16)) === 20260816);
+
+        /* --- solving a generated board --- */
+
+        section('playing');
+
+        const board = generate(6, 999);
+        const solution = board.solution;
+
+        check('the generated solution passes the win check', isSolved(board, solution));
+        check('a solution with one cat moved does not', (() => {
+            const wrong = [...solution];
+            wrong[0] = (wrong[0] + 1) % (board.n * board.n);
+            return isSolved(board, wrong) === false;
+        })());
+        check('a partial board does not', isSolved(board, solution.slice(0, board.n - 1)) === false);
+        check('the solver finds it', (() => {
+            const found = findSolutions(board.n, board.regions, 2);
+            return found.length === 1 && [...found[0]].sort((a, b) => a - b).join() ===
+                [...solution].sort((a, b) => a - b).join();
+        })());
+
+        /* --- the level curve --- */
+
+        section('levels');
+
+        check('level 1 is the smallest board', boardSizeForLevel(1) === 5);
+        check('the curve rises', boardSizeForLevel(21) === 6 && boardSizeForLevel(61) === 8);
+        check('and caps, so endless levels stay solvable',
+            boardSizeForLevel(81) === 9 && boardSizeForLevel(100000) === 9);
+        check('three hearts', MAX_HEARTS === 3);
+
+        const summary = document.getElementById('summary');
+        const checks = out.querySelectorAll('.pass, .fail').length;
+        summary.className = failures === 0 ? 'pass' : 'fail';
+        summary.textContent = failures === 0
+            ? `all ${checks} checks passed`
+            : `${failures} of ${checks} checks FAILED`;
+    </script>
+</body>
+</html>
