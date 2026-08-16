@@ -250,17 +250,14 @@ h1, h2, h3 {
     box-shadow: 0 15px 30px rgba(112, 72, 232, 0.45);
 }
 
-/* Official Google Play badge, used as Google supplies it. Their brand guidelines
-   require the badge artwork unmodified and forbid recreating the Play logo, so
-   this is an <img> of assets/google-play-badge.png rather than an inline SVG
-   dressed up as one of the site's gradient pills.
+/* Official Google Play badge artwork, unaltered — their brand guidelines require the artwork
+   itself untouched and forbid recreating the Play logo, so this is an <img> of
+   assets/google-play-badge.png rather than an inline SVG dressed up as a site pill. Hover lifts
+   it without scaling or filtering it. Defined once here so the game pages cannot drift apart.
 
-   No padding here: the badge PNG already contains the clear space Google
-   mandates, which is why the file is 646x250 rather than the ratio of the pill
-   you can see. Height only, width auto, so the artwork is never distorted.
-   Hover lifts the badge without touching the artwork itself — no scale, no
-   filter, nothing that would count as modifying it. Defined once here so the
-   game pages cannot drift apart. */
+   The file used to be 646x250: the artwork plus 41px of transparent clear space on every side,
+   which Google bakes in. It is cropped to the artwork now, 564x168, and the clear space is
+   supplied as margin below — see .play-badge. */
 /*
  * The store badge, last in the block of actions and as wide as the ones above it.
  *
@@ -355,11 +352,21 @@ h1, h2, h3 {
     justify-content: flex-start;
     gap: 24px;
     overflow-x: auto;
+    /*
+     * Explicit, and not redundant. CSS computes a `visible` overflow to `auto` on one axis as
+     * soon as the other axis is not visible — so `overflow-x: auto` alone made this strip
+     * scrollable up and down as well. It had something to scroll, too: .reveal holds its cards
+     * at translateY(30px) until they enter the viewport, and the cards off the right-hand end
+     * of a horizontal strip never do, so that offset was permanent and so was the stray 18px
+     * of vertical travel.
+     */
+    overflow-y: hidden;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
     scroll-padding-inline: 24px;
     margin-inline: -24px;
-    padding: 6px 24px 20px 24px;
+    /* Top padding clears the 8px hover lift, which hidden overflow would otherwise crop. */
+    padding: 12px 24px 20px 24px;
     /* Visible and thin where there is a mouse to drag it; hidden under a finger, which needs
        no scrollbar and is better off without one. */
     scrollbar-width: thin;
@@ -368,6 +375,19 @@ h1, h2, h3 {
 
 .card-strip > * {
     scroll-snap-align: center;
+}
+
+/*
+ * A strip's cards do not do the entrance animation. .reveal holds an element 30px down and
+ * fully transparent until it intersects the viewport, which suits a column you scroll past and
+ * not a row you swipe along: the cards past the right-hand edge never intersect anything, so
+ * they stayed at opacity 0 — swiping to one meant landing on a blank card and waiting for it
+ * to fade in — and their 30px offset was permanent, which is what the strip found to scroll up
+ * and down.
+ */
+.card-strip > .reveal {
+    opacity: 1;
+    transform: none;
 }
 
 @media (hover: none) {
@@ -400,7 +420,7 @@ h1, h2, h3 {
     will-change: transform;
 }
 
-/* Cursor-tracked sheen; JS sets --mx/--my to the pointer position */
+/* A fixed sheen along the top edge. It was cursor-tracked, from the same handler as the tilt. */
 .card::before {
     content: "";
     position: absolute;
@@ -415,7 +435,9 @@ h1, h2, h3 {
 }
 .card:hover::before { opacity: 1; }
 
+/* Straight up, the same amount every time and from any direction — the whole hover state. */
 .card:hover {
+    transform: translateY(-6px);
     box-shadow: 0 30px 55px rgba(31, 38, 135, 0.22);
 }
 
@@ -515,45 +537,6 @@ h1, h2, h3 {
     box-shadow: 0 6px 12px rgba(0,0,0,0.08);
 }
 
-/* Why Artivy — feature strip */
-.features-section {
-    padding: 20px 50px 40px;
-}
-.feature-tiles {
-    max-width: 1080px;
-    margin-inline: auto;
-}
-.feature-tile {
-    flex: 0 0 300px;
-    max-width: 340px;
-    background: var(--glass-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 20px;
-    backdrop-filter: blur(12px);
-    box-shadow: var(--glass-shadow);
-    padding: 32px 28px;
-    text-align: center;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
-}
-.feature-tile:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(31, 38, 135, 0.15);
-}
-.feature-tile .feature-emoji {
-    font-size: 2.6rem;
-    display: block;
-    margin-bottom: 14px;
-}
-.feature-tile h3 {
-    font-size: 1.3rem;
-    color: #2d3748;
-    margin-bottom: 8px;
-}
-.feature-tile p {
-    color: #718096;
-    font-weight: 600;
-    line-height: 1.55;
-}
 
 /* Footer */
 footer {
@@ -574,8 +557,7 @@ footer {
     .hero-content {
         padding: 36px 26px;
     }
-    .games-section,
-    .features-section {
+    .games-section {
         padding-left: 20px;
         padding-right: 20px;
     }
@@ -715,13 +697,13 @@ footer {
         gap: 16px;
         scroll-padding-inline: 20px;
         margin-inline: -20px;
-        padding: 4px 20px 12px 20px;
+        /* Same clearance for the hover lift as the desktop rule, since overflow-y is hidden. */
+        padding: 12px 20px 12px 20px;
     }
 
     /* A share of the screen rather than a fixed width, so one card fills a phone and the
        next one peeks. */
-    .card,
-    .feature-tile {
+    .card {
         flex: 0 0 84%;
         max-width: 330px;
     }

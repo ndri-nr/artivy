@@ -158,24 +158,13 @@ if (reduceMotion || !('IntersectionObserver' in window)) {
     revealEls.forEach((el) => io.observe(el));
 }
 
-// 3D tilt on game cards (pointer devices only)
-const canTilt = window.matchMedia('(hover: hover)').matches && !reduceMotion;
-if (canTilt) {
-    const MAX_TILT = 9; // degrees
-    document.querySelectorAll('.card').forEach((card) => {
-        card.addEventListener('mousemove', (e) => {
-            const r = card.getBoundingClientRect();
-            const px = (e.clientX - r.left) / r.width;   // 0..1
-            const py = (e.clientY - r.top) / r.height;   // 0..1
-            const rotY = (px - 0.5) * 2 * MAX_TILT;
-            const rotX = (0.5 - py) * 2 * MAX_TILT;
-            card.style.transform =
-                `rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-8px)`;
-            card.style.setProperty('--mx', `${px * 100}%`);
-            card.style.setProperty('--my', `${py * 100}%`);
-        });
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-        });
-    });
-}
+/*
+ * The cards used to tilt up to 9 degrees under the pointer, driven from here on every
+ * mousemove. It made a card that is mostly text lean away from you while you were reading it,
+ * and on a strip you swipe through, five of them leaning independently is restless rather than
+ * responsive. The hover state is a plain lift in CSS now — no script, and the same behaviour on
+ * a phone as on a laptop.
+ *
+ * The sheen the tilt also drove stays: --mx/--my fall back to 50%/0%, which is a fixed
+ * highlight along the card's top edge.
+ */
