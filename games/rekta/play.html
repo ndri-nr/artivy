@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Play Rekta in your browser. Cut the grid into rectangles, one number in each, the number being how many cells it covers. Endless levels, no account, no download.">
+    <meta name="theme-color" content="#0a1130">
+    <title>Play Rekta - Artivy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/play.css">
+    <link rel="stylesheet" href="game.css">
+
+    <!-- AdSense, on every page as Google's setup requires. The meta tag is what links the
+         site to the account; the script is what would serve an advert. Neither places one by
+         itself: Auto ads are off, and the game pages take a hand-placed unit in the slot
+         play.css reserves below the board. -->
+    <meta name="google-adsense-account" content="ca-pub-8668013395284480">
+    <script async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
+        crossorigin="anonymous"></script>
+</head>
+<!-- main.js is deliberately not loaded: it is the home page's Three.js particle field, a
+     continuous repaint that would compete with the board for frames. -->
+<body class="playing grekta">
+    <div class="play-bar">
+        <a class="play-home" href="../index.html">
+            <img src="../assets/logo.png" alt="Artivy">
+        </a>
+        <span class="play-spacer"></span>
+        <a class="play-quiet" href="index.html">About</a>
+        <a class="play-quiet" href="privacy-policy.html">Privacy</a>
+        <a class="play-quiet" href="terms-and-conditions.html">Terms</a>
+    </div>
+
+    <main class="play-stage" id="stage">
+        <div class="play-panel">
+            <div class="play-row">
+                <h1 class="play-title">Rekta</h1>
+                <span class="play-spacer"></span>
+                <div class="stat">
+                    <span class="stat-label">LEVEL</span>
+                    <span class="stat-value" id="level">1</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">TIME</span>
+                    <span class="stat-value" id="time">0:00</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">BEST</span>
+                    <span class="stat-value" id="best">—</span>
+                </div>
+            </div>
+
+            <div class="play-row" id="difficulty" role="group" aria-label="Grid size"></div>
+
+            <div class="play-row">
+                <button class="play-button" id="hint">Hint</button>
+                <button class="play-button" id="clear">Clear</button>
+                <span class="play-spacer"></span>
+                <button class="play-button" id="skip">New level</button>
+            </div>
+
+            <p class="play-hint">Drag to cut a rectangle. Tap a rectangle to remove it, or an
+                empty cell to claim it.</p>
+            <p class="play-warning" id="warning" hidden>
+                This browser is not letting the page save, so your level and best times will not
+                survive a reload.
+            </p>
+        </div>
+
+        <div class="play-board" id="board" role="application" aria-label="Rekta grid" tabindex="0">
+            <div class="grid" id="grid"></div>
+            <div class="blocks" id="blocks"></div>
+            <!-- Above the blocks, so a rectangle never hides the number it was drawn for. -->
+            <div class="clues" id="clues"></div>
+            <div class="preview" id="preview" hidden></div>
+            <div class="overlay" id="overlay" hidden>
+                <h2>Solved</h2>
+                <p id="overlay-text"></p>
+                <button class="play-button" id="next">Next level</button>
+            </div>
+        </div>
+
+        <!-- Ad slot, empty on purpose: no AdSense account yet. Reserving the height now means
+             switching ads on later cannot shove the board down the page. Note Rekta's own rule
+             from the Android build — no strip of advertising beside the grid the player is
+             staring at — which is why this sits below the board with a gap, and why nothing
+             may move it alongside. -->
+        <div class="play-ad" id="ad"></div>
+    </main>
+
+    <script type="module" src="play.js"></script>
+</body>
+</html>

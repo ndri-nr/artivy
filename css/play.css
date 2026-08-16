@@ -23,7 +23,7 @@ body.playing {
      * existed. A constant cannot be stale. If it is a little generous the board is a little
      * small, which is a much cheaper way to be wrong.
      */
-    --play-chrome: 310px;
+    --play-chrome: var(--play-chrome-stacked, 310px);
 
     /* No pull-to-refresh and no rubber-band while a finger is dragging tiles around. The page
        can still scroll: if the constant above turns out to be too small on some screen, the
@@ -97,6 +97,9 @@ body.playing::before {
     display: flex;
     align-items: center;
     gap: 10px;
+    /* A row of buttons that does not fit a narrow phone must stack, not spill sideways: the
+       page may scroll down when a board is squeezed, but it must never scroll across. */
+    flex-wrap: wrap;
 }
 
 .play-row .play-spacer {
@@ -140,15 +143,23 @@ body.playing::before {
 }
 
 /*
- * The board: a square bounded by whichever runs out first, the width or the height.
+ * The board, bounded by whichever runs out first, the width or the height.
+ *
+ * --board-ratio is width ÷ height, so a square board leaves it at 1 and a portrait grid such
+ * as Rekta's 10x13 sets 10/13. It appears twice on purpose: once as the box's aspect ratio,
+ * and once as the factor converting the leftover height into the width that height allows.
+ *
  * `dvh` rather than `vh` — mobile browser chrome slides away as you scroll and `vh` measures
  * the taller state, so a `vh`-sized board is clipped for as long as the toolbar is showing.
- * A game sets --board-max for its own sensible ceiling.
  */
 .play-board {
     position: relative;
-    width: min(var(--board-max, 520px), 100%, calc(100dvh - var(--play-chrome)));
-    aspect-ratio: 1;
+    width: min(
+        var(--board-max, 520px),
+        100%,
+        calc((100dvh - var(--play-chrome)) * var(--board-ratio, 1))
+    );
+    aspect-ratio: var(--board-ratio, 1);
     margin: 0 auto;
     /* Swipes belong to the game, not to the page. Without this the first drag scrolls. */
     touch-action: none;
@@ -197,8 +208,10 @@ body.playing::before {
  */
 @media (orientation: landscape) and (max-height: 560px) {
     body.playing {
-        /* Only the top bar is above the board now, so almost the whole height is available. */
-        --play-chrome: 70px;
+        /* Only the top bar is above the board now, so almost the whole height is available.
+           Set here rather than through --play-chrome-stacked, so a game overriding that one
+           for its own portrait layout does not also make its landscape board too small. */
+        --play-chrome: var(--play-chrome-beside, 70px);
     }
 
     .play-stage {

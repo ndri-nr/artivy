@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rekta self-check</title>
+    <style>
+        body { font: 14px/1.6 ui-monospace, monospace; padding: 24px; background: #0a1130; color: #eaf3ff; }
+        h1 { font-size: 1rem; margin: 0 0 12px 0; }
+        .pass { color: #4dffb8; }
+        .fail { color: #ff5c6e; font-weight: 700; }
+        .note { color: #97add6; }
+        #summary { margin-top: 16px; font-weight: 700; }
+    </style>
+</head>
+<!--
+  Open this page and read it. A level generator is exactly the kind of code that needs a
+  check: it runs unattended, its output is different every level, and a board that cannot be
+  solved looks like a hard board until someone gives up on it.
+
+  Paths resolve against the published layout (games/ flattened to the site root), so serve the
+  flattened copy — see the preview one-liner in the workspace CLAUDE.md.
+-->
+<body>
+    <h1>Rekta self-check</h1>
+    <div id="out"></div>
+    <div id="summary"></div>
+
+    <script type="module">
+        import {
+            DIFFICULTIES, area, boardFor, clueAt, covered, isValid, overlaps,
+            place, removeAt, solutionFor, solved,
+        } from './model.js';
+
+        const out = document.getElementById('out');
+        let failures = 0;
+
+        function check(name, condition, detail = '') {
+            const line = document.createElement('div');
+            line.className = condition ? 'pass' : 'fail';
+            line.textContent = `${condition ? 'ok  ' : 'FAIL'} ${name}`
+                + (detail && !condition ? ` — ${detail}` : '');
+            out.appendChild(line);
+            if (!condition) failures++;
+        }
+
+        function note(text) {
+            const line = document.createElement('div');
+            line.className = 'note';
+            line.textContent = `    ${text}`;
+            out.appendChild(line);
+        }
+
+        /* --- the generator, over a wide sweep of levels --- */
+
+        const LEVELS = 60;
+        let tilingFaults = 0;
+        let clueFaults = 0;
+        let unsolvable = 0;
+        let boundsFaults = 0;
+        let wide = 0;
+        let tall = 0;
+        let square = 0;
+        let singles = 0;
+        let totalBlocks = 0;
+
+        for (const difficulty of DIFFICULTIES) {
+            for (let level = 1; level <= LEVELS; level++) {
+                const answer = solutionFor(difficulty, level);
+                const board = boardFor(difficulty, level);
+                const cells = difficulty.cols * difficulty.rows;
+
+                // Every cell covered exactly once: no overlap and no gap.
+                const cover = new Array(cells).fill(0);
+                for (const block of answer) {
+                    if (block.x < 0 || block.y < 0
+                        || block.x + block.w > difficulty.cols
+                        || block.y + block.h > difficulty.rows) {
+                        boundsFaults++;
+                        continue;
+                    }
+                    for (let y = block.y; y < block.y + block.h; y++) {
+                        for (let x = block.x; x < block.x + block.w; x++) cover[y * difficulty.cols + x]++;
+                    }
+                }
+                if (cover.some((count) => count !== 1)) tilingFaults++;
+
+                // One clue per block, and it is that block's area.
+                let clues = 0;
+                for (let i = 0; i < cells; i++) if (board.clues[i] !== 0) clues++;
+                if (clues !== answer.length) clueFaults++;
+
+                for (const block of answer) {
+                    let found = 0;
+                    let value = 0;
+                    for (let y = block.y; y < block.y + block.h; y++) {
+                        for (let x = block.x; x < block.x + block.w; x++) {
+                            const clue = clueAt(board, x, y);
+                            if (clue !== 0) { found++; value = clue; }
+                        }
+                    }
+                    if (found !== 1 || value !== area(block)) clueFaults++;
+
+                    totalBlocks++;
+                    if (area(block) === 1) singles++;
+                    if (block.w > block.h) wide++;
+                    else if (block.h > block.w) tall++;
+                    else square++;
+                }
+
+                // The generator's own partition has to satisfy the clues it produced.
+                for (const block of answer) {
+                    place(board, block.x, block.y, block.x + block.w - 1, block.y + block.h - 1);
+                }
+                if (!solved(board)) unsolvable++;
+            }
+        }
+
+        const boards = DIFFICULTIES.length * LEVELS;
+        check(`${boards} boards tile the grid with no overlap and no gap`, tilingFaults === 0,
+            `${tilingFaults} faulty`);
+        check('every block stays inside the grid', boundsFaults === 0, `${boundsFaults} out of bounds`);
+        check('every block holds exactly one clue, equal to its area', clueFaults === 0,
+            `${clueFaults} faulty`);
+        check('every generated board is solvable by its own partition', unsolvable === 0,
+            `${unsolvable} unsolvable`);
+
+        /*
+         * The generator picks a shape first and a placement second, precisely so the board's
+         * aspect ratio does not become a standing preference for tall blocks. Collapse those
+         * two decisions back into one draw and this ratio blows out — which is what makes the
+         * boards guessable, and is the reason this check exists rather than a shape count.
+         */
+        const lean = Math.max(wide, tall) / Math.min(wide, tall);
+        check('neither axis dominates the block shapes', lean < 1.4, `wide ${wide}, tall ${tall}`);
+        note(`${totalBlocks} blocks: ${wide} wide, ${tall} tall, ${square} square, ${singles} single cells`);
+
+        check('single cells stay rare after merging', singles / totalBlocks < 0.1,
+            `${((singles / totalBlocks) * 100).toFixed(1)}% are 1x1`);
+
+        /* --- levels are the same board every time --- */
+
+        const easy = DIFFICULTIES[0];
+        check('the same level generates the same clues twice',
+            JSON.stringify(boardFor(easy, 12).clues) === JSON.stringify(boardFor(easy, 12).clues));
+        check('a different level generates a different board',
+            JSON.stringify(boardFor(easy, 12).clues) !== JSON.stringify(boardFor(easy, 13).clues));
+        check('the same level differs between grid sizes',
+            JSON.stringify(boardFor(easy, 12).clues)
+            !== JSON.stringify(boardFor(DIFFICULTIES[1], 12).clues));
+
+        /* --- placing and removing --- */
+
+        const board = boardFor(easy, 3);
+        place(board, 0, 0, 1, 1);
+        check('a drag places one block', board.blocks.length === 1);
+        check('and it spans the dragged corners', area(board.blocks[0]) === 4);
+
+        place(board, 1, 1, 2, 2);
+        check('an overlapping block replaces what it covers, rather than being refused',
+            board.blocks.length === 1);
+        check('and the survivor is the new one', board.blocks[0].x === 1 && board.blocks[0].y === 1);
+
+        place(board, 0, 4, 0, 4);
+        check('a 1x1 can be claimed, which is the only answer to a clue of 1',
+            board.blocks.length === 2);
+        check('two blocks that do not touch both survive',
+            !overlaps(board.blocks[0], board.blocks[1]));
+
+        check('a tap on a block removes it', removeAt(board, 1, 1) === true);
+        check('a tap on empty space removes nothing', removeAt(board, 5, 7) === false);
+
+        /* --- reversed drags --- */
+
+        const reversed = boardFor(easy, 4);
+        place(reversed, 3, 5, 1, 2);
+        check('dragging up and to the left gives the same rectangle as down and right',
+            reversed.blocks[0].x === 1 && reversed.blocks[0].y === 2
+            && reversed.blocks[0].w === 3 && reversed.blocks[0].h === 4);
+
+        const clamped = boardFor(easy, 5);
+        place(clamped, -4, -4, 99, 99);
+        check('a drag beyond the edge is clamped to the grid',
+            area(clamped.blocks[0]) === easy.cols * easy.rows);
+
+        /* --- validity --- */
+
+        const scored = boardFor(easy, 6);
+        let clueCell = null;
+        for (let y = 0; y < scored.rows && !clueCell; y++) {
+            for (let x = 0; x < scored.cols && !clueCell; x++) {
+                if (clueAt(scored, x, y) === 1) clueCell = { x, y };
+            }
+        }
+        if (clueCell) {
+            place(scored, clueCell.x, clueCell.y, clueCell.x, clueCell.y);
+            check('a 1x1 on a clue of 1 is valid', isValid(scored, scored.blocks[0]));
+        } else {
+            note('no clue of 1 on this board, skipped the 1x1 validity case');
+        }
+
+        const empty = boardFor(easy, 7);
+        check('an unfinished board is not solved', solved(empty) === false);
+        check('an empty board covers nothing', covered(empty) === 0);
+
+        const summary = document.getElementById('summary');
+        const checks = out.querySelectorAll('.pass, .fail').length;
+        summary.className = failures === 0 ? 'pass' : 'fail';
+        summary.textContent = failures === 0
+            ? `all ${checks} checks passed`
+            : `${failures} of ${checks} checks FAILED`;
+    </script>
+</body>
+</html>

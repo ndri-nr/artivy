@@ -1,0 +1,255 @@
+/*
+ * Rekta's look: cold navy ground, neon blocks. Same palette as the Android build — each step
+ * from ground to board to cell to block is a real step, because a first pass that kept every
+ * surface within a few points of the background read as one flat slab, and an empty grid was
+ * invisible.
+ *
+ * Block colours are applied from JS, because the ramp is indexed by the block's geometry.
+ * Everything else is here.
+ */
+
+.grekta {
+    --ground: #0a1130;
+    --board-bg: #101a45;
+    --cell: #1b2a5e;
+    --grid-line: #354c93;
+    --text-primary: #eaf3ff;
+    --text-secondary: #97add6;
+    --cyan: #3de0ff;
+    --coral: #ff5c6e;
+
+    /* Rekta's panel carries a difficulty row and an action row that 2048 has no need of, so
+       it reserves more of the screen than the shell's default. Measured, not guessed: the
+       page came out 30px taller than the viewport at 360, and the panel plus the ad slot add
+       up to 390. The extra two are slack, because being slightly generous costs a slightly
+       smaller board and being slightly mean costs a scrollbar. */
+    --play-chrome-stacked: 392px;
+}
+
+body.grekta {
+    background: linear-gradient(180deg, #141f52 0%, #060a1c 100%);
+    color: var(--text-primary);
+}
+
+/* The site's animated mesh is built for the light pages and glows through this one. */
+body.grekta::before {
+    display: none;
+}
+
+.grekta .play-bar .play-home,
+.grekta .play-bar a.play-quiet {
+    color: var(--text-secondary);
+}
+
+.grekta .play-bar a.play-quiet:hover {
+    background: rgba(61, 224, 255, 0.12);
+    color: var(--text-primary);
+}
+
+.grekta .play-title {
+    color: var(--text-primary);
+}
+
+.grekta .play-button {
+    background: rgba(53, 76, 147, 0.28);
+    border-color: rgba(53, 76, 147, 0.9);
+    color: var(--text-primary);
+}
+
+.grekta .play-button:hover:not(:disabled) {
+    background: rgba(61, 224, 255, 0.16);
+}
+
+.grekta .play-button[aria-pressed="true"] {
+    background: var(--cyan);
+    border-color: transparent;
+    color: #04060e;
+}
+
+.grekta .stat {
+    background: rgba(16, 26, 69, 0.85);
+    border: 1px solid rgba(53, 76, 147, 0.7);
+    border-radius: 10px;
+    padding: 5px 11px;
+    min-width: 66px;
+    text-align: center;
+    line-height: 1.15;
+}
+
+.grekta .stat-label {
+    display: block;
+    font-size: 0.6rem;
+    letter-spacing: 0.09em;
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+.grekta .stat-value {
+    font-size: 1rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.grekta .play-hint {
+    color: var(--text-secondary);
+}
+
+.grekta .play-warning {
+    color: #ffd9dd;
+    background: rgba(255, 92, 110, 0.16);
+}
+
+/* ---------- the board ---------- */
+
+.grekta .play-board {
+    --board-max: 460px;
+    background: var(--board-bg);
+    border: 1px solid rgba(53, 76, 147, 0.55);
+    border-radius: 12px;
+    /* Establishes the container that clue text is sized against, so a 10-wide grid gets
+       smaller numerals than a 6-wide one with no JavaScript involved. */
+    container-type: size;
+    overflow: hidden;
+}
+
+.grekta .grid {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
+}
+
+/*
+ * Grid lines are drawn inside the cell rather than as a gap. A gap would push the cells off
+ * the exact 1/cols fractions that the block overlay positions itself on, and the blocks would
+ * drift further out of true with every column.
+ */
+.grekta .cell {
+    background: var(--cell);
+    box-shadow: inset 0 0 0 1px rgba(53, 76, 147, 0.5);
+}
+
+.grekta .blocks {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.grekta .block {
+    position: absolute;
+    border: 2px solid currentColor;
+    border-radius: 7px;
+}
+
+/*
+ * The fill is the outline colour at partial strength and the outline carries the neon. It has
+ * to be a pseudo-element rather than a background on the block itself: `currentColor` as a
+ * background paints at full opacity, which buries the clue the block was drawn around.
+ */
+.grekta .block::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0.28;
+    border-radius: 5px;
+}
+
+/*
+ * Clues sit in their own layer above the blocks, which is the whole point of them being here
+ * rather than inside the cells: a clue covered by the rectangle drawn around it leaves the
+ * player working from memory, and the number is the only thing on the board worth reading.
+ * The Android build draws them last for the same reason.
+ */
+.grekta .clues {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.grekta .clue {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.grekta .clue span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 78%;
+    height: 78%;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    /* Nearly opaque on purpose: this disc is what keeps the numeral legible against whatever
+       colour the player has just drawn underneath it. */
+    background: rgba(4, 6, 14, 0.88);
+    color: var(--text-primary);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    /* 1cqw is one percent of the board's width, so one cell is 100/cols of them. */
+    font-size: calc(100cqw / var(--cols) * 0.42);
+    line-height: 1;
+}
+
+.grekta .block.invalid {
+    color: var(--coral);
+}
+
+.grekta .preview {
+    position: absolute;
+    border: 2px dashed var(--cyan);
+    border-radius: 7px;
+    background: rgba(61, 224, 255, 0.16);
+    pointer-events: none;
+}
+
+.grekta .preview[hidden] {
+    display: none;
+}
+
+/* ---------- solved card ---------- */
+
+.grekta .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 20px;
+    text-align: center;
+    background: rgba(10, 16, 48, 0.94);
+    border-radius: 12px;
+    z-index: 2;
+}
+
+.grekta .overlay[hidden] {
+    display: none;
+}
+
+.grekta .overlay h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--cyan);
+}
+
+.grekta .overlay p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.grekta .overlay .record {
+    color: #4dffb8;
+    font-weight: 700;
+}
+
+.grekta .overlay .play-button {
+    background: var(--cyan);
+    border-color: transparent;
+    color: #04060e;
+}
