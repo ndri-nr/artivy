@@ -1,15 +1,18 @@
 /*
- * The browser build of Pawdoku: board, taps, hearts, the daily clock and saving. The rules
- * and the generator are in model.js, which has no DOM in it and is checked by selftest.html.
+ * The browser build of Pawdoku: board, taps, lives and saving. The rules and the generator
+ * are in model.js, which has no DOM in it and is checked by selftest.html.
  *
- * The tap model is the Android build's, and it is not the obvious one:
+ * Endless levels only. The app's daily challenge, coins, store, trophies, hints and paws are
+ * all deliberately absent — this is the puzzle, not the economy around it.
+ *
+ * The tap model is the app's, and it is not the obvious one:
  *
  *   - a tap marks the player's own X, and taps it away again;
- *   - a second tap on the same cell within 200ms upgrades it to a cat;
- *   - a long press summons a cat directly, for anyone who would rather not race the timer;
+ *   - a second tap on the same cell within 200ms upgrades it to a paw;
+ *   - a long press places a paw directly;
  *   - dragging paints X across cells.
  *
- * A cat is only correct where the solution puts one. Anywhere else costs a life and leaves a
+ * A paw is only correct where the solution puts one. Anywhere else costs a life and leaves a
  * red cross that cannot be cleared.
  */
 
@@ -17,14 +20,11 @@ import { storage, isPersistent } from '../js/storage.js';
 import {
     BLOCKED,
     CAT,
-    DAILY_SIZE,
-    DAILY_TIME_LIMIT,
     EMPTY,
     LOCKED,
     MAX_HEARTS,
     boardSizeForLevel,
     catsIn,
-    dateKey,
     generate,
     isSolved,
     summon,
@@ -38,9 +38,15 @@ const REGION_COLORS = [
     '#d99a3c', '#a9dceb', '#9aa5b1', '#a85e86',
 ];
 
-/* Which of those are dark enough to need light text on top. A lookup rather than luminance
-   maths: the palette is fixed and nine long, so this is both simpler and correctable by eye. */
-const DARK_REGIONS = new Set([1, 2, 8]);
+/* Material's `pets` glyph, which is the paw the Android build draws. Inline so it takes the
+   fill colour and stays sharp at any board size, with no icon font to load. */
+const PAW_PATH = 'M4.5 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm4.5-4a2.5 2.5 0 1 0 0 5 '
+    + '2.5 2.5 0 0 0 0-5zm6 0a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zm4.5 4a2.5 2.5 0 1 0 0 5 '
+    + '2.5 2.5 0 0 0 0-5zm-2.16 5.36c-.87-1.02-1.6-1.89-2.48-2.91-.46-.54-1.05-1.08-1.75-1.32'
+    + '-.11-.04-.22-.07-.33-.09-.25-.04-.52-.04-.78-.04s-.53 0-.79.05c-.11.02-.22.05-.33.09'
+    + '-.7.24-1.28.78-1.75 1.32-.87 1.02-1.6 1.89-2.48 2.91-1.31 1.31-2.92 2.76-2.62 4.79'
+    + '.29 1.02 1.02 2.03 2.33 2.32.73.15 3.06-.44 5.54-.44h.18c2.48 0 4.81.58 5.54.44 '
+    + '1.31-.29 2.04-1.31 2.33-2.32.31-2.04-1.3-3.49-2.61-4.8z';
 
 /** The app's window for "that was a second tap, not a new one". */
 const DOUBLE_TAP_MS = 200;
@@ -52,43 +58,23 @@ const save = storage('pawdoku');
 const boardEl = document.getElementById('board');
 const statusEl = document.getElementById('status');
 const counterEl = document.getElementById('counter');
-const counterLabel = document.getElementById('counter-label');
 const heartsEl = document.getElementById('hearts');
-const timerStat = document.getElementById('timer-stat');
-const timerEl = document.getElementById('timer');
-const endlessButton = document.getElementById('mode-endless');
-const dailyButton = document.getElementById('mode-daily');
 const sheet = document.getElementById('sheet');
 const sheetTitle = document.getElementById('sheet-title');
 const sheetText = document.getElementById('sheet-text');
 const sheetAction = document.getElementById('sheet-action');
 
-let mode = save.get('mode', 'endless') === 'daily' ? 'daily' : 'endless';
 let level = Math.max(1, Number(save.get('level', 1)) || 1);
 let puzzle = null;
 let states = [];
 let hearts = MAX_HEARTS;
 let over = false;
-/* Wall-clock, not a counter that pauses. Leaving the page and coming back has to restore the
-   time that really elapsed, or backing out becomes a way to stop the clock. */
-let deadline = null;
 
 /* ---------- saved state ---------- */
 
-function slot() {
-    return mode === 'daily' ? `daily.${dateKey(new Date())}` : 'endless';
-}
-
 function persist() {
-    save.set('mode', mode);
     save.set('level', level);
-    save.set(slot(), {
-        states: [...states],
-        hearts,
-        over,
-        deadline,
-        level: mode === 'endless' ? level : undefined,
-    });
+    save.set('board', { states: [...states], hearts, over, level });
 }
 
 /** A saved board is trusted only as far as it is the right length and holds known states. */
@@ -99,24 +85,12 @@ function usableStates(saved, size) {
         : null;
 }
 
-function wonDays() {
-    const days = save.get('wonDays', []);
-    return Array.isArray(days) ? days.filter(Number.isInteger) : [];
-}
-
 /* ---------- rendering ---------- */
 
 /**
- * Draws the board, and with it the only thing a player has to read at a glance: the shape of
- * each region.
- *
- * A heavy line goes wherever two regions meet, a hairline between cells inside one region. An
- * even grid of identical heavy lines — which is what this was first — reads as wire mesh and
- * leaves the regions invisible, which is fatal in a puzzle whose rules are about regions.
- *
- * Each internal boundary is drawn once, by the cell on its left or above it, so two
- * neighbours never stack their borders into a line of double thickness. The outer edge is the
- * board's own border, so the last column and row draw nothing.
+ * Draws the board: separate rounded tiles with a gap, on a white card, with no region borders
+ * at all. Colour alone groups the cells, one colour per region — which is how the Android
+ * build looks, and it is what keeps this reading as a friendly puzzle rather than a worksheet.
  */
 function buildBoard() {
     const n = puzzle.n;
@@ -124,64 +98,56 @@ function buildBoard() {
     boardEl.replaceChildren();
 
     for (let cell = 0; cell < n * n; cell++) {
-        const button = document.createElement('div');
-        button.className = 'cell';
-        button.dataset.cell = cell;
-        button.setAttribute('role', 'gridcell');
-
-        const region = puzzle.regions[cell] % REGION_COLORS.length;
-        button.style.background = REGION_COLORS[region];
-        button.style.color = DARK_REGIONS.has(region) ? '#fff' : '#3c2f26';
-
-        const edges = [];
-        if (cell % n !== n - 1) {
-            edges.push(puzzle.regions[cell] !== puzzle.regions[cell + 1]
-                ? 'inset calc(-1 * var(--edge)) 0 0 var(--boundary)'
-                : 'inset -1px 0 0 var(--hairline)');
-        }
-        if (Math.floor(cell / n) !== n - 1) {
-            edges.push(puzzle.regions[cell] !== puzzle.regions[cell + n]
-                ? 'inset 0 calc(-1 * var(--edge)) 0 var(--boundary)'
-                : 'inset 0 -1px 0 var(--hairline)');
-        }
-        button.style.boxShadow = edges.join(', ');
-
-        boardEl.appendChild(button);
+        const tile = document.createElement('div');
+        tile.className = 'cell';
+        tile.dataset.cell = cell;
+        tile.setAttribute('role', 'gridcell');
+        tile.style.background = REGION_COLORS[puzzle.regions[cell] % REGION_COLORS.length];
+        boardEl.appendChild(tile);
     }
 }
 
-const LABELS = { [CAT]: 'cat', [BLOCKED]: 'marked empty', [LOCKED]: 'wrong guess' };
+function pawMark() {
+    const disc = document.createElement('span');
+    disc.className = 'mark paw';
+
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', PAW_PATH);
+    svg.appendChild(path);
+    disc.appendChild(svg);
+    return disc;
+}
+
+function crossMark(locked) {
+    const mark = document.createElement('span');
+    mark.className = locked ? 'mark cross locked' : 'cross note';
+    return mark;
+}
+
+const LABELS = { [CAT]: 'paw', [BLOCKED]: 'marked empty', [LOCKED]: 'wrong guess' };
 
 function render() {
-    for (const button of boardEl.children) {
-        const state = states[Number(button.dataset.cell)];
-        button.replaceChildren();
+    for (const tile of boardEl.children) {
+        const state = states[Number(tile.dataset.cell)];
+        tile.replaceChildren();
 
-        if (state !== EMPTY) {
-            const mark = document.createElement('span');
-            if (state === CAT) {
-                mark.className = 'mark';
-                mark.textContent = '🐱';
-            } else {
-                // The cross is drawn by the stylesheet from two bars, so it carries no text.
-                mark.className = state === LOCKED ? 'mark cross locked' : 'mark cross';
-            }
-            button.appendChild(mark);
-            button.setAttribute('aria-label', LABELS[state]);
-        } else {
-            button.removeAttribute('aria-label');
+        if (state === EMPTY) {
+            tile.removeAttribute('aria-label');
+            continue;
         }
+        tile.appendChild(state === CAT ? pawMark() : crossMark(state === LOCKED));
+        tile.setAttribute('aria-label', LABELS[state]);
     }
 
-    const placed = catsIn(states).length;
-    counterEl.textContent = mode === 'daily' ? `${placed}/${puzzle.n}` : String(level);
-    counterLabel.textContent = mode === 'daily' ? 'CATS' : 'LEVEL';
+    counterEl.textContent = String(level);
 
     heartsEl.replaceChildren();
     for (let i = 0; i < MAX_HEARTS; i++) {
         const heart = document.createElement('span');
-        heart.textContent = '♥';
-        if (i >= hearts) heart.className = 'spent';
+        // Outlined rather than faded for a lost life, which is what the app shows.
+        heart.textContent = i < hearts ? '♥' : '♡';
         heartsEl.appendChild(heart);
     }
     heartsEl.setAttribute('aria-label', `${hearts} of ${MAX_HEARTS} lives left`);
@@ -191,45 +157,16 @@ function say(message) {
     statusEl.textContent = message;
 }
 
-/* ---------- the daily clock ---------- */
-
-function formatTime(seconds) {
-    const safe = Math.max(0, seconds);
-    return `${Math.floor(safe / 60)}:${String(safe % 60).padStart(2, '0')}`;
-}
-
-function remaining() {
-    if (deadline === null) return DAILY_TIME_LIMIT;
-    return Math.ceil((deadline - Date.now()) / 1000);
-}
-
-function tick() {
-    if (mode !== 'daily') return;
-    timerEl.textContent = formatTime(remaining());
-    if (!over && deadline !== null && remaining() <= 0) {
-        hearts = 0;
-        finish(false, 'Out of time.');
-    }
-}
-
-setInterval(tick, 250);
-
 /* ---------- playing ---------- */
 
 function finish(won, message) {
     over = true;
 
-    if (won && mode === 'daily') {
-        const days = new Set(wonDays());
-        days.add(dateKey(new Date()));
-        save.set('wonDays', [...days]);
-    }
-
     // Save the finished board under the level it actually belongs to, and only then advance
     // the counter. The other order files a solved board against the *next* level, and the
     // next level then loads already solved.
     persist();
-    if (won && mode === 'endless') {
+    if (won) {
         level += 1;
         save.set('level', level);
     }
@@ -237,33 +174,18 @@ function finish(won, message) {
     render();
     say(message);
 
-    sheetTitle.textContent = won ? 'Solved' : (hearts <= 0 ? 'Out of lives' : 'Out of time');
-    sheetText.textContent = won
-        ? (mode === 'daily'
-            ? `Today's puzzle, with ${formatTime(remaining())} to spare.`
-            : `Level ${level - 1} done. On to ${level}.`)
-        : message;
-    sheetAction.textContent = won && mode === 'endless' ? 'Next level' : 'Try again';
+    sheetTitle.textContent = won ? 'Solved' : 'Out of lives';
+    sheetText.textContent = won ? `Level ${level - 1} done. On to ${level}.` : message;
+    sheetAction.textContent = won ? 'Next level' : 'Try again';
     sheet.hidden = false;
 }
 
-function afterMove() {
-    render();
-    persist();
-
-    if (isSolved(puzzle, catsIn(states))) {
-        finish(true, 'Solved.');
-        return true;
-    }
-    return false;
-}
-
 function flash(cell, className) {
-    const button = boardEl.children[cell];
-    button.classList.remove('rejected', 'landed');
+    const tile = boardEl.children[cell];
+    tile.classList.remove('rejected', 'landed');
     // Reading offsetWidth restarts the animation, so two wrong guesses in a row both show.
-    void button.offsetWidth;
-    button.classList.add(className);
+    void tile.offsetWidth;
+    tile.classList.add(className);
 }
 
 function doToggle(cell) {
@@ -282,8 +204,8 @@ function doSummon(cell) {
         hearts -= 1;
         flash(cell, 'rejected');
         say(hearts > 0
-            ? `No cat there. ${hearts} ${hearts === 1 ? 'life' : 'lives'} left.`
-            : 'No cat there.');
+            ? `No paw there. ${hearts} ${hearts === 1 ? 'life' : 'lives'} left.`
+            : 'No paw there.');
         render();
         persist();
         if (hearts <= 0) finish(false, 'Out of lives.');
@@ -291,9 +213,14 @@ function doSummon(cell) {
     }
 
     flash(cell, 'landed');
-    if (afterMove()) return;
-    const placed = catsIn(states).length;
-    say(`${placed} of ${puzzle.n} placed.`);
+    render();
+    persist();
+
+    if (isSolved(puzzle, catsIn(states))) {
+        finish(true, 'Solved.');
+        return;
+    }
+    say(`${catsIn(states).length} of ${puzzle.n} placed.`);
 }
 
 /* ---------- input ---------- */
@@ -326,7 +253,7 @@ boardEl.addEventListener('pointerdown', (event) => {
         painted: false,
         handled: false,
         timer: setTimeout(() => {
-            // Long press summons directly. Marked handled so the release does not also
+            // Long press places a paw directly. Marked handled so the release does not also
             // toggle the note underneath it.
             if (!press || press.handled || press.painted) return;
             press.handled = true;
@@ -348,7 +275,7 @@ boardEl.addEventListener('pointermove', (event) => {
         && Math.abs(event.clientY - press.y) < DRAG_SLOP) return;
 
     // Past the slop this is a drag, not a tap. Dragging paints the player's X across cells;
-    // it never disturbs a cat or a locked cross, which is what toggleNote already refuses.
+    // it never disturbs a paw or a locked cross, which is what toggleNote already refuses.
     clearTimeout(press.timer);
     const cell = cellAt(event.clientX, event.clientY);
     if (cell === null) return;
@@ -378,7 +305,7 @@ function endPress(event) {
     const cell = cellAt(event.clientX, event.clientY) ?? finished.cell;
     const now = Date.now();
     if (cell === lastTapCell && now - lastTapAt < DOUBLE_TAP_MS) {
-        // A quick second tap on the same cell upgrades the note to a cat. The first tap has
+        // A quick second tap on the same cell upgrades the note to a paw. The first tap has
         // already left an X there, and summon overwrites it either way.
         lastTapCell = null;
         doSummon(cell);
@@ -405,12 +332,9 @@ boardEl.addEventListener('contextmenu', (event) => event.preventDefault());
 
 function load(fresh = false) {
     sheet.hidden = true;
-    timerStat.hidden = mode !== 'daily';
 
-    const size = mode === 'daily' ? DAILY_SIZE : boardSizeForLevel(level);
-    const seed = mode === 'daily' ? dateKey(new Date()) : level * 2654435761;
-
-    puzzle = generate(size, seed >>> 0);
+    const size = boardSizeForLevel(level);
+    puzzle = generate(size, (level * 2654435761) >>> 0);
     if (!puzzle) {
         // 200 attempts all got stuck. Vanishingly unlikely, but a page that says so beats a
         // page that is silently blank.
@@ -418,32 +342,26 @@ function load(fresh = false) {
         return;
     }
 
-    const saved = fresh ? null : save.get(slot(), null);
-    const restored = saved && typeof saved === 'object'
-        && (mode === 'daily' || saved.level === level)
+    const saved = fresh ? null : save.get('board', null);
+    const restored = saved && typeof saved === 'object' && saved.level === level
         ? usableStates(saved.states, size)
         : null;
 
     if (restored) {
         states = restored;
         hearts = Number.isInteger(saved.hearts) ? Math.min(saved.hearts, MAX_HEARTS) : MAX_HEARTS;
-        deadline = Number.isFinite(saved.deadline) ? saved.deadline : null;
         over = saved.over === true;
     } else {
         states = new Array(size * size).fill(EMPTY);
         hearts = MAX_HEARTS;
-        deadline = null;
         over = false;
     }
 
-    // A restored daily may have run out of time while the page was closed.
-    if (mode === 'daily' && !over && deadline !== null && remaining() <= 0) hearts = 0;
     if (hearts <= 0) over = true;
     if (isSolved(puzzle, catsIn(states))) over = true;
 
     buildBoard();
     render();
-    tick();
     persist();
 
     if (over) {
@@ -451,33 +369,20 @@ function load(fresh = false) {
         say(won ? 'Solved.' : 'Out of lives. Restart to try again.');
         sheetTitle.textContent = won ? 'Solved' : 'Out of lives';
         sheetText.textContent = won
-            ? (mode === 'daily' ? "Today's puzzle is done." : 'Ready for the next level.')
+            ? 'Ready for the next level.'
             : 'Restart to try this board again.';
-        sheetAction.textContent = won && mode === 'endless' ? 'Next level' : 'Try again';
+        sheetAction.textContent = won ? 'Next level' : 'Try again';
         sheet.hidden = false;
     } else {
-        say(mode === 'daily'
-            ? "Today's 7x7. Three minutes, starting with your first cat."
-            : 'Tap to mark. Tap twice, or hold, to place a cat.');
+        say('Tap to mark. Tap twice, or hold, to place a paw.');
     }
 }
-
-function setMode(next) {
-    if (mode === next) return;
-    mode = next;
-    endlessButton.setAttribute('aria-pressed', String(next === 'endless'));
-    dailyButton.setAttribute('aria-pressed', String(next === 'daily'));
-    load();
-}
-
-endlessButton.addEventListener('click', () => setMode('endless'));
-dailyButton.addEventListener('click', () => setMode('daily'));
 
 document.getElementById('restart').addEventListener('click', () => load(true));
 
 sheetAction.addEventListener('click', () => {
-    // After a win in endless the level has already advanced, so this builds the next board.
-    // Everywhere else it is a fresh go at the same one.
+    // After a win the level has already advanced, so this builds the next board. After a loss
+    // it is a fresh go at the same one.
     load(true);
 });
 
@@ -486,9 +391,6 @@ document.getElementById('sheet-close').addEventListener('click', () => {
 });
 
 /* ---------- boot ---------- */
-
-endlessButton.setAttribute('aria-pressed', String(mode === 'endless'));
-dailyButton.setAttribute('aria-pressed', String(mode === 'daily'));
 
 if (!isPersistent()) document.getElementById('warning').hidden = false;
 

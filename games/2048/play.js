@@ -31,45 +31,18 @@ const TILE_COLORS = [
    goes dark again in the palette, so it is light-on-dark once more. */
 const DARK_NUMERALS = new Set([512, 1024, 2048]);
 
+/*
+ * English only. There was a language toggle here, mirroring the Android build's, and it was
+ * the wrong thing to carry across: on the web the page is one screen with six words of chrome
+ * on it, and a picker for those six words costs more room in the panel than the words take.
+ */
 const TEXT = {
-    en: {
-        score: 'SCORE',
-        best: 'BEST',
-        newGame: 'New game',
-        undo: 'Undo',
-        hint: 'Swipe, or use the arrow keys.',
-        privacy: 'Privacy',
-        terms: 'Terms',
-        about: 'About',
-        noStorage: 'This browser is not letting the page save, so this run will not survive a reload.',
-        wonTitle: '2048',
-        wonText: 'You made it. The run does not have to stop here.',
-        keepGoing: 'Keep going',
-        overTitle: 'No moves left',
-        overText: 'Final score {score}.',
-        tryAgain: 'Try again',
-        bestRuns: 'Best runs',
-        confirmNew: 'Start a new game? The current run will be lost.',
-    },
-    id: {
-        score: 'SKOR',
-        best: 'TERBAIK',
-        newGame: 'Main lagi',
-        undo: 'Urungkan',
-        hint: 'Geser, atau pakai tombol panah.',
-        privacy: 'Privasi',
-        terms: 'Ketentuan',
-        about: 'Tentang',
-        noStorage: 'Browser ini tidak mengizinkan penyimpanan, jadi permainan ini hilang saat halaman dimuat ulang.',
-        wonTitle: '2048',
-        wonText: 'Berhasil. Permainan tidak harus berhenti di sini.',
-        keepGoing: 'Lanjut main',
-        overTitle: 'Tidak ada langkah',
-        overText: 'Skor akhir {score}.',
-        tryAgain: 'Coba lagi',
-        bestRuns: 'Skor terbaik',
-        confirmNew: 'Mulai permainan baru? Permainan sekarang akan hilang.',
-    },
+    confirmNew: 'Start a new game? The current run will be lost.',
+    wonTitle: '2048',
+    wonText: 'You made it. The run does not have to stop here.',
+    keepGoing: 'Keep going',
+    overTitle: 'No moves left',
+    tryAgain: 'Try again',
 };
 
 const SLIDE_MS = 110;
@@ -87,7 +60,6 @@ const overlaySecondary = document.getElementById('overlay-secondary');
 const scoreEl = document.getElementById('score');
 const bestEl = document.getElementById('best');
 const undoButton = document.getElementById('undo');
-const langButton = document.getElementById('lang');
 
 const elements = new Map();
 
@@ -97,7 +69,6 @@ let best = save.get('best', 0);
 let topScores = readTopScores();
 let acknowledgedWin = false;
 let previous = null;
-let lang = TEXT[save.get('lang', 'en')] ? save.get('lang', 'en') : 'en';
 
 /* A saved value is whatever was last written, which after a browser crash or a hand-edited
    key is not necessarily a list of numbers. */
@@ -108,20 +79,6 @@ function readTopScores() {
 }
 let cell = 0;
 let gap = 0;
-
-/* ---------- text ---------- */
-
-function t(key) {
-    return TEXT[lang][key];
-}
-
-function applyText() {
-    for (const node of document.querySelectorAll('[data-t]')) {
-        node.textContent = t(node.dataset.t);
-    }
-    langButton.textContent = lang === 'en' ? 'ID' : 'EN';
-    document.documentElement.lang = lang;
-}
 
 /* ---------- geometry ---------- */
 
@@ -196,12 +153,11 @@ function fontScale(length) {
  * A brand-new element starts at translate(0, 0) — the board's top-left corner — so the first
  * transform on it would animate from there, and a spawned tile would appear to slide in from
  * the corner rather than simply arrive on its square. Suppressing the transition for one
- * frame puts it where it belongs; the scale-up in `.spawn` is the only motion it should have.
+ * frame puts it where it belongs, with no entrance of any kind.
  */
 function createTile(id, x, y) {
     const element = document.createElement('div');
     element.className = 'tile';
-    element.addEventListener('animationend', () => element.classList.remove('spawn', 'merge'));
     element.style.transition = 'none';
     place(element, x, y);
     board.appendChild(element);
@@ -229,10 +185,9 @@ function render() {
             place(element, x, y);
             paint(element, tile.value);
 
-            if (tile.spawned) {
-                element.classList.add('spawn');
-                delete tile.spawned;
-            }
+            // `spawned` is consumed rather than drawn: a new tile gets no entrance, it is
+            // simply on its square. See the note in game.css.
+            if (tile.spawned) delete tile.spawned;
 
             if (tile.absorbed !== undefined) {
                 const swallowed = elements.get(tile.absorbed);
@@ -241,7 +196,6 @@ function render() {
                     place(swallowed, x, y);
                     retiring.push(tile.absorbed);
                 }
-                element.classList.add('merge');
                 delete tile.absorbed;
             }
         }
@@ -292,16 +246,11 @@ function showScores(highlight) {
     });
 }
 
-/* The overlay's text is written in, not marked up with data-t, so switching language while
-   it is open has to redraw it. This remembers how. */
-let redrawOverlay = null;
-
 function showWin() {
-    redrawOverlay = showWin;
-    overlayTitle.textContent = t('wonTitle');
-    overlayText.textContent = t('wonText');
+    overlayTitle.textContent = TEXT.wonTitle;
+    overlayText.textContent = TEXT.wonText;
     overlayScores.hidden = true;
-    overlayPrimary.textContent = t('keepGoing');
+    overlayPrimary.textContent = TEXT.keepGoing;
     overlayPrimary.onclick = () => {
         acknowledgedWin = true;
         persist();
@@ -316,16 +265,15 @@ function showWin() {
  * would add the same run to the table on every refresh.
  */
 function showGameOver(record = true) {
-    redrawOverlay = () => showGameOver(false);
     if (record) {
         topScores = [...topScores, score].sort((a, b) => b - a).slice(0, 10);
         save.set('top', topScores);
     }
 
-    overlayTitle.textContent = t('overTitle');
-    overlayText.textContent = t('overText').replace('{score}', String(score));
+    overlayTitle.textContent = TEXT.overTitle;
+    overlayText.textContent = `Final score ${score}.`;
     showScores(score);
-    overlayPrimary.textContent = t('tryAgain');
+    overlayPrimary.textContent = TEXT.tryAgain;
     overlayPrimary.onclick = () => start();
     overlaySecondary.hidden = true;
     overlay.hidden = false;
@@ -447,22 +395,14 @@ board.addEventListener('pointercancel', () => {
 
 document.getElementById('new').addEventListener('click', () => {
     // Only worth asking when there is a run to lose.
-    if (score > 0 && overlay.hidden && !window.confirm(t('confirmNew'))) return;
+    if (score > 0 && overlay.hidden && !window.confirm(TEXT.confirmNew)) return;
     start();
 });
 
 undoButton.addEventListener('click', undo);
 
-langButton.addEventListener('click', () => {
-    lang = lang === 'en' ? 'id' : 'en';
-    save.set('lang', lang);
-    applyText();
-    if (!overlay.hidden && redrawOverlay) redrawOverlay();
-});
-
 /* ---------- boot ---------- */
 
-applyText();
 backdrop();
 restore();
 

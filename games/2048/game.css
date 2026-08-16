@@ -82,26 +82,13 @@
     transition: none;
 }
 
-.g2048 .tile.spawn {
-    animation: g2048-spawn 130ms ease-out;
-}
-
-.g2048 .tile.merge {
-    animation: g2048-merge 130ms ease-out;
-}
-
-@keyframes g2048-spawn {
-    from {
-        opacity: 0;
-        scale: 0.55;
-    }
-}
-
-@keyframes g2048-merge {
-    50% {
-        scale: 1.14;
-    }
-}
+/*
+ * The slide is the only animation on this board, and it belongs to tiles that actually
+ * travelled. A spawned tile had a scale-up and a merged tile had a bounce; both moved nothing
+ * and both read as the tile arriving from somewhere, because next to three sliding tiles the
+ * eye takes any motion at all as travel. Removing them left the board calmer and easier to
+ * follow, which is the whole reason a slide is animated in the first place.
+ */
 
 .g2048 .play-hint {
     text-align: center;

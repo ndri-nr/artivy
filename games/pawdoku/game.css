@@ -15,13 +15,16 @@
     --heart: #e0795c;
 
     /*
-     * Measured at 375px wide: 461px of panel, status line, ad slot and gaps, plus slack. On a
-     * tall phone the board is limited by width long before this matters, but on a 667px
-     * screen it is this number that keeps the page from overflowing — and it has to be at
-     * least the real figure, since declaring less than the chrome actually takes lets the
-     * board grow into space that is not there.
+     * The top bar, the panel, the ad slot and the gaps between them: 264px measured, plus
+     * slack. It has to be at least the real figure, since declaring less lets the board grow
+     * into space that is not there.
+     *
+     * It read 465 for a while, from measuring `scrollHeight - board`. That is not the chrome
+     * when the page does not overflow, because scrollHeight never reports less than the
+     * viewport — so it was measuring the screen and shrinking the board by two hundred pixels
+     * for nothing. Measure the parts, not the document.
      */
-    --play-chrome-stacked: 465px;
+    --play-chrome-stacked: 276px;
 }
 
 body.gpaw {
@@ -98,34 +101,38 @@ body.gpaw::before {
 /* ---------- the board ---------- */
 
 /*
- * The board draws two different lines, and the difference is the whole readability of the
- * game: a heavy one wherever two regions meet, a hairline between cells inside one region.
+ * The board is the Android build's, taken from its store screenshots rather than invented:
+ * separate rounded tiles with a gap between them, sitting on a white card. There are no
+ * region borders at all — colour alone groups the cells, and there is one colour per region.
  *
- * An even grid of identical heavy lines — which is what this was first — turns the board into
- * wire mesh and hides the one thing a player has to see at a glance, which is the shape of
- * each region. Every printed puzzle of this family is drawn the same way for the same reason.
+ * An earlier pass here drew heavy lines along every region boundary. That is how a printed
+ * puzzle of this family is set, and it is not how this game looks; the tiles-on-a-card
+ * treatment is what makes it read as friendly rather than as a worksheet.
  *
- * Each boundary is drawn once, by the cell above or to the left of it, so two neighbours
- * never stack their borders into a double-thickness line. The board's own border closes the
- * outer edge.
+ * Gaps, radii and markers are all fractions of a cell, so a 5x5 and a 9x9 look like the same
+ * game at different sizes instead of the 9x9 turning into piping.
  */
 .gpaw .play-board {
-    --board-max: 460px;
-    /* Scales with the board, so a 9x9 does not end up mostly ink. */
-    --edge: clamp(1.5px, 0.85cqw, 3.5px);
-    --boundary: #4a3b30;
-    --hairline: rgba(74, 59, 48, 0.16);
+    --board-max: 500px;
 
     display: grid;
     grid-template-columns: repeat(var(--cells), 1fr);
     grid-template-rows: repeat(var(--cells), 1fr);
-    background: var(--cream);
-    border: var(--edge) solid var(--boundary);
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 10px 28px rgba(74, 59, 48, 0.16), 0 2px 6px rgba(74, 59, 48, 0.1);
-    /* Sizes the cat, the crosses and the edges against the board, so a 5x5 gets big markers
-       and a 9x9 small ones with no JavaScript involved. */
+    /*
+     * Percentages, not cqw. `container-type: size` makes this element a query container for
+     * its *descendants*; a cqw used in a declaration on the container itself resolves against
+     * the container above it, which here is the whole stage — so the gap came out more than
+     * twice the intended width. A percentage gap resolves against this element's own content
+     * box, which is exactly what was wanted.
+     *
+     * One tenth of a cell, and a cell is a tenth of the board divided by the count.
+     */
+    gap: calc(10% / var(--cells));
+    padding: clamp(3px, 1.1%, 9px);
+    background: #fff;
+    border-radius: clamp(8px, 2.4%, 14px);
+    box-shadow: 0 8px 24px rgba(74, 59, 48, 0.1), 0 1px 3px rgba(74, 59, 48, 0.08);
+    /* Establishes the container that the cells size their markers against. */
     container-type: size;
 }
 
@@ -139,13 +146,16 @@ body.gpaw::before {
     font: inherit;
     line-height: 1;
     cursor: pointer;
+    border-radius: 14%;
     /* A second tap within 200ms is the game's own gesture, and dragging paints across cells,
        so the browser must not claim either as a zoom or a scroll. */
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
-    font-size: calc(100cqw / var(--cells) * 0.62);
+    /* cqw is correct *here*, on a descendant of the container: one cell's width. The marks
+       below are sized in em, so they follow the board at every grid size. */
+    font-size: calc(100cqw / var(--cells));
     transition: filter 120ms ease-out;
 }
 
@@ -160,25 +170,47 @@ body.gpaw::before {
     filter: brightness(0.94);
 }
 
+/*
+ * Both marks are a disc of the same size, centred in the cell: a pale one holding an orange
+ * paw for a cat, a red one holding a white cross for a wrong guess. Same shape, opposite
+ * weight — the player's answer sits *on* the colour, the game's verdict interrupts it.
+ */
 .gpaw .cell .mark {
     pointer-events: none;
+    width: 0.62em;
+    height: 0.62em;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0.03em 0.06em rgba(74, 59, 48, 0.28);
 }
 
-/* Drawn rather than typed. The ✕ glyph sits differently in every fallback font and drifts
-   off-centre; two rotated bars are the same shape everywhere and scale cleanly. */
-.gpaw .cell .cross {
-    --bar: 11%;
-    position: relative;
-    width: 0.42em;
-    height: 0.42em;
+.gpaw .cell .paw {
+    background: #fff8f0;
 }
 
+.gpaw .cell .paw svg {
+    width: 66%;
+    height: 66%;
+    fill: #e8834f;
+    display: block;
+}
+
+/*
+ * Drawn rather than typed. The ✕ glyph sits differently in every fallback font and drifts
+ * off-centre; two rotated bars are the same shape everywhere and scale cleanly.
+ *
+ * `--reach` is how far each bar runs past the box sides. A bar rotated 45° puts its ends on
+ * the diagonal, so a negative reach of about 20% is what makes the cross span its box corner
+ * to corner rather than sitting as a small mark in the middle of it.
+ */
 .gpaw .cell .cross::before,
 .gpaw .cell .cross::after {
     content: "";
     position: absolute;
-    inset: calc(50% - var(--bar) / 2) 0;
-    border-radius: 2px;
+    inset: calc(50% - var(--bar) / 2) var(--reach);
+    border-radius: 999px;
     background: currentColor;
 }
 
@@ -190,14 +222,25 @@ body.gpaw::before {
     rotate: -45deg;
 }
 
-/* The player's own note: quiet, and clearly theirs to take back. */
-.gpaw .cell .cross {
-    color: rgba(60, 47, 38, 0.42);
-}
-
-.gpaw .cell .mark:not(.cross) {
-    /* Lifts the cat off a flat region colour without adding a badge behind it. */
-    filter: drop-shadow(0 2px 2px rgba(74, 59, 48, 0.35));
+/*
+ * The player's own note. No disc and no shadow: it is a pencil mark on the tile, not an
+ * object placed on it, and it has to stay quieter than both the paw and the locked cross.
+ */
+.gpaw .cell .cross.note {
+    --bar: 13%;
+    --reach: -20.7%;
+    position: relative;
+    /* Corner to corner this reads at about 45% of the cell, near enough the paw disc's 62%
+       to belong to the same board. It was a third of that before, which looked like a
+       smudge rather than a decision the player had made. */
+    width: 0.45em;
+    height: 0.45em;
+    border-radius: 0;
+    box-shadow: none;
+    /* Solid rather than a faint wash. It still has to sit below the paw and the locked cross
+       in weight, but a mark the player deliberately placed should look placed — at 42% alpha
+       it disappeared entirely on the darker regions. */
+    color: rgba(60, 47, 38, 0.72);
 }
 
 /*
@@ -205,22 +248,14 @@ body.gpaw::before {
  * cleared, so it has to read as the game's mark rather than the player's — heavier, red, and
  * ringed so it is still distinguishable where the region colour is itself reddish.
  */
-/*
- * White disc, red cross. The disc is white rather than red on purpose: two of the nine region
- * colours are themselves red-orange, and a red disc on the coral region all but disappeared.
- * White appears nowhere in the palette, so this mark separates from every board it can land
- * on.
- */
+/* The game's verdict: a solid red disc with a white cross, the same size as the paw disc. */
 .gpaw .cell .cross.locked {
-    --bar: 19%;
-    color: #b03a2e;
-    width: 0.5em;
-    height: 0.5em;
-    padding: 0.15em;
-    box-sizing: content-box;
-    background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 0 2px #b03a2e, 0 2px 5px rgba(74, 59, 48, 0.3);
+    --bar: 11%;
+    /* Positive, so the arms stay inside the disc instead of running out of it. */
+    --reach: 27%;
+    position: relative;
+    color: #fff;
+    background: #dc3545;
 }
 
 .gpaw .cell.rejected {

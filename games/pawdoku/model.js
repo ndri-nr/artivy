@@ -13,8 +13,6 @@
  */
 
 export const MAX_HEARTS = 3;
-export const DAILY_SIZE = 7;
-export const DAILY_TIME_LIMIT = 180;
 
 /** Board size by level. Rises, then caps, so levels are endless but stay solvable. */
 export function boardSizeForLevel(level) {
@@ -26,13 +24,13 @@ export function boardSizeForLevel(level) {
 }
 
 /**
- * A seeded generator (mulberry32). Math.random cannot be seeded, and the daily puzzle has to
- * be the same board for everyone who opens it on the same date.
+ * A seeded generator (mulberry32). Math.random cannot be seeded, and a level generated from
+ * its number has to be the same board every time it is opened — otherwise retrying a level
+ * after losing would hand out a different puzzle.
  *
- * The daily board is *not* the same as the Android app's for that date. Matching would mean
- * reproducing dart:math's Random stream exactly, which is an implementation detail rather
- * than a promise, and no player gains anything from the two agreeing. Kata·Word's daily word
- * is the opposite case and does match, because there the mechanism is a plain hash.
+ * Level n here is not level n in the Android app. Matching would mean reproducing dart:math's
+ * Random stream exactly, which is an implementation detail rather than a promise, and no
+ * player gains anything from the two agreeing.
  */
 export function rng(seed) {
     let state = seed >>> 0;
@@ -373,9 +371,4 @@ export function generate(n, seed) {
         }
     }
     return null;
-}
-
-/** The date as an integer, 2026-08-16 becomes 20260816 — the daily puzzle's seed. */
-export function dateKey(date) {
-    return date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
 }

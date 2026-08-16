@@ -39,23 +39,13 @@
                 <h1 class="play-title">Pawdoku</h1>
                 <span class="play-spacer"></span>
                 <div class="stat">
-                    <span class="stat-label" id="counter-label">LEVEL</span>
+                    <span class="stat-label">LEVEL</span>
                     <span class="stat-value" id="counter">1</span>
                 </div>
                 <div class="stat">
                     <span class="stat-label">LIVES</span>
                     <span class="stat-value hearts" id="hearts">♥♥♥</span>
                 </div>
-                <div class="stat" id="timer-stat" hidden>
-                    <span class="stat-label">TIME</span>
-                    <span class="stat-value" id="timer">3:00</span>
-                </div>
-            </div>
-
-            <div class="play-row">
-                <button class="play-button" id="mode-endless" aria-pressed="true">Endless</button>
-                <button class="play-button" id="mode-daily" aria-pressed="false">Daily</button>
-                <span class="play-spacer"></span>
                 <button class="play-button" id="restart">Restart</button>
             </div>
 
@@ -63,8 +53,8 @@
                  of height it cannot spare. Replaced by play.js once a board is loaded. -->
             <p class="play-hint" id="status">Tap to mark. Tap twice, or hold, to place a cat.</p>
             <p class="play-warning" id="warning" hidden>
-                This browser is not letting the page save, so your level and today's daily will
-                not survive a reload.
+                This browser is not letting the page save, so your level will not survive a
+                reload.
             </p>
         </div>
 

@@ -30,9 +30,9 @@
             <img src="../assets/logo.png" alt="Artivy">
         </a>
         <span class="play-spacer"></span>
-        <a class="play-quiet" href="index.html" data-t="about">About</a>
-        <a class="play-quiet" href="privacy-policy.html" data-t="privacy">Privacy</a>
-        <a class="play-quiet" href="terms-and-conditions.html" data-t="terms">Terms</a>
+        <a class="play-quiet" href="index.html">About</a>
+        <a class="play-quiet" href="privacy-policy.html">Privacy</a>
+        <a class="play-quiet" href="terms-and-conditions.html">Terms</a>
     </div>
 
     <main class="play-stage" id="stage">
@@ -41,24 +41,22 @@
                 <h1 class="play-title">2048</h1>
                 <span class="play-spacer"></span>
                 <div class="score-card">
-                    <span class="score-label" data-t="score">SCORE</span>
+                    <span class="score-label">SCORE</span>
                     <span class="score-value" id="score">0</span>
                 </div>
                 <div class="score-card">
-                    <span class="score-label" data-t="best">BEST</span>
+                    <span class="score-label">BEST</span>
                     <span class="score-value" id="best">0</span>
                 </div>
             </div>
 
             <div class="play-row">
-                <button class="play-button" id="new" data-t="newGame">New game</button>
-                <button class="play-button" id="undo" data-t="undo" disabled>Undo</button>
-                <span class="play-spacer"></span>
-                <button class="play-button" id="lang" aria-label="Bahasa">ID</button>
+                <button class="play-button" id="new">New game</button>
+                <button class="play-button" id="undo" disabled>Undo</button>
             </div>
 
-            <p class="play-hint" id="hint" data-t="hint">Swipe, or use the arrow keys.</p>
-            <p class="play-warning" id="warning" hidden data-t="noStorage">
+            <p class="play-hint" id="hint">Swipe, or use the arrow keys.</p>
+            <p class="play-warning" id="warning" hidden>
                 This browser is not letting the page save, so this run will not survive a reload.
             </p>
         </div>

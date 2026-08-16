@@ -34,8 +34,8 @@
 
     <script type="module">
         import {
-            BLOCKED, CAT, DAILY_SIZE, EMPTY, LOCKED, MAX_HEARTS,
-            boardSizeForLevel, catsIn, checkPlacement, colOf, countSolutions, dateKey,
+            BLOCKED, CAT, EMPTY, LOCKED, MAX_HEARTS,
+            boardSizeForLevel, catsIn, checkPlacement, colOf, countSolutions,
             findSolutions, generate, isSolved, kingAdjacent, rowOf, summon, toggleNote,
         } from './model.js';
 
@@ -186,10 +186,15 @@
         check('a different seed builds a different board',
             JSON.stringify(first.regions) !== JSON.stringify(other.regions));
 
-        const daily = generate(DAILY_SIZE, dateKey(new Date(2026, 7, 16)));
-        check('today\'s daily board is a real one', daily !== null && daily.n === DAILY_SIZE);
-        check('and it is unique too', countSolutions(DAILY_SIZE, daily.regions, 3) === 1);
-        check('the date key is yyyyMMdd', dateKey(new Date(2026, 7, 16)) === 20260816);
+        // The seed play.js actually uses, so retrying a level really does return the board the
+        // player just lost rather than a new one.
+        const seedFor = (n) => (n * 2654435761) >>> 0;
+        const retry = generate(boardSizeForLevel(37), seedFor(37));
+        const retryAgain = generate(boardSizeForLevel(37), seedFor(37));
+        check('a level rebuilt from its number is the same board',
+            JSON.stringify(retry.regions) === JSON.stringify(retryAgain.regions));
+        check('and it is unique too',
+            countSolutions(retry.n, retry.regions, 3) === 1);
 
         /* --- solving a generated board --- */
 
