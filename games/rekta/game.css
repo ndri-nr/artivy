@@ -284,3 +284,11 @@ body.grekta::before {
         padding-inline: 12px;
     }
 }
+
+/* The switcher panel, in this game's colours rather than the shell's light default. */
+.grekta .play-menu {
+    --menu-bg: #0c1236;
+    --menu-fg: var(--text-primary);
+    --menu-line: rgba(61, 224, 255, 0.22);
+    --menu-hover: rgba(61, 224, 255, 0.16);
+}

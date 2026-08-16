@@ -28,9 +28,23 @@
             <img src="../assets/logo.svg" alt="Artivy">
         </a>
         <span class="play-spacer"></span>
-        <a class="play-quiet" href="index.html">About</a>
-        <a class="play-quiet" href="privacy-policy.html">Privacy</a>
-        <a class="play-quiet" href="terms-and-conditions.html">Terms</a>
+        <details class="play-menu">
+            <summary aria-label="Games and pages">Games <span class="play-caret"></span></summary>
+            <div class="play-menu-panel">
+                <ul>
+                    <li><a href="play.html" aria-current="page">PawDoku</a></li>
+                    <li><a href="../kata_word/play.html">Kata·Word</a></li>
+                    <li><a href="../stacko/play.html">StackO!</a></li>
+                    <li><a href="../2048/play.html">2048</a></li>
+                    <li><a href="../rekta/play.html">Rekta</a></li>
+                </ul>
+                <ul class="play-menu-pages">
+                    <li><a href="index.html">About PawDoku</a></li>
+                    <li><a href="privacy-policy.html">Privacy</a></li>
+                    <li><a href="terms-and-conditions.html">Terms</a></li>
+                </ul>
+            </div>
+        </details>
     </div>
 
     <main class="play-stage" id="stage">
