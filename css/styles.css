@@ -311,11 +311,45 @@ h1, h2, h3 {
     color: #2d3748;
 }
 
-.game-cards {
+/*
+ * One row that scrolls sideways, at every width, shared by both strips on the page.
+ * Wrapping made the page longer with every game added; this stays the same height whatever
+ * the catalogue grows to, and it is the same interaction on a phone and a desktop rather
+ * than two layouts to keep in step.
+ *
+ * The negative margin lets the strip bleed to the edges of its section while the padding
+ * keeps the first and last card off them, so a half-visible card at the right edge says
+ * "there is more" without needing a row of dots to say it.
+ */
+.card-strip {
     display: flex;
-    justify-content: center;
-    gap: 40px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 24px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 24px;
+    margin-inline: -24px;
+    padding: 6px 24px 20px 24px;
+    /* Visible and thin where there is a mouse to drag it; hidden under a finger, which needs
+       no scrollbar and is better off without one. */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(112, 72, 232, 0.35) transparent;
+}
+
+.card-strip > * {
+    scroll-snap-align: center;
+}
+
+@media (hover: none) {
+    .card-strip {
+        scrollbar-width: none;
+    }
+
+    .card-strip::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 .game-cards {
@@ -323,6 +357,7 @@ h1, h2, h3 {
 }
 
 .card {
+    flex: 0 0 380px;
     position: relative;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
@@ -457,15 +492,11 @@ h1, h2, h3 {
     padding: 20px 50px 40px;
 }
 .feature-tiles {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    flex-wrap: wrap;
     max-width: 1080px;
-    margin: 0 auto;
+    margin-inline: auto;
 }
 .feature-tile {
-    flex: 1 1 260px;
+    flex: 0 0 300px;
     max-width: 340px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
@@ -625,27 +656,19 @@ footer {
      * the first and last card off them, so a half-visible card at the right edge tells the
      * player there is more without needing a row of dots to say it.
      */
-    .game-cards {
-        flex-wrap: nowrap;
-        justify-content: flex-start;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-        scroll-snap-type: x mandatory;
-        scroll-padding-inline: 20px;
+    .card-strip {
         gap: 16px;
+        scroll-padding-inline: 20px;
         margin-inline: -20px;
         padding: 4px 20px 12px 20px;
-        scrollbar-width: none;
     }
 
-    .game-cards::-webkit-scrollbar {
-        display: none;
-    }
-
-    .card {
+    /* A share of the screen rather than a fixed width, so one card fills a phone and the
+       next one peeks. */
+    .card,
+    .feature-tile {
         flex: 0 0 84%;
         max-width: 330px;
-        scroll-snap-align: center;
     }
 
     /* Half the height of the desktop banner: on a phone the icon is the identifier, and the
@@ -687,4 +710,117 @@ footer {
 
 .card-store:hover {
     transform: translateY(-2px);
+}
+
+/* ---------- phone menu ---------- */
+
+.nav-menu {
+    display: none;
+    position: relative;
+}
+
+.nav-menu > summary {
+    list-style: none;
+    cursor: pointer;
+    border-radius: 12px;
+    /* Fixed, not padding-derived. The three bars are absolutely positioned, so they add no
+       height of their own and the button came out 23px tall — half a comfortable target. */
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-menu > summary::-webkit-details-marker {
+    display: none;
+}
+
+.nav-menu[open] > summary {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* Three bars drawn from one element, so the icon needs no image and no font. */
+.nav-burger,
+.nav-burger::before,
+.nav-burger::after {
+    display: block;
+    width: 22px;
+    height: 2.5px;
+    border-radius: 2px;
+    background: #2d3748;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-burger::before,
+.nav-burger::after {
+    content: "";
+    position: absolute;
+}
+
+.nav-burger::before {
+    transform: translateY(-7px);
+}
+
+.nav-burger::after {
+    transform: translateY(7px);
+}
+
+/* Open, the bars become a cross — the same element saying it will close again. */
+.nav-menu[open] .nav-burger {
+    background: transparent;
+}
+
+.nav-menu[open] .nav-burger::before {
+    transform: rotate(45deg);
+}
+
+.nav-menu[open] .nav-burger::after {
+    transform: rotate(-45deg);
+}
+
+.nav-menu > ul {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    min-width: 190px;
+    list-style: none;
+    margin: 0;
+    padding: 8px;
+    /* Opaque. A menu is a thing you read, and the hero headline behind it was showing
+       straight through the translucent panel this started as. */
+    background: #fff;
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: 0 18px 40px rgba(31, 38, 135, 0.18);
+    z-index: 100;
+}
+
+/* The site sets a bottom margin on list items for the prose pages; a menu is not prose. */
+.nav-menu > ul li {
+    margin: 0;
+}
+
+.nav-menu > ul a {
+    display: block;
+    padding: 11px 14px;
+    border-radius: 10px;
+    color: #2d3748;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.nav-menu > ul a:hover {
+    background: rgba(112, 72, 232, 0.1);
+    color: var(--accent-deep);
+}
+
+/*
+ * Last in the file on purpose. The base rule above hides the phone menu, and this has to come
+ * after it to win — same specificity, so order is the only thing deciding which applies.
+ */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: block;
+    }
 }

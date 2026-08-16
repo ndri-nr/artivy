@@ -269,3 +269,18 @@ body.grekta::before {
     border-color: transparent;
     color: #04060e;
 }
+
+/*
+ * Landscape phones. The panel is only 280px wide beside the board, and an even third of that
+ * cannot hold "Medium 8×10", so the size buttons go back to sizing themselves and wrapping.
+ */
+@media (orientation: landscape) and (max-height: 560px) {
+    .grekta #difficulty {
+        flex-wrap: wrap;
+    }
+
+    .grekta #difficulty .play-button {
+        flex: 0 1 auto;
+        padding-inline: 12px;
+    }
+}

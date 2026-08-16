@@ -41,6 +41,25 @@
             </li>
             <li><a href="#about">About</a></li>
         </ul>
+
+        <!--
+          The phone menu. A <details> rather than a button and a script: the browser already
+          has a disclosure widget, and it opens on click, on Enter and on Space, and reports
+          its state to a screen reader, none of which is worth reimplementing. The previous
+          layout simply hid the navigation on a phone and offered nothing in its place.
+        -->
+        <details class="nav-menu">
+            <summary aria-label="Menu"><span class="nav-burger"></span></summary>
+            <ul>
+                <li><a href="#games">Games</a></li>
+                <li><a href="pawdoku/play.html">Pawdoku</a></li>
+                <li><a href="kata_word/play.html">Kata·Word</a></li>
+                <li><a href="2048/play.html">2048</a></li>
+                <li><a href="rekta/play.html">Rekta</a></li>
+                <li><a href="stacko/index.html">StackO!</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </details>
     </nav>
 
     <!-- Main Content -->
@@ -59,7 +78,7 @@
 
     <!-- Why Artivy -->
     <section class="features-section">
-        <div class="feature-tiles">
+        <div class="feature-tiles card-strip">
             <div class="feature-tile reveal">
                 <span class="feature-emoji">🎨</span>
                 <h3>Made with care</h3>
@@ -88,7 +107,7 @@
     <!-- Games Section -->
     <section id="games" class="games-section">
         <h2 class="reveal">Featured Games</h2>
-        <div class="game-cards">
+        <div class="game-cards card-strip">
             <div class="card reveal">
                 <div class="card-image">
                     <img src="assets/pawdoku-icon.png" alt="Pawdoku" class="game-icon">
