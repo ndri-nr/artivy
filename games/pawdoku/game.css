@@ -97,21 +97,40 @@ body.gpaw::before {
 
 /* ---------- the board ---------- */
 
+/*
+ * The board draws two different lines, and the difference is the whole readability of the
+ * game: a heavy one wherever two regions meet, a hairline between cells inside one region.
+ *
+ * An even grid of identical heavy lines — which is what this was first — turns the board into
+ * wire mesh and hides the one thing a player has to see at a glance, which is the shape of
+ * each region. Every printed puzzle of this family is drawn the same way for the same reason.
+ *
+ * Each boundary is drawn once, by the cell above or to the left of it, so two neighbours
+ * never stack their borders into a double-thickness line. The board's own border closes the
+ * outer edge.
+ */
 .gpaw .play-board {
     --board-max: 460px;
+    /* Scales with the board, so a 9x9 does not end up mostly ink. */
+    --edge: clamp(1.5px, 0.85cqw, 3.5px);
+    --boundary: #4a3b30;
+    --hairline: rgba(74, 59, 48, 0.16);
+
     display: grid;
     grid-template-columns: repeat(var(--cells), 1fr);
     grid-template-rows: repeat(var(--cells), 1fr);
-    gap: 2px;
-    padding: 3px;
-    background: var(--grout);
-    border-radius: 10px;
-    /* Sizes the cat and the cross against the board, so a 5x5 gets big markers and a 9x9
-       small ones with no JavaScript involved. */
+    background: var(--cream);
+    border: var(--edge) solid var(--boundary);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 28px rgba(74, 59, 48, 0.16), 0 2px 6px rgba(74, 59, 48, 0.1);
+    /* Sizes the cat, the crosses and the edges against the board, so a 5x5 gets big markers
+       and a 9x9 small ones with no JavaScript involved. */
     container-type: size;
 }
 
 .gpaw .cell {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -126,18 +145,59 @@ body.gpaw::before {
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
-    font-size: calc(100cqw / var(--cells) * 0.6);
+    font-size: calc(100cqw / var(--cells) * 0.62);
+    transition: filter 120ms ease-out;
+}
+
+/* Hover only where there is a real pointer; on a phone it sticks after a tap. */
+@media (hover: hover) {
+    .gpaw .cell:hover {
+        filter: brightness(1.07);
+    }
+}
+
+.gpaw .cell:active {
+    filter: brightness(0.94);
 }
 
 .gpaw .cell .mark {
     pointer-events: none;
 }
 
+/* Drawn rather than typed. The ✕ glyph sits differently in every fallback font and drifts
+   off-centre; two rotated bars are the same shape everywhere and scale cleanly. */
+.gpaw .cell .cross {
+    --bar: 11%;
+    position: relative;
+    width: 0.42em;
+    height: 0.42em;
+}
+
+.gpaw .cell .cross::before,
+.gpaw .cell .cross::after {
+    content: "";
+    position: absolute;
+    inset: calc(50% - var(--bar) / 2) 0;
+    border-radius: 2px;
+    background: currentColor;
+}
+
+.gpaw .cell .cross::before {
+    rotate: 45deg;
+}
+
+.gpaw .cell .cross::after {
+    rotate: -45deg;
+}
+
 /* The player's own note: quiet, and clearly theirs to take back. */
 .gpaw .cell .cross {
-    font-size: 0.55em;
-    color: rgba(60, 47, 38, 0.45);
-    font-weight: 800;
+    color: rgba(60, 47, 38, 0.42);
+}
+
+.gpaw .cell .mark:not(.cross) {
+    /* Lifts the cat off a flat region colour without adding a badge behind it. */
+    filter: drop-shadow(0 2px 2px rgba(74, 59, 48, 0.35));
 }
 
 /*
@@ -145,16 +205,22 @@ body.gpaw::before {
  * cleared, so it has to read as the game's mark rather than the player's — heavier, red, and
  * ringed so it is still distinguishable where the region colour is itself reddish.
  */
+/*
+ * White disc, red cross. The disc is white rather than red on purpose: two of the nine region
+ * colours are themselves red-orange, and a red disc on the coral region all but disappeared.
+ * White appears nowhere in the palette, so this mark separates from every board it can land
+ * on.
+ */
 .gpaw .cell .cross.locked {
-    font-size: 0.7em;
+    --bar: 19%;
     color: #b03a2e;
-    background: rgba(255, 255, 255, 0.82);
+    width: 0.5em;
+    height: 0.5em;
+    padding: 0.15em;
+    box-sizing: content-box;
+    background: #fff;
     border-radius: 50%;
-    width: 0.95em;
-    height: 0.95em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    box-shadow: 0 0 0 2px #b03a2e, 0 2px 5px rgba(74, 59, 48, 0.3);
 }
 
 .gpaw .cell.rejected {

@@ -106,11 +106,24 @@ function wonDays() {
 
 /* ---------- rendering ---------- */
 
+/**
+ * Draws the board, and with it the only thing a player has to read at a glance: the shape of
+ * each region.
+ *
+ * A heavy line goes wherever two regions meet, a hairline between cells inside one region. An
+ * even grid of identical heavy lines — which is what this was first — reads as wire mesh and
+ * leaves the regions invisible, which is fatal in a puzzle whose rules are about regions.
+ *
+ * Each internal boundary is drawn once, by the cell on its left or above it, so two
+ * neighbours never stack their borders into a line of double thickness. The outer edge is the
+ * board's own border, so the last column and row draw nothing.
+ */
 function buildBoard() {
-    boardEl.style.setProperty('--cells', puzzle.n);
+    const n = puzzle.n;
+    boardEl.style.setProperty('--cells', n);
     boardEl.replaceChildren();
 
-    for (let cell = 0; cell < puzzle.n * puzzle.n; cell++) {
+    for (let cell = 0; cell < n * n; cell++) {
         const button = document.createElement('div');
         button.className = 'cell';
         button.dataset.cell = cell;
@@ -119,6 +132,19 @@ function buildBoard() {
         const region = puzzle.regions[cell] % REGION_COLORS.length;
         button.style.background = REGION_COLORS[region];
         button.style.color = DARK_REGIONS.has(region) ? '#fff' : '#3c2f26';
+
+        const edges = [];
+        if (cell % n !== n - 1) {
+            edges.push(puzzle.regions[cell] !== puzzle.regions[cell + 1]
+                ? 'inset calc(-1 * var(--edge)) 0 0 var(--boundary)'
+                : 'inset -1px 0 0 var(--hairline)');
+        }
+        if (Math.floor(cell / n) !== n - 1) {
+            edges.push(puzzle.regions[cell] !== puzzle.regions[cell + n]
+                ? 'inset 0 calc(-1 * var(--edge)) 0 var(--boundary)'
+                : 'inset 0 -1px 0 var(--hairline)');
+        }
+        button.style.boxShadow = edges.join(', ');
 
         boardEl.appendChild(button);
     }
@@ -137,8 +163,8 @@ function render() {
                 mark.className = 'mark';
                 mark.textContent = '🐱';
             } else {
+                // The cross is drawn by the stylesheet from two bars, so it carries no text.
                 mark.className = state === LOCKED ? 'mark cross locked' : 'mark cross';
-                mark.textContent = '✕';
             }
             button.appendChild(mark);
             button.setAttribute('aria-label', LABELS[state]);

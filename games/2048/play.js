@@ -192,11 +192,23 @@ function fontScale(length) {
     return 0.24;
 }
 
-function createTile(id) {
+/**
+ * A brand-new element starts at translate(0, 0) — the board's top-left corner — so the first
+ * transform on it would animate from there, and a spawned tile would appear to slide in from
+ * the corner rather than simply arrive on its square. Suppressing the transition for one
+ * frame puts it where it belongs; the scale-up in `.spawn` is the only motion it should have.
+ */
+function createTile(id, x, y) {
     const element = document.createElement('div');
     element.className = 'tile';
     element.addEventListener('animationend', () => element.classList.remove('spawn', 'merge'));
+    element.style.transition = 'none';
+    place(element, x, y);
     board.appendChild(element);
+
+    void element.offsetWidth; // commit the position before motion is allowed again
+    element.style.transition = '';
+
     elements.set(id, element);
     return element;
 }
@@ -213,7 +225,7 @@ function render() {
             if (!tile) continue;
 
             alive.add(tile.id);
-            const element = elements.get(tile.id) ?? createTile(tile.id);
+            const element = elements.get(tile.id) ?? createTile(tile.id, x, y);
             place(element, x, y);
             paint(element, tile.value);
 
