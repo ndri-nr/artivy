@@ -49,9 +49,13 @@
 
     <main class="play-stage" id="stage">
         <div class="play-panel">
+            <!--
+              Stats and actions share one row. They had a row each, and on a phone every row
+              above the board is height the board does not get: the grid is portrait, so it is
+              bounded by height at every size and each row costs it real cells.
+            -->
             <div class="play-row">
                 <h1 class="play-title">Rekta</h1>
-                <span class="play-spacer"></span>
                 <div class="stat">
                     <span class="stat-label">LEVEL</span>
                     <span class="stat-value" id="level">1</span>
@@ -64,18 +68,14 @@
                     <span class="stat-label">BEST</span>
                     <span class="stat-value" id="best">—</span>
                 </div>
+                <span class="play-spacer"></span>
+                <button class="play-button" id="clear">Clear</button>
+                <button class="play-button" id="regenerate">New grid</button>
             </div>
 
             <div class="play-row" id="difficulty" role="group" aria-label="Grid size"></div>
 
-            <div class="play-row">
-                <button class="play-button" id="clear">Clear</button>
-                <span class="play-spacer"></span>
-                <button class="play-button" id="regenerate">Regenerate</button>
-            </div>
-
-            <p class="play-hint">Drag to cut a rectangle. Tap a rectangle to remove it, or an
-                empty cell to claim it.</p>
+            <p class="play-hint">Drag to cut. Tap to remove, or to claim one cell.</p>
             <p class="play-warning" id="warning" hidden>
                 This browser is not letting the page save, so your level and best times will not
                 survive a reload.

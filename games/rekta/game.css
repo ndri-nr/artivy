@@ -18,12 +18,10 @@
     --cyan: #3de0ff;
     --coral: #ff5c6e;
 
-    /* Rekta's panel carries a difficulty row and an action row that 2048 has no need of, so
-       it reserves more of the screen than the shell's default. Measured, not guessed: the
-       page came out 30px taller than the viewport at 360, and the panel plus the ad slot add
-       up to 390. The extra two are slack, because being slightly generous costs a slightly
-       smaller board and being slightly mean costs a scrollbar. */
-    --play-chrome-stacked: 392px;
+    /* Measured after the panel went from three rows to two: see the note in play.html. The
+       old figure was 392 against a real 399, so the page overflowed by seven pixels while the
+       board was already being squeezed. */
+    --play-chrome-stacked: 330px;
 }
 
 body.grekta {
@@ -291,4 +289,46 @@ body.grekta::before {
     --menu-fg: var(--text-primary);
     --menu-line: rgba(61, 224, 255, 0.22);
     --menu-hover: rgba(61, 224, 255, 0.16);
+}
+
+/* ---------- phones: give the grid the width and the height ---------- */
+
+@media (max-width: 768px) {
+    /*
+     * The grid takes the whole width the page gives its text — the same gutter the hint line
+     * below it sits in — rather than being capped at 460px or squeezed by a chrome figure
+     * that was too large. It is not bled to the bezel: lining up with everything else on the
+     * page is worth more than the twelve pixels either side.
+     */
+    .grekta .play-board {
+        --board-max: 100%;
+    }
+
+    /*
+     * The stats and the two actions have to fit one line. Left at their desktop sizes they
+     * wrapped, and that second line cost 45px of height — which on a portrait grid is real
+     * cells, since the board is bounded by height at every size.
+     */
+    .grekta .play-title {
+        display: none;
+    }
+
+    .grekta .stat {
+        min-width: 0;
+        padding: 4px 7px;
+    }
+
+    .grekta .stat-label {
+        font-size: 0.55rem;
+    }
+
+    .grekta .stat-value {
+        font-size: 0.9rem;
+    }
+
+    .grekta #clear,
+    .grekta #regenerate {
+        padding: 7px 9px;
+        font-size: 0.8rem;
+    }
 }
