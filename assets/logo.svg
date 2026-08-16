@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 290 100" role="img" aria-label="Artivy">
+  <title>Artivy</title>
+  <!--
+    Horizontal lockup, drawn as paths on purpose. This file is loaded through <img>, and an
+    <img>-rendered SVG cannot fetch anything external — no Google Fonts, no scripts — so a
+    font-family="Nunito" wordmark would silently fall back to whatever the visitor happens to
+    have. Every letter here is a stroked path, so it looks the same everywhere.
+
+    Horizontal, not stacked: the navbar gives it 40px of height and the play bar 26px. The old
+    stacked PNG put a wordmark under the mark, which at that size was an unreadable smudge —
+    and cost 252KB to be one.
+
+    Geometry is monoline: x-height band y=35..69, bowls r=13, stroke 7. Those three numbers are
+    tied together — the bowl's hole is 2r minus the stroke, so a heavier stroke or a smaller
+    radius closes the 'a' into a blob. It was 8 and 12 at first, and the 'a' read as a filled
+    lump. Keep the hole at roughly half the x-height if you touch any of them.
+  -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffa14a"/>
+      <stop offset="0.5" stop-color="#ff5f8f"/>
+      <stop offset="1" stop-color="#7048e8"/>
+    </linearGradient>
+    <linearGradient id="ink" x1="112" y1="0" x2="280" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7048e8"/>
+      <stop offset="0.55" stop-color="#ff5f8f"/>
+      <stop offset="1" stop-color="#ff8a5b"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#fff" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- The wordmark, drawn once and used twice: inked, then again as the sheen's mask. -->
+    <g id="word" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+      <!-- a: circle bowl tangent to a full-height stem, the Quicksand shape the site already
+           sets its headings in. -->
+      <path d="M138 52a13 13 0 1 1-26 0 13 13 0 1 1 26 0"/>
+      <path d="M138 35v34"/>
+      <!-- r -->
+      <path d="M151 35v34"/>
+      <path d="M151 49a13 13 0 0 1 13-13"/>
+      <!-- t -->
+      <path d="M183 25v36a8 8 0 0 0 8 8"/>
+      <path d="M173 40h20"/>
+      <!-- i -->
+      <path d="M205 35v34"/>
+      <path d="M205 19.9v.2" stroke-width="9"/>
+      <!-- v -->
+      <path d="m217 35 12 34 12-34"/>
+      <!-- y -->
+      <path d="m253 35 12.5 29"/>
+      <path d="m277 35-19 48"/>
+    </g>
+
+    <mask id="wordmask">
+      <use href="#word" stroke="#fff"/>
+    </mask>
+
+    <mask id="amask">
+      <g fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M26 79 50 21l24 58"/>
+        <path d="M35 62h30"/>
+      </g>
+    </mask>
+  </defs>
+
+  <style>
+    /* CSS animation rather than SMIL: this is the only one of the two that a visitor who has
+       asked for less motion can turn off. */
+    .sheen { animation: sweep 5s ease-in-out infinite; }
+    @keyframes sweep {
+      0%, 12%   { transform: translateX(-150px); }
+      50%, 100% { transform: translateX(200px); }
+    }
+    @media (prefers-reduced-motion: reduce) { .sheen { animation: none; opacity: 0; } }
+  </style>
+
+  <!-- Mark: an A centred on the tile with equal margins all round, painted through its own
+       mask. The yellow is a plain horizontal band laid over the white — because the mask is the
+       A's silhouette, the band's ends follow the slanted legs exactly. Drawing the crossbar as
+       a separate yellow stroke instead left it either overshooting the legs or floating short
+       of them, since a straight cap cannot meet a slanted edge cleanly at both of its corners. -->
+  <rect x="6" y="6" width="88" height="88" rx="26" fill="url(#tile)"/>
+  <g mask="url(#amask)">
+    <rect x="6" y="6" width="88" height="88" fill="#fff"/>
+    <rect x="6" y="57.5" width="88" height="9" fill="#feca57"/>
+  </g>
+
+  <use href="#word" stroke="url(#ink)"/>
+  <g mask="url(#wordmask)">
+    <g class="sheen">
+      <rect x="100" y="0" width="44" height="100" fill="url(#sheen)" transform="skewX(-18)"/>
+    </g>
+  </g>
+</svg>
