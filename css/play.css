@@ -143,6 +143,17 @@ body.playing::before {
 }
 
 /*
+ * The one line of instructions under each panel. Centred, because the board it describes is
+ * centred — left-aligned it hung off to one side of everything else on the page. 2048 had
+ * this rule to itself and the other four did not, which is the sort of difference nobody
+ * notices on one page and everybody notices moving between two.
+ */
+.play-hint {
+    text-align: center;
+    margin: 0;
+}
+
+/*
  * The board, bounded by whichever runs out first, the width or the height.
  *
  * --board-ratio is width ÷ height, so a square board leaves it at 1 and a portrait grid such

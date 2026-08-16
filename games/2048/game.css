@@ -90,11 +90,10 @@
  * follow, which is the whole reason a slide is animated in the first place.
  */
 
+/* Centring and margins moved to .play-hint in play.css, where all five games get them. */
 .g2048 .play-hint {
-    text-align: center;
     color: #55606f;
     font-size: 0.82rem;
-    margin: 0;
 }
 
 .g2048 .play-warning {

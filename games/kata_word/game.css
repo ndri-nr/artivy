@@ -32,8 +32,12 @@
      *
      * This is still the tallest chrome of any game here, and most of it is the keyboard,
      * which is not negotiable — a word game with no keys is not playable on a phone.
+     *
+     * 482 rather than 476: measured on a 375x812 phone the parts add up to 479 — bar 60,
+     * panel 123, keys 144, ad slot 100, gaps 48 — and declaring less than that lets the board
+     * grow into space the page does not have. It was overflowing by 3px.
      */
-    --play-chrome-stacked: 476px;
+    --play-chrome-stacked: 482px;
 }
 
 .gkata .play-title {
