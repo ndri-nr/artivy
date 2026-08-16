@@ -66,6 +66,22 @@ body.grekta::before {
     color: #04060e;
 }
 
+/*
+ * The three sizes split the row evenly. Left to size themselves they came out 91, 122 and
+ * 110 wide — the labels are different lengths, and a row of three buttons that are supposed
+ * to be one control should not look like three unrelated ones.
+ */
+.grekta #difficulty {
+    flex-wrap: nowrap;
+}
+
+.grekta #difficulty .play-button {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 4px;
+    white-space: nowrap;
+}
+
 .grekta .stat {
     background: rgba(16, 26, 69, 0.85);
     border: 1px solid rgba(53, 76, 147, 0.7);

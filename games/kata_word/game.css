@@ -22,12 +22,18 @@
     --key-text: #1a1a1b;
 
     /*
-     * Measured at 375px wide, not guessed: 518px of panel, keyboard, ad slot and gaps, plus
-     * a little slack. This is the tallest chrome of any game here, and most of it is the
-     * keyboard, which is not negotiable — a word game with no keys is not playable on a
-     * phone. The board takes what is left, which at five letters is about 240px.
+     * Measured at 375px wide by adding up the parts — top bar, panel, keyboard, ad slot and
+     * the gaps between them — which comes to 469, plus slack.
+     *
+     * It read 524 for a while, from `scrollHeight - board`. That overstates the chrome
+     * whenever the page does not overflow, because scrollHeight never reports less than the
+     * viewport, and the board paid for the difference: 55px of dead space under the ad slot
+     * and tiles smaller than they needed to be.
+     *
+     * This is still the tallest chrome of any game here, and most of it is the keyboard,
+     * which is not negotiable — a word game with no keys is not playable on a phone.
      */
-    --play-chrome-stacked: 524px;
+    --play-chrome-stacked: 476px;
 }
 
 .gkata .play-title {
@@ -165,6 +171,11 @@
 /* ---------- keyboard ---------- */
 
 .gkata .keys {
+    --key-gap: 5px;
+    /* The longest row. Every letter key is sized to a tenth of the keyboard so that all
+       three rows use the same key, whatever their length. */
+    --keys-per-row: 10;
+
     width: min(520px, 100%);
     display: flex;
     flex-direction: column;
@@ -176,13 +187,20 @@
 
 .gkata .keys-row {
     display: flex;
-    gap: 5px;
+    gap: var(--key-gap);
     justify-content: center;
 }
 
 .gkata .key {
     appearance: none;
-    flex: 1 1 auto;
+    /*
+     * Fixed, not flexible. With `flex: 1 1 auto` each row shared out its own width, so the
+     * nine keys of the middle row came out wider than the ten above them and a letter moved
+     * under the finger between rows. A tenth of the keyboard is the same width everywhere,
+     * and the shorter rows simply centre.
+     */
+    flex: 0 0 auto;
+    width: calc((100% - (var(--keys-per-row) - 1) * var(--key-gap)) / var(--keys-per-row));
     min-width: 0;
     /* 44px is the smallest comfortable touch target, and three rows of it is the single
        biggest thing standing between the board and the bottom of a phone screen. */
@@ -199,8 +217,14 @@
     touch-action: manipulation;
 }
 
+/*
+ * Enter and Del take whatever the seven letters between them leave, and split it evenly.
+ * The basis is 0 rather than auto on purpose: from `auto` they grow out of their own text, so
+ * the wider word ends up the wider key and the row looks lopsided.
+ */
 .gkata .key.wide {
-    flex: 1.5 1 auto;
+    flex: 1 1 0;
+    width: auto;
     font-size: 0.72rem;
 }
 
