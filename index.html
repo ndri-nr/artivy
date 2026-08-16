@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artivy | Beautifully Crafted Mobile Games</title>
-    <meta name="description" content="Artivy is a mobile game publisher crafting relaxing, beautifully designed games like Pawdoku, Kata·Word, 2048 and Rekta — free to play and made for everyone.">
+    <meta name="description" content="Artivy is a mobile game publisher crafting relaxing, beautifully designed games like PawDoku, Kata·Word, 2048 and Rekta — free to play and made for everyone.">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
@@ -32,11 +32,11 @@
             <li class="dropdown">
                 <a href="#games" class="dropbtn">Games ▾</a>
                 <div class="dropdown-content">
-                    <a href="pawdoku/index.html">Pawdoku</a>
-                    <a href="kata_word/index.html">Kata·Word</a>
-                    <a href="stacko/index.html">StackO!</a>
-                    <a href="2048/index.html">2048</a>
-                    <a href="rekta/index.html">Rekta</a>
+                    <a href="pawdoku/play.html">PawDoku</a>
+                    <a href="kata_word/play.html">Kata·Word</a>
+                    <a href="stacko/play.html">StackO!</a>
+                    <a href="2048/play.html">2048</a>
+                    <a href="rekta/play.html">Rekta</a>
                 </div>
             </li>
         </ul>
@@ -51,11 +51,11 @@
             <summary aria-label="Menu"><span class="nav-burger"></span></summary>
             <ul>
                 <li><a href="#games">Games</a></li>
-                <li><a href="pawdoku/play.html">Pawdoku</a></li>
+                <li><a href="pawdoku/play.html">PawDoku</a></li>
                 <li><a href="kata_word/play.html">Kata·Word</a></li>
+                <li><a href="stacko/play.html">StackO!</a></li>
                 <li><a href="2048/play.html">2048</a></li>
                 <li><a href="rekta/play.html">Rekta</a></li>
-                <li><a href="stacko/index.html">StackO!</a></li>
             </ul>
         </details>
     </nav>
@@ -96,10 +96,10 @@
     </section>
 
     <!--
-      Only Pawdoku carries a Google Play badge, because only Pawdoku has a listing that
+      Only PawDoku carries a Google Play badge, because only PawDoku has a listing that
       resolves — the other four answer 404 today, and a badge leading to Google's "item not
       found" page is worse than no badge. Checked with curl, not assumed. When a listing goes
-      live, copy the .card-store anchor from the Pawdoku card and swap the id, and confirm the
+      live, copy the .card-store anchor from the PawDoku card and swap the id, and confirm the
       URL really resolves before pushing.
     -->
     <!-- Games Section -->
@@ -108,17 +108,17 @@
         <div class="game-cards card-strip">
             <div class="card reveal">
                 <div class="card-image">
-                    <img src="assets/pawdoku-icon.png" alt="Pawdoku" class="game-icon">
+                    <img src="assets/pawdoku-icon.png" alt="PawDoku" class="game-icon">
                 </div>
                 <div class="card-content">
-                    <h3>Pawdoku</h3>
+                    <h3>PawDoku</h3>
                     <p>A purr-fect blend of logic and calm. Place one cat in every row, column and colour region — no two touching, and never a number in sight. Every puzzle has exactly one solution, so you can always reason it out.</p>
                     <div class="card-links">
                         <a href="pawdoku/play.html" class="card-play">▶ Play</a>
                         <a href="pawdoku/index.html" class="card-info">About</a>
                         <a href="https://play.google.com/store/apps/details?id=id.artivy.pawdoku"
                            class="card-store" target="_blank" rel="noopener"
-                           aria-label="Get Pawdoku on Google Play">
+                           aria-label="Get PawDoku on Google Play">
                             <img src="assets/google-play-badge.png" alt="Get it on Google Play">
                         </a>
                     </div>

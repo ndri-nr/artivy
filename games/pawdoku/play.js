@@ -1,5 +1,5 @@
 /*
- * The browser build of Pawdoku: board, taps, lives and saving. The rules and the generator
+ * The browser build of PawDoku: board, taps, lives and saving. The rules and the generator
  * are in model.js, which has no DOM in it and is checked by selftest.html.
  *
  * Endless levels only. The app's daily challenge, coins, store, trophies, hints and paws are

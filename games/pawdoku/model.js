@@ -1,5 +1,5 @@
 /*
- * Pawdoku's rules and its puzzle generator. No DOM here, which is what makes selftest.html
+ * PawDoku's rules and its puzzle generator. No DOM here, which is what makes selftest.html
  * possible — and a generator that can hand out an unsolvable board is exactly the thing worth
  * checking automatically.
  *
