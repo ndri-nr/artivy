@@ -1,0 +1,425 @@
+/*
+ * The browser build of Kata·Word: board, keyboard, saving and the two modes. The rules —
+ * scoring, the daily word, streaks — are in model.js, which has no DOM in it and is checked
+ * by selftest.html.
+ */
+
+import { storage, isPersistent } from '../js/storage.js';
+import {
+    LANGUAGES,
+    MAX_GUESSES,
+    WORD_LENGTHS,
+    computeStreaks,
+    dailyIndex,
+    dateKey,
+    evaluateGuess,
+    loadGuessSet,
+    loadList,
+    mergeKeyboard,
+    pickWord,
+} from './model.js';
+
+const KEY_ROWS = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
+
+/* How many recent Free Play words to steer away from. Long enough that a session does not
+   repeat itself, short enough that a heavy player is not slowly locked out of the list. */
+const RECENT_MEMORY = 40;
+
+const save = storage('kata_word');
+
+const boardEl = document.getElementById('board');
+const keysEl = document.getElementById('keys');
+const statusEl = document.getElementById('status');
+const streakEl = document.getElementById('streak');
+const bestEl = document.getElementById('best');
+const winsEl = document.getElementById('wins');
+const langSelect = document.getElementById('lang');
+const lengthSelect = document.getElementById('length');
+const dailyButton = document.getElementById('mode-daily');
+const freeButton = document.getElementById('mode-free');
+const sheet = document.getElementById('sheet');
+const sheetTitle = document.getElementById('sheet-title');
+const sheetText = document.getElementById('sheet-text');
+const sheetWord = document.getElementById('sheet-word');
+const sheetAction = document.getElementById('sheet-action');
+
+let lang = LANGUAGES.some((entry) => entry.code === save.get('lang', 'en'))
+    ? save.get('lang', 'en') : 'en';
+let length = WORD_LENGTHS.includes(save.get('length', 5)) ? save.get('length', 5) : 5;
+let mode = save.get('mode', 'daily') === 'free' ? 'free' : 'daily';
+
+let answer = '';
+let guesses = [];
+let current = '';
+let guessSet = null;
+let finished = false;
+let busy = false;
+
+/* ---------- saved state ---------- */
+
+function dailySlot(day = new Date()) {
+    return `daily.${lang}.${length}.${dateKey(day)}`;
+}
+
+function freeSlot() {
+    return `free.${lang}.${length}`;
+}
+
+function readStats() {
+    const stats = save.get('stats', null);
+    if (!stats || typeof stats !== 'object') return { played: 0, wins: 0 };
+    return {
+        played: Number(stats.played) || 0,
+        wins: Number(stats.wins) || 0,
+    };
+}
+
+function readWonDays() {
+    const days = save.get('wonDays', []);
+    return Array.isArray(days) ? days.filter(Number.isInteger) : [];
+}
+
+/** Guesses are trusted only as far as they are strings of the right length. */
+function usableGuesses(saved) {
+    if (!Array.isArray(saved)) return [];
+    return saved
+        .filter((word) => typeof word === 'string' && word.length === length)
+        .slice(0, MAX_GUESSES);
+}
+
+/* ---------- rendering ---------- */
+
+function buildBoard() {
+    boardEl.style.setProperty('--cols', length);
+    boardEl.style.setProperty('--board-ratio', length / MAX_GUESSES);
+    boardEl.replaceChildren();
+
+    for (let row = 0; row < MAX_GUESSES; row++) {
+        for (let column = 0; column < length; column++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.dataset.row = row;
+            tile.dataset.column = column;
+            boardEl.appendChild(tile);
+        }
+    }
+}
+
+function tileAt(row, column) {
+    return boardEl.children[row * length + column];
+}
+
+function renderBoard(popAt = -1) {
+    for (let row = 0; row < MAX_GUESSES; row++) {
+        const guess = guesses[row];
+        const typing = row === guesses.length ? current : '';
+
+        for (let column = 0; column < length; column++) {
+            const tile = tileAt(row, column);
+            if (guess) {
+                const status = evaluateGuess(guess, answer)[column];
+                tile.textContent = guess[column];
+                tile.className = `tile ${status}`;
+                // The colour is not the only carrier of the result. Read out, the row is
+                // "c, correct. r, correct." rather than a row of letters with no scores.
+                tile.setAttribute('aria-label', `${guess[column]}, ${status}`);
+            } else {
+                const letter = typing[column] ?? '';
+                tile.textContent = letter;
+                tile.className = letter ? 'tile filled' : 'tile';
+                tile.removeAttribute('aria-label');
+                if (row === guesses.length && column === popAt) tile.classList.add('pop');
+            }
+        }
+    }
+}
+
+function renderKeyboard() {
+    const colours = {};
+    for (const guess of guesses) mergeKeyboard(colours, guess, evaluateGuess(guess, answer));
+
+    for (const key of keysEl.querySelectorAll('.key[data-letter]')) {
+        const state = colours[key.dataset.letter];
+        key.className = state ? `key ${state}` : 'key';
+    }
+}
+
+function renderStats() {
+    const { current: streak, best } = computeStreaks(readWonDays(), new Date());
+    const stats = readStats();
+    streakEl.textContent = String(streak);
+    bestEl.textContent = String(best);
+    winsEl.textContent = `${stats.wins}/${stats.played}`;
+}
+
+function buildKeyboard() {
+    keysEl.replaceChildren();
+
+    KEY_ROWS.forEach((letters, index) => {
+        const row = document.createElement('div');
+        row.className = 'keys-row';
+
+        if (index === 2) row.appendChild(specialKey('Enter', 'enter'));
+        for (const letter of letters) {
+            const key = document.createElement('button');
+            key.className = 'key';
+            key.type = 'button';
+            key.textContent = letter;
+            key.dataset.letter = letter;
+            row.appendChild(key);
+        }
+        if (index === 2) row.appendChild(specialKey('Del', 'backspace'));
+
+        keysEl.appendChild(row);
+    });
+}
+
+function specialKey(label, action) {
+    const key = document.createElement('button');
+    key.className = 'key wide';
+    key.type = 'button';
+    key.textContent = label;
+    key.dataset.action = action;
+    return key;
+}
+
+function say(message) {
+    statusEl.textContent = message;
+}
+
+/* ---------- the game ---------- */
+
+function shake() {
+    boardEl.classList.remove('row-invalid');
+    // Reading offsetWidth restarts the animation; without it a second rejection in a row
+    // does nothing visible and the player thinks the key was missed.
+    void boardEl.offsetWidth;
+    boardEl.classList.add('row-invalid');
+}
+
+function showSheet(won) {
+    sheetTitle.textContent = won ? 'Solved' : 'Out of tries';
+    sheetText.textContent = won
+        ? `In ${guesses.length} of ${MAX_GUESSES}.`
+        : 'The word was';
+    sheetWord.textContent = answer;
+    sheetWord.hidden = won;
+    sheetAction.textContent = mode === 'daily' ? 'Free play' : 'Next word';
+    sheet.hidden = false;
+}
+
+function finish(won) {
+    finished = true;
+
+    const stats = readStats();
+    save.set('stats', { played: stats.played + 1, wins: stats.wins + (won ? 1 : 0) });
+
+    if (mode === 'daily' && won) {
+        // A set, so replaying a day cannot inflate the streak, and so back-filling a past day
+        // later still lands in the right place — computeStreaks reads the whole set.
+        const days = new Set(readWonDays());
+        days.add(dateKey(new Date()));
+        save.set('wonDays', [...days]);
+    }
+
+    if (mode === 'free') {
+        const recent = [answer, ...(save.get('recent', []) || [])]
+            .filter((word) => typeof word === 'string')
+            .slice(0, RECENT_MEMORY);
+        save.set('recent', recent);
+    }
+
+    persist();
+    renderStats();
+    say(won ? 'Solved.' : `The word was ${answer.toUpperCase()}.`);
+    showSheet(won);
+}
+
+function persist() {
+    save.set('lang', lang);
+    save.set('length', length);
+    save.set('mode', mode);
+    const record = { answer, guesses, finished };
+    save.set(mode === 'daily' ? dailySlot() : freeSlot(), record);
+}
+
+async function submit() {
+    if (finished || busy) return;
+
+    if (current.length !== length) {
+        shake();
+        say(`Needs ${length} letters.`);
+        return;
+    }
+    if (!guessSet.has(current)) {
+        shake();
+        say('Not in the word list.');
+        return;
+    }
+
+    guesses.push(current);
+    const won = current === answer;
+    current = '';
+
+    renderBoard();
+    renderKeyboard();
+    persist();
+
+    if (won) finish(true);
+    else if (guesses.length >= MAX_GUESSES) finish(false);
+    else say(`${MAX_GUESSES - guesses.length} tries left.`);
+}
+
+function type(letter) {
+    if (finished || busy || current.length >= length) return;
+    current += letter;
+    renderBoard(current.length - 1);
+}
+
+function backspace() {
+    if (finished || busy || current.length === 0) return;
+    current = current.slice(0, -1);
+    renderBoard();
+}
+
+/* ---------- starting a game ---------- */
+
+async function start(nextWord = false) {
+    busy = true;
+    sheet.hidden = true;
+    current = '';
+    guesses = [];
+    finished = false;
+
+    buildBoard();
+    say('Loading words…');
+
+    try {
+        guessSet = await loadGuessSet(lang, length);
+
+        if (mode === 'daily') {
+            const pool = await loadList(lang, 'daily', length);
+            answer = pool[dailyIndex(new Date(), pool.length)];
+        } else {
+            const pool = await loadList(lang, 'answers', length);
+            const saved = nextWord ? null : save.get(freeSlot(), null);
+            answer = saved && typeof saved.answer === 'string' && saved.answer.length === length
+                ? saved.answer
+                : pickWord(pool, Date.now() & 0x7fffffff, new Set(save.get('recent', []) || []));
+        }
+    } catch (error) {
+        // A failed fetch is the one thing that can leave this page with no game at all.
+        say('Could not load the word list. Check your connection and reload.');
+        busy = false;
+        return;
+    }
+
+    const saved = save.get(mode === 'daily' ? dailySlot() : freeSlot(), null);
+    if (saved && saved.answer === answer) {
+        guesses = usableGuesses(saved.guesses);
+        finished = saved.finished === true
+            || guesses.length >= MAX_GUESSES
+            || guesses.includes(answer);
+    }
+
+    busy = false;
+    renderBoard();
+    renderKeyboard();
+    renderStats();
+    persist();
+
+    if (finished) {
+        const won = guesses.includes(answer);
+        say(mode === 'daily'
+            ? (won ? 'Today\'s word is done. Come back tomorrow.' : `Today's word was ${answer.toUpperCase()}.`)
+            : (won ? 'Solved.' : `The word was ${answer.toUpperCase()}.`));
+        showSheet(won);
+    } else {
+        say(mode === 'daily' ? 'Today\'s word. Six tries.' : 'Guess the word in six tries.');
+    }
+}
+
+/* ---------- input ---------- */
+
+keysEl.addEventListener('click', (event) => {
+    const key = event.target.closest('.key');
+    if (!key) return;
+    if (key.dataset.action === 'enter') submit();
+    else if (key.dataset.action === 'backspace') backspace();
+    else if (key.dataset.letter) type(key.dataset.letter);
+});
+
+window.addEventListener('keydown', (event) => {
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+    if (event.target instanceof HTMLSelectElement) return;
+
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        if (!sheet.hidden) return;
+        submit();
+    } else if (event.key === 'Backspace') {
+        event.preventDefault();
+        backspace();
+    } else if (/^[a-zA-Z]$/.test(event.key)) {
+        type(event.key.toLowerCase());
+    }
+});
+
+function setMode(next) {
+    if (mode === next) return;
+    mode = next;
+    dailyButton.setAttribute('aria-pressed', String(next === 'daily'));
+    freeButton.setAttribute('aria-pressed', String(next === 'free'));
+    start();
+}
+
+dailyButton.addEventListener('click', () => setMode('daily'));
+freeButton.addEventListener('click', () => setMode('free'));
+
+langSelect.addEventListener('change', () => {
+    lang = langSelect.value;
+    start();
+});
+
+lengthSelect.addEventListener('change', () => {
+    length = Number(lengthSelect.value);
+    start();
+});
+
+sheetAction.addEventListener('click', () => {
+    if (mode === 'daily') {
+        setMode('free');
+    } else {
+        start(true);
+    }
+});
+
+document.getElementById('sheet-close').addEventListener('click', () => {
+    sheet.hidden = true;
+});
+
+/* ---------- boot ---------- */
+
+for (const entry of LANGUAGES) {
+    const option = document.createElement('option');
+    option.value = entry.code;
+    option.textContent = entry.label;
+    option.selected = entry.code === lang;
+    langSelect.appendChild(option);
+}
+
+for (const size of WORD_LENGTHS) {
+    const option = document.createElement('option');
+    option.value = String(size);
+    option.textContent = `${size} letters`;
+    option.selected = size === length;
+    lengthSelect.appendChild(option);
+}
+
+dailyButton.setAttribute('aria-pressed', String(mode === 'daily'));
+freeButton.setAttribute('aria-pressed', String(mode === 'free'));
+
+if (!isPersistent()) document.getElementById('warning').hidden = false;
+
+buildKeyboard();
+start();

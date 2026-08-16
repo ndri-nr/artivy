@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Play Kata·Word in your browser. Guess the hidden word in six tries, in English or Bahasa Indonesia, at four, five or six letters. A shared daily challenge plus unlimited free play.">
+    <meta name="theme-color" content="#f0f4f8">
+    <title>Play Kata·Word - Artivy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/play.css">
+    <link rel="stylesheet" href="game.css">
+
+    <!-- AdSense, on every page as Google's setup requires. The meta tag is what links the
+         site to the account; the script is what would serve an advert. Neither places one by
+         itself: Auto ads are off, and the game pages take a hand-placed unit in the slot
+         play.css reserves below the board. -->
+    <meta name="google-adsense-account" content="ca-pub-8668013395284480">
+    <script async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
+        crossorigin="anonymous"></script>
+</head>
+<!-- main.js is deliberately not loaded: it is the home page's Three.js particle field, a
+     continuous repaint that would compete with the board for frames. -->
+<body class="playing gkata">
+    <div class="play-bar">
+        <a class="play-home" href="../index.html">
+            <img src="../assets/logo.png" alt="Artivy">
+        </a>
+        <span class="play-spacer"></span>
+        <a class="play-quiet" href="index.html">About</a>
+        <a class="play-quiet" href="privacy-policy.html">Privacy</a>
+        <a class="play-quiet" href="terms-and-conditions.html">Terms</a>
+    </div>
+
+    <main class="play-stage" id="stage">
+        <div class="play-panel">
+            <div class="play-row">
+                <h1 class="play-title">Kata·Word</h1>
+                <span class="play-spacer"></span>
+                <div class="stat">
+                    <span class="stat-label">STREAK</span>
+                    <span class="stat-value" id="streak">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">BEST</span>
+                    <span class="stat-value" id="best">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">WINS</span>
+                    <span class="stat-value" id="wins">0/0</span>
+                </div>
+            </div>
+
+            <div class="play-row">
+                <button class="play-button" id="mode-daily" aria-pressed="true">Daily</button>
+                <button class="play-button" id="mode-free" aria-pressed="false">Free play</button>
+                <span class="play-spacer"></span>
+                <!-- Native selects on purpose: the platform already has a good picker on every
+                     phone, and it is reachable by keyboard and screen reader for free. -->
+                <label class="visually-hidden" for="lang">Language</label>
+                <select id="lang" class="play-select"></select>
+                <label class="visually-hidden" for="length">Word length</label>
+                <select id="length" class="play-select"></select>
+            </div>
+
+            <p class="play-hint" id="status">Guess the word in six tries.</p>
+            <p class="play-warning" id="warning" hidden>
+                This browser is not letting the page save, so your streak and today's result
+                will not survive a reload.
+            </p>
+        </div>
+
+        <div class="play-board" id="board" role="application" aria-label="Kata·Word board"></div>
+
+        <div class="keys" id="keys" aria-label="Keyboard"></div>
+
+        <!-- Ad slot, empty on purpose: no AdSense unit is placed yet. The height is reserved
+             so switching one on later cannot shove the board and keyboard around. -->
+        <div class="play-ad" id="ad"></div>
+    </main>
+
+    <div class="sheet" id="sheet" hidden>
+        <div class="sheet-card">
+            <h2 id="sheet-title"></h2>
+            <p id="sheet-text"></p>
+            <p class="sheet-word" id="sheet-word"></p>
+            <div class="play-row">
+                <button class="play-button" id="sheet-action"></button>
+                <button class="play-button ghost" id="sheet-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="play.js"></script>
+</body>
+</html>

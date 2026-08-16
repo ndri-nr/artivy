@@ -1,0 +1,302 @@
+/*
+ * Kata·Word's look. The classic palette from the Android build's free theme — the other
+ * themes there unlock at streak milestones through a coin store the browser version does not
+ * have, so there is one palette here and no theme picker.
+ *
+ * Every scored tile carries its result as an aria-label, so the board is readable without
+ * seeing the colours at all.
+ *
+ * ponytail: no high-contrast palette yet. Roughly one man in twelve cannot reliably separate
+ * 6AAA64 from C9B458, and the honest fix is the alternate orange/blue pair with a toggle, not
+ * a tweak to these two. Add it when there is a settings surface to hang the toggle on.
+ */
+
+.gkata {
+    --correct: #6aaa64;
+    --present: #c9b458;
+    --absent: #787c7e;
+    --tile-empty: #ffffff;
+    --tile-border: #d3d6da;
+    --tile-filled-border: #878a8c;
+    --key-bg: #d3d6da;
+    --key-text: #1a1a1b;
+
+    /*
+     * Measured at 375px wide, not guessed: 518px of panel, keyboard, ad slot and gaps, plus
+     * a little slack. This is the tallest chrome of any game here, and most of it is the
+     * keyboard, which is not negotiable — a word game with no keys is not playable on a
+     * phone. The board takes what is left, which at five letters is about 240px.
+     */
+    --play-chrome-stacked: 524px;
+}
+
+.gkata .play-title {
+    font-size: 1.2rem;
+    white-space: nowrap;
+}
+
+/*
+ * Deliberately tight. Three stats plus the title have to stay on one line at 360px wide: the
+ * moment they wrap, the panel grows by a whole row and the board loses that height twice
+ * over, once for the wrap and once because --play-chrome-stacked no longer describes reality.
+ */
+.gkata .stat {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid var(--tile-border);
+    border-radius: 9px;
+    padding: 4px 7px;
+    min-width: 44px;
+    text-align: center;
+    line-height: 1.1;
+}
+
+.gkata .stat-label {
+    display: block;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    color: #6b7280;
+    font-weight: 700;
+}
+
+.gkata .stat-value {
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.gkata .play-button[aria-pressed="true"] {
+    background: #2d3748;
+    border-color: transparent;
+    color: #fff;
+}
+
+.gkata .play-select {
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: #2d3748;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---------- the board ---------- */
+
+.gkata .play-board {
+    --board-max: 400px;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: min(1.6%, 6px);
+    /* Sizes the letters against the board rather than the viewport, so a four-letter game
+       gets bigger tiles and bigger letters with no JavaScript involved. */
+    container-type: size;
+}
+
+.gkata .tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--tile-border);
+    background: var(--tile-empty);
+    border-radius: 4px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #1a1a1b;
+    font-size: calc(100cqw / var(--cols) * 0.46);
+    line-height: 1;
+    user-select: none;
+}
+
+.gkata .tile.filled {
+    border-color: var(--tile-filled-border);
+}
+
+/* The pop is what tells a player the key registered on a phone with no tactile feedback. */
+.gkata .tile.pop {
+    animation: kata-pop 100ms ease-out;
+}
+
+@keyframes kata-pop {
+    50% {
+        scale: 1.08;
+    }
+}
+
+.gkata .tile.correct,
+.gkata .tile.present,
+.gkata .tile.absent {
+    color: #fff;
+    border-color: transparent;
+}
+
+.gkata .tile.correct {
+    background: var(--correct);
+}
+
+.gkata .tile.present {
+    background: var(--present);
+}
+
+.gkata .tile.absent {
+    background: var(--absent);
+}
+
+.gkata .row-invalid {
+    animation: kata-shake 320ms;
+}
+
+@keyframes kata-shake {
+    10%, 90% { translate: -2px 0; }
+    30%, 70% { translate: 4px 0; }
+    50% { translate: -6px 0; }
+}
+
+/* ---------- keyboard ---------- */
+
+.gkata .keys {
+    width: min(520px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0 auto;
+    /* The keyboard is tapped fast and repeatedly; without this a double tap zooms the page. */
+    touch-action: manipulation;
+}
+
+.gkata .keys-row {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+}
+
+.gkata .key {
+    appearance: none;
+    flex: 1 1 auto;
+    min-width: 0;
+    /* 44px is the smallest comfortable touch target, and three rows of it is the single
+       biggest thing standing between the board and the bottom of a phone screen. */
+    height: 44px;
+    border: 0;
+    border-radius: 5px;
+    background: var(--key-bg);
+    color: var(--key-text);
+    font: inherit;
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+.gkata .key.wide {
+    flex: 1.5 1 auto;
+    font-size: 0.72rem;
+}
+
+.gkata .key.correct {
+    background: var(--correct);
+    color: #fff;
+}
+
+.gkata .key.present {
+    background: var(--present);
+    color: #fff;
+}
+
+.gkata .key.absent {
+    background: var(--absent);
+    color: #fff;
+}
+
+.gkata .key:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* ---------- result sheet ---------- */
+
+.gkata .sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(26, 26, 27, 0.55);
+}
+
+.gkata .sheet[hidden] {
+    display: none;
+}
+
+.gkata .sheet-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 340px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.gkata .sheet-card h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.4rem;
+    color: #1a1a1b;
+}
+
+.gkata .sheet-card p {
+    margin: 0 0 6px 0;
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.gkata .sheet-word {
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--correct);
+    margin: 10px 0 16px 0 !important;
+}
+
+.gkata .sheet-card .play-row {
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.gkata .sheet-card .play-button {
+    background: #2d3748;
+    border-color: transparent;
+    color: #fff;
+}
+
+.gkata .sheet-card .play-button.ghost {
+    background: transparent;
+    border-color: var(--tile-border);
+    color: #4a5568;
+}
+
+/* On a landscape phone the keyboard goes beside the board with the rest of the chrome. */
+@media (orientation: landscape) and (max-height: 560px) {
+    .gkata .keys {
+        width: min(320px, 34vw);
+    }
+
+    .gkata .key {
+        height: 34px;
+        font-size: 0.8rem;
+    }
+}
