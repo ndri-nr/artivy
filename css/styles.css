@@ -175,7 +175,8 @@ h1, h2, h3 {
 }
 
 .hero-content h1 {
-    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    /* Was clamp(2.8rem, 7vw, 5.5rem) — 88px on a wide screen, which read as shouting. */
+    font-size: clamp(2.1rem, 5vw, 3.4rem);
     line-height: 1.05;
     color: #2d3748;
     margin-bottom: 20px;
@@ -303,8 +304,10 @@ h1, h2, h3 {
 
 .games-section h2 {
     text-align: center;
-    font-size: 3rem;
-    margin-bottom: 60px;
+    /* Fluid rather than 3rem flat. A section heading is a signpost, not the content — at 48px
+       it was taking a third of a phone screen before the first card. */
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    margin-bottom: clamp(24px, 4vw, 44px);
     color: #2d3748;
 }
 
@@ -371,9 +374,16 @@ h1, h2, h3 {
     text-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
+/*
+ * Sized against the banner rather than in fixed pixels. At 170px flat it burst out of the
+ * shorter banner the mobile layout uses, and a logo hanging over the edge of its own card is
+ * the first thing anyone notices.
+ */
 .game-icon {
-    height: 170px;
-    width: 170px;
+    height: 78%;
+    width: auto;
+    aspect-ratio: 1;
+    max-width: 78%;
     object-fit: contain;
     filter: drop-shadow(0 6px 16px rgba(0,0,0,0.25));
 }
@@ -553,5 +563,128 @@ footer {
 
 .play-now a:hover {
     filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+/* ---------- game cards: two actions, and a whole-card tap target ---------- */
+
+.card-links {
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Play is the primary action on the front page, because four of these are playable in the
+   browser and the shortest path from the front door to a game should be one tap. */
+.card-play {
+    background: var(--accent-deep) !important;
+    box-shadow: 0 5px 15px rgba(112, 72, 232, 0.3) !important;
+}
+
+.card-play:hover {
+    background: #5c34d4 !important;
+}
+
+.card-info {
+    background: transparent !important;
+    color: #4a5568 !important;
+    border: 1px solid var(--glass-border);
+    box-shadow: none !important;
+}
+
+.card-info:hover {
+    background: rgba(255, 255, 255, 0.7) !important;
+}
+
+/*
+ * The whole card opens the game. A card that looks tappable and is not — where only a
+ * 90px pill inside it responds — is the most common way a phone layout feels broken, and the
+ * cure is one stretched pseudo-element rather than restructuring the markup into a link.
+ * The real buttons sit above it, so they still get their own taps.
+ */
+.card-play::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+}
+
+.card-links a {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---------- mobile: the games scroll sideways ---------- */
+
+@media (max-width: 768px) {
+    /*
+     * Five stacked cards is a very long page, and it gets longer with every game. Sideways,
+     * one card at a time, it stays the same length however many there are.
+     *
+     * The negative margin lets the strip bleed to the screen edges while the padding keeps
+     * the first and last card off them, so a half-visible card at the right edge tells the
+     * player there is more without needing a row of dots to say it.
+     */
+    .game-cards {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scroll-padding-inline: 20px;
+        gap: 16px;
+        margin-inline: -20px;
+        padding: 4px 20px 12px 20px;
+        scrollbar-width: none;
+    }
+
+    .game-cards::-webkit-scrollbar {
+        display: none;
+    }
+
+    .card {
+        flex: 0 0 84%;
+        max-width: 330px;
+        scroll-snap-align: center;
+    }
+
+    /* Half the height of the desktop banner: on a phone the icon is the identifier, and the
+       description below it is what the player actually reads. */
+    .card-image {
+        height: 150px;
+    }
+
+    /* The parallax lift is a pointer-device flourish, and on the shorter banner it is also
+       the last few pixels that pushed the icon over the edge. */
+    .card .game-icon {
+        transform: none;
+    }
+
+    .card-content p {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 0.95rem;
+    }
+}
+
+/* The Play badge on a home card: its own row, so it never squeezes the two buttons. */
+.card-store {
+    display: block;
+    flex-basis: 100%;
+    padding: 0 !important;
+    background: none !important;
+    box-shadow: none !important;
+    line-height: 0;
+}
+
+.card-store img {
+    height: 44px;
+    width: auto;
+    display: inline-block;
+}
+
+.card-store:hover {
     transform: translateY(-2px);
 }

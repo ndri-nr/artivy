@@ -78,6 +78,13 @@
         </div>
     </section>
 
+    <!--
+      Only Pawdoku carries a Google Play badge, because only Pawdoku has a listing that
+      resolves — the other four answer 404 today, and a badge leading to Google's "item not
+      found" page is worse than no badge. Checked with curl, not assumed. When a listing goes
+      live, copy the .card-store anchor from the Pawdoku card and swap the id, and confirm the
+      URL really resolves before pushing.
+    -->
     <!-- Games Section -->
     <section id="games" class="games-section">
         <h2 class="reveal">Featured Games</h2>
@@ -90,7 +97,13 @@
                     <h3>Pawdoku</h3>
                     <p>A purr-fect blend of logic and calm. Place one cat in every row, column and colour region — no two touching, and never a number in sight. Every puzzle has exactly one solution, so you can always reason it out.</p>
                     <div class="card-links">
-                        <a href="pawdoku/index.html">View Game Info</a>
+                        <a href="pawdoku/play.html" class="card-play">▶ Play</a>
+                        <a href="pawdoku/index.html" class="card-info">About</a>
+                        <a href="https://play.google.com/store/apps/details?id=id.artivy.pawdoku"
+                           class="card-store" target="_blank" rel="noopener"
+                           aria-label="Get Pawdoku on Google Play">
+                            <img src="assets/google-play-badge.png" alt="Get it on Google Play">
+                        </a>
                     </div>
                 </div>
             </div>
@@ -102,7 +115,18 @@
                     <h3>Kata·Word</h3>
                     <p>Crack a new word every day, or play as long as you like. Guess in 4–6 letters across English and Bahasa Indonesia — with streaks, trophies, and unlockable themes.</p>
                     <div class="card-links">
-                        <a href="kata_word/index.html">View Game Info</a>
+                        <a href="kata_word/play.html" class="card-play">▶ Play</a>
+                        <a href="kata_word/index.html" class="card-info">About</a>
+                        <!-- READY, BUT NOT LIVE: Kata·Word's listing answers 404 today. Delete the
+                             two comment markers below on the day it goes live, and confirm the
+                             URL really resolves before pushing. -->
+                        <!--
+                        <a href="https://play.google.com/store/apps/details?id=id.artivy.wordle"
+                           class="card-store" target="_blank" rel="noopener"
+                           aria-label="Get Kata·Word on Google Play">
+                            <img src="assets/google-play-badge.png" alt="Get it on Google Play">
+                        </a>
+                        -->
                     </div>
                 </div>
             </div>
@@ -114,7 +138,17 @@
                     <h3>StackO!</h3>
                     <p>A neon isometric block stacker. Tap to drop each sliding slab — miss and the overhang is sliced off, so the next one is narrower. Three modes, gems, and unlockable neon themes.</p>
                     <div class="card-links">
-                        <a href="stacko/index.html">View Game Info</a>
+                        <a href="stacko/index.html" class="card-info">About</a>
+                        <!-- READY, BUT NOT LIVE: StackO!'s listing answers 404 today. Delete the
+                             two comment markers below on the day it goes live, and confirm the
+                             URL really resolves before pushing. -->
+                        <!--
+                        <a href="https://play.google.com/store/apps/details?id=id.artivy.stacko"
+                           class="card-store" target="_blank" rel="noopener"
+                           aria-label="Get StackO! on Google Play">
+                            <img src="assets/google-play-badge.png" alt="Get it on Google Play">
+                        </a>
+                        -->
                     </div>
                 </div>
             </div>
@@ -126,7 +160,18 @@
                     <h3>2048</h3>
                     <p>The sliding-tile classic in warm ochre on ink. Swipe to slide the whole board; equal tiles merge and double. Hitting 2048 is the start, not the end — undo a slip, chase your own top-10, and play in English or Bahasa Indonesia.</p>
                     <div class="card-links">
-                        <a href="2048/index.html">View Game Info</a>
+                        <a href="2048/play.html" class="card-play">▶ Play</a>
+                        <a href="2048/index.html" class="card-info">About</a>
+                        <!-- READY, BUT NOT LIVE: 2048's listing answers 404 today. Delete the
+                             two comment markers below on the day it goes live, and confirm the
+                             URL really resolves before pushing. -->
+                        <!--
+                        <a href="https://play.google.com/store/apps/details?id=id.artivy.puzzle2048"
+                           class="card-store" target="_blank" rel="noopener"
+                           aria-label="Get 2048 on Google Play">
+                            <img src="assets/google-play-badge.png" alt="Get it on Google Play">
+                        </a>
+                        -->
                     </div>
                 </div>
             </div>
@@ -138,7 +183,18 @@
                     <h3>Rekta</h3>
                     <p>Shikaku in cold neon. Drag to cut the grid into rectangles — each holds one number, and that number is how many cells it covers. Three grid sizes, each with its own endless run, and every level is the same puzzle on every device.</p>
                     <div class="card-links">
-                        <a href="rekta/index.html">View Game Info</a>
+                        <a href="rekta/play.html" class="card-play">▶ Play</a>
+                        <a href="rekta/index.html" class="card-info">About</a>
+                        <!-- READY, BUT NOT LIVE: Rekta's listing answers 404 today. Delete the
+                             two comment markers below on the day it goes live, and confirm the
+                             URL really resolves before pushing. -->
+                        <!--
+                        <a href="https://play.google.com/store/apps/details?id=id.artivy.rekta"
+                           class="card-store" target="_blank" rel="noopener"
+                           aria-label="Get Rekta on Google Play">
+                            <img src="assets/google-play-badge.png" alt="Get it on Google Play">
+                        </a>
+                        -->
                     </div>
                 </div>
             </div>
