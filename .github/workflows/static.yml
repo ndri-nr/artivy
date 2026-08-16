@@ -33,6 +33,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      # The game pages are grouped under games/ in the repo for tidiness, but
+      # every shipped app has /artivy/<game>/privacy-policy.html hard-coded in
+      # its binary. Flatten them back to the root so the published URLs never
+      # move. Deleting this step 404s the legal links in five released games.
+      - name: Flatten games/ to the site root
+        run: cp -R games/. . && rm -rf games
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
