@@ -408,6 +408,16 @@ restore();
 
 if (!isPersistent()) document.getElementById('warning').hidden = false;
 
-/* Observing fires once straight away, and that first call is what draws the opening board.
-   Safe from feedback: `measure` writes --cell, which the board's own size does not depend on. */
+/*
+ * Draw once here, and let the observer handle every change after that.
+ *
+ * Observing does normally fire straight away, and this used to rely on that for the opening
+ * board — but a ResizeObserver only delivers while the document is being rendered. In a
+ * background tab, a prerender, or anything else that defers rendering, the callback simply
+ * does not arrive and the board stays empty. A blank board is the worst possible failure, and
+ * it costs one call to rule out.
+ *
+ * Safe from feedback: `measure` writes --cell, which the board's own size does not depend on.
+ */
+measure();
 new ResizeObserver(measure).observe(board);

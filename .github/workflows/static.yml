@@ -37,6 +37,21 @@ jobs:
       # every shipped app has /artivy/<game>/privacy-policy.html hard-coded in
       # its binary. Flatten them back to the root so the published URLs never
       # move. Deleting this step 404s the legal links in five released games.
+      # A play page and its script are separate files with separate cache lifetimes, so a
+      # browser can hold a new play.html beside a play.js from the previous deploy. When a
+      # change spans both — a button removed from the HTML that the old script still reaches
+      # for at boot — that pair throws and the game is a blank board. Safari holds it longest.
+      #
+      # Stamping the commit time into the asset URLs makes the pair inseparable: whichever
+      # page a browser has, it asks for the assets that shipped with it. Done here rather than
+      # by hand because a version you have to remember to bump is one you will forget on the
+      # deploy that needed it.
+      - name: Stamp the asset version
+        run: |
+          STAMP=$(git log -1 --format=%ct)
+          grep -rl '?v=BUILD' games | xargs -r sed -i "s/?v=BUILD/?v=$STAMP/g"
+          echo "stamped v=$STAMP"
+          ! grep -rq '?v=BUILD' games
       - name: Flatten games/ to the site root
         run: cp -R games/. . && rm -rf games
       - name: Upload artifact
