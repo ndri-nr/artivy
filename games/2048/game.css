@@ -1,0 +1,187 @@
+/*
+ * 2048's own look. Geometry and type only — tile colours are applied from model data in
+ * play.js, because the palette is indexed by the tile's exponent and a stylesheet cannot
+ * index anything.
+ *
+ * The palette is the Android build's: warm ochre on ink, flat surfaces, no gradients and
+ * no glow on anything the player is looking at.
+ */
+
+.g2048 {
+    --ink: #15120f;
+    --board: #1d1814;
+    --ochre: #d98e3e;
+    --text-light: #f0e7da;
+    --text-dark: #241d17;
+    --muted: #9a8b7a;
+}
+
+.g2048 .play-title {
+    color: var(--ink);
+}
+
+.g2048 .score-card {
+    background: var(--ink);
+    color: var(--text-light);
+    border-radius: 10px;
+    padding: 6px 12px;
+    min-width: 74px;
+    text-align: center;
+    line-height: 1.15;
+}
+
+.g2048 .score-label {
+    display: block;
+    font-size: 0.62rem;
+    letter-spacing: 0.09em;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+.g2048 .score-value {
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+}
+
+.g2048 .play-board {
+    --board-max: 520px;
+    background: var(--board);
+    border-radius: 14px;
+}
+
+.g2048 .cell,
+.g2048 .tile {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--cell, 0px);
+    height: var(--cell, 0px);
+    border-radius: 8px;
+}
+
+.g2048 .cell {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.g2048 .tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    /* Only the slide is animated. Colour changes on merge, and fading that too reads as
+       lag rather than polish. */
+    transition: transform 110ms cubic-bezier(0.25, 0.8, 0.35, 1);
+    will-change: transform;
+}
+
+/* Set while the board is being restored or resized, so nothing slides in from the corner. */
+.g2048 .play-board.no-anim .tile {
+    transition: none;
+}
+
+.g2048 .tile.spawn {
+    animation: g2048-spawn 130ms ease-out;
+}
+
+.g2048 .tile.merge {
+    animation: g2048-merge 130ms ease-out;
+}
+
+@keyframes g2048-spawn {
+    from {
+        opacity: 0;
+        scale: 0.55;
+    }
+}
+
+@keyframes g2048-merge {
+    50% {
+        scale: 1.14;
+    }
+}
+
+.g2048 .play-hint {
+    text-align: center;
+    color: #55606f;
+    font-size: 0.82rem;
+    margin: 0;
+}
+
+.g2048 .play-warning {
+    text-align: center;
+    color: #8a3d2a;
+    background: rgba(255, 233, 225, 0.9);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* Win / game-over card, over the board rather than as a platform dialog. */
+.g2048 .overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 18px;
+    text-align: center;
+    background: rgba(21, 18, 15, 0.9);
+    color: var(--text-light);
+    border-radius: 14px;
+    z-index: 2;
+}
+
+.g2048 .overlay[hidden] {
+    display: none;
+}
+
+.g2048 .overlay h2 {
+    font-size: 1.5rem;
+    color: var(--ochre);
+    margin: 0;
+}
+
+.g2048 .overlay p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.g2048 .overlay .play-button {
+    background: var(--ochre);
+    border-color: transparent;
+    color: var(--ink);
+}
+
+.g2048 .overlay .play-button.ghost {
+    background: transparent;
+    border-color: rgba(240, 231, 218, 0.35);
+    color: var(--text-light);
+}
+
+.g2048 .scores {
+    list-style: none;
+    margin: 4px 0 0 0;
+    padding: 0;
+    font-size: 0.82rem;
+    color: var(--muted);
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 2px 18px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* display:grid above would otherwise beat the [hidden] attribute. */
+.g2048 .scores[hidden] {
+    display: none;
+}
+
+.g2048 .scores li.current {
+    color: var(--ochre);
+    font-weight: 700;
+}

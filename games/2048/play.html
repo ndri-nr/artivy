@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Play 2048 in your browser. Slide the tiles, merge equal numbers, keep going past 2048. No account, no download, progress saved on your device.">
+    <meta name="theme-color" content="#15120f">
+    <title>Play 2048 - Artivy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/play.css">
+    <link rel="stylesheet" href="game.css">
+</head>
+<!--
+  main.js is deliberately not loaded here. It runs a Three.js particle field behind the
+  page, which is a continuous repaint the board would be competing with for frames.
+-->
+<body class="playing g2048">
+    <div class="play-bar">
+        <a class="play-home" href="../index.html">
+            <img src="../assets/logo.png" alt="Artivy">
+        </a>
+        <span class="play-spacer"></span>
+        <a class="play-quiet" href="index.html" data-t="about">About</a>
+        <a class="play-quiet" href="privacy-policy.html" data-t="privacy">Privacy</a>
+        <a class="play-quiet" href="terms-and-conditions.html" data-t="terms">Terms</a>
+    </div>
+
+    <main class="play-stage" id="stage">
+        <div class="play-panel">
+            <div class="play-row">
+                <h1 class="play-title">2048</h1>
+                <span class="play-spacer"></span>
+                <div class="score-card">
+                    <span class="score-label" data-t="score">SCORE</span>
+                    <span class="score-value" id="score">0</span>
+                </div>
+                <div class="score-card">
+                    <span class="score-label" data-t="best">BEST</span>
+                    <span class="score-value" id="best">0</span>
+                </div>
+            </div>
+
+            <div class="play-row">
+                <button class="play-button" id="new" data-t="newGame">New game</button>
+                <button class="play-button" id="undo" data-t="undo" disabled>Undo</button>
+                <span class="play-spacer"></span>
+                <button class="play-button" id="lang" aria-label="Bahasa">ID</button>
+            </div>
+
+            <p class="play-hint" id="hint" data-t="hint">Swipe, or use the arrow keys.</p>
+            <p class="play-warning" id="warning" hidden data-t="noStorage">
+                This browser is not letting the page save, so this run will not survive a reload.
+            </p>
+        </div>
+
+        <!--
+          The board is a sibling of the panel, not a child of it. On a landscape phone the
+          stage turns into a row and the two sit side by side, which is only possible if
+          they are siblings.
+        -->
+        <div class="play-board" id="board" role="application" aria-label="2048 board" tabindex="0">
+            <div class="overlay" id="overlay" hidden>
+                <h2 id="overlay-title"></h2>
+                <p id="overlay-text"></p>
+                <ol class="scores" id="overlay-scores"></ol>
+                <div class="play-row">
+                    <button class="play-button" id="overlay-primary"></button>
+                    <button class="play-button ghost" id="overlay-secondary" hidden></button>
+                </div>
+            </div>
+        </div>
+
+        <!--
+          Ad slot, empty on purpose. There is no AdSense account yet; the height is reserved
+          so switching ads on later does not move the board. Whatever goes in here must stay
+          clear of the board — a missed swipe landing on an ad is an accidental click, and
+          those close publisher accounts.
+        -->
+        <div class="play-ad" id="ad"></div>
+    </main>
+
+    <script type="module" src="play.js"></script>
+</body>
+</html>

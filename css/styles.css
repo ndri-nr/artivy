@@ -527,3 +527,31 @@ footer {
     .reveal { opacity: 1; transform: none; }
     .hero-content { opacity: 1; }
 }
+
+/*
+ * "Play in your browser" — the primary action on a game page, above the store links.
+ * Shared rather than per-game: every games/<slug>/index.html gets the same button.
+ */
+.play-now {
+    margin-top: 30px;
+}
+
+.play-now a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 30px;
+    border-radius: 14px;
+    background: var(--accent-deep);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.05rem;
+    box-shadow: var(--glass-shadow);
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.play-now a:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}

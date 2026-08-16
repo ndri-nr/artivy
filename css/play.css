@@ -1,0 +1,229 @@
+/*
+ * Shared layout for the playable browser versions, loaded on every games/<slug>/play.html
+ * alongside styles.css. Everything game-specific (tile colours, board texture) belongs in
+ * the game's own file — this one only decides how a board, a score row and an ad slot share
+ * a screen without any of them scrolling out of reach.
+ *
+ * Sizing rule: the board is a square that fits the smaller of the width left over and the
+ * height left over. `dvh` rather than `vh` on purpose — mobile browser chrome slides away as
+ * you scroll, and `vh` measures the taller state, so a `vh`-sized board is clipped for as
+ * long as the toolbar is showing.
+ */
+
+body.playing {
+    /*
+     * Height of everything on the page that is not the board: the top bar, the score and
+     * button rows, the hint, and the ad slot. The board is whatever is left over, so this
+     * single number is what decides how large it can be.
+     *
+     * It is deliberately a declared constant rather than something JavaScript measures.
+     * Measuring meant reading the layout on load and again on resize, and both readings were
+     * taken while the layout was still moving — the web font had not swapped in yet, or the
+     * viewport was mid-resize — so the board came out sized for a page that no longer
+     * existed. A constant cannot be stale. If it is a little generous the board is a little
+     * small, which is a much cheaper way to be wrong.
+     */
+    --play-chrome: 310px;
+
+    /* No pull-to-refresh and no rubber-band while a finger is dragging tiles around. The page
+       can still scroll: if the constant above turns out to be too small on some screen, the
+       overflow should be reachable rather than clipped. */
+    overscroll-behavior: none;
+}
+
+body.playing::before {
+    /* The home page's drifting gradient is a continuous repaint. It is not worth the frames
+       while a game is running, so keep the colour and drop the animation. */
+    animation: none;
+}
+
+.play-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px max(14px, env(safe-area-inset-left)) 10px max(14px, env(safe-area-inset-right));
+}
+
+.play-bar .play-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #2d3748;
+    font-weight: 700;
+}
+
+.play-bar .play-home img {
+    height: 26px;
+    width: auto;
+    display: block;
+}
+
+.play-bar .play-spacer {
+    flex: 1;
+}
+
+.play-bar a.play-quiet {
+    color: #55606f;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 8px;
+}
+
+.play-bar a.play-quiet:hover {
+    background: rgba(255, 255, 255, 0.55);
+}
+
+/* The whole game, sized as one column that never exceeds the viewport. */
+.play-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 0 max(12px, env(safe-area-inset-left)) max(12px, env(safe-area-inset-bottom))
+        max(12px, env(safe-area-inset-right));
+}
+
+.play-panel {
+    width: min(520px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.play-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.play-row .play-spacer {
+    flex: 1;
+}
+
+.play-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+.play-button {
+    appearance: none;
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
+    color: #2d3748;
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 9px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    /* A game is a rapid-tap surface: without this a double tap zooms the page. */
+    touch-action: manipulation;
+}
+
+.play-button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.play-button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.play-button:focus-visible {
+    outline: 3px solid var(--accent-deep);
+    outline-offset: 2px;
+}
+
+/*
+ * The board: a square bounded by whichever runs out first, the width or the height.
+ * `dvh` rather than `vh` — mobile browser chrome slides away as you scroll and `vh` measures
+ * the taller state, so a `vh`-sized board is clipped for as long as the toolbar is showing.
+ * A game sets --board-max for its own sensible ceiling.
+ */
+.play-board {
+    position: relative;
+    width: min(var(--board-max, 520px), 100%, calc(100dvh - var(--play-chrome)));
+    aspect-ratio: 1;
+    margin: 0 auto;
+    /* Swipes belong to the game, not to the page. Without this the first drag scrolls. */
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* The board is focusable so a keyboard player has somewhere to land, but a tap should not
+   draw a focus ring around the whole game. `:focus-visible` is the distinction. */
+.play-board:focus {
+    outline: none;
+}
+
+.play-board:focus-visible {
+    outline: 3px solid var(--accent-deep);
+    outline-offset: 3px;
+}
+
+/*
+ * Ad slot. Empty until an AdSense account exists — the height is reserved now so that
+ * switching ads on later does not shove the board down the page on first paint, and so
+ * the gap between the board and the ad is designed rather than discovered.
+ *
+ * The gap is the point: a game is the worst possible surround for an ad, because a missed
+ * swipe that lands on one is an accidental click, and enough of those close a publisher
+ * account. Nothing here may sit within a thumb's width of the board.
+ */
+.play-ad {
+    width: min(520px, 100%);
+    min-height: 100px;
+    margin: 4px auto 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.play-ad:empty::after {
+    content: "";
+}
+
+/*
+ * Landscape phones. Height is the binding constraint, so the chrome moves beside the board
+ * rather than stacking above it, and the ad slot steps out entirely — there is no room for
+ * it that is not either on top of the board or under a thumb.
+ */
+@media (orientation: landscape) and (max-height: 560px) {
+    body.playing {
+        /* Only the top bar is above the board now, so almost the whole height is available. */
+        --play-chrome: 70px;
+    }
+
+    .play-stage {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+    }
+
+    .play-panel {
+        width: auto;
+        max-width: 280px;
+    }
+
+    .play-title {
+        font-size: 1.2rem;
+    }
+
+    .play-ad {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .play-board * {
+        transition: none !important;
+    }
+}

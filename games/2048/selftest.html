@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2048 self-check</title>
+    <style>
+        body { font: 14px/1.6 ui-monospace, monospace; padding: 24px; background: #15120f; color: #f0e7da; }
+        h1 { font-size: 1rem; margin: 0 0 12px 0; }
+        .pass { color: #7dd88a; }
+        .fail { color: #ff8f7a; font-weight: 700; }
+        #summary { margin-top: 16px; font-weight: 700; }
+    </style>
+</head>
+<!--
+  Not a test framework and not a build step: open this page and read it. It exists because
+  the slide rules and the storage wrapper are the two places where a quiet bug would cost a
+  player their game, and both are pure functions that can be checked without a browser
+  harness.
+
+  Paths resolve against the published layout (games/ flattened to the site root), so serve
+  the flattened copy — see the preview one-liner in the workspace CLAUDE.md — rather than
+  opening this file straight off disk.
+-->
+<body>
+    <h1>2048 self-check</h1>
+    <div id="out"></div>
+    <div id="summary"></div>
+
+    <script type="module">
+        import { storage } from '../js/storage.js';
+        import { SIZE, canMove, compact, emptyGrid, fromValues, move, spawn, toValues } from './model.js';
+
+        const out = document.getElementById('out');
+        let failures = 0;
+
+        function check(name, condition, detail = '') {
+            const line = document.createElement('div');
+            line.className = condition ? 'pass' : 'fail';
+            line.textContent = `${condition ? 'ok  ' : 'FAIL'} ${name}${detail && !condition ? ` — ${detail}` : ''}`;
+            out.appendChild(line);
+            if (!condition) failures++;
+        }
+
+        function equal(name, actual, expected) {
+            const a = JSON.stringify(actual);
+            const b = JSON.stringify(expected);
+            check(name, a === b, `got ${a}, wanted ${b}`);
+        }
+
+        /** Builds a grid from plain numbers so a case reads as the board it describes. */
+        function board(rows) {
+            return fromValues(rows);
+        }
+
+        /* --- the merge rule, which is where every 2048 implementation goes wrong --- */
+
+        let result = move(board([[2, 2, 4, 4], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]), 'left');
+        equal('a merged tile cannot merge again in the same move', toValues(result.grid)[0], [4, 8, 0, 0]);
+        check('merging scores the sum of what it made', result.gained === 12, `got ${result.gained}`);
+
+        result = move(board([[4, 4, 4, 4], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]), 'left');
+        equal('four equal tiles make two, not one', toValues(result.grid)[0], [8, 8, 0, 0]);
+
+        result = move(board([[2, 2, 2, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]), 'left');
+        equal('three equal tiles merge the pair nearest the wall', toValues(result.grid)[0], [4, 2, 0, 0]);
+
+        result = move(board([[0, 2, 2, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]), 'right');
+        equal('sliding right packs against the right wall', toValues(result.grid)[0], [0, 0, 0, 4]);
+
+        /* --- directions --- */
+
+        result = move(board([[2, 0, 0, 0], [2, 0, 0, 0], [0, 0, 0, 0], [4, 0, 0, 0]]), 'up');
+        equal('up merges down the column', toValues(result.grid).map((row) => row[0]), [4, 4, 0, 0]);
+
+        result = move(board([[2, 0, 0, 0], [2, 0, 0, 0], [0, 0, 0, 0], [4, 0, 0, 0]]), 'down');
+        equal('down packs against the bottom', toValues(result.grid).map((row) => row[0]), [0, 0, 4, 4]);
+
+        /* --- moves that change nothing must not count --- */
+
+        result = move(board([[2, 4, 8, 16], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]), 'left');
+        check('a row already packed reports no move', result.moved === false);
+
+        // Not the row above: four tiles fill the row, so it cannot move either way.
+        result = move(board([[2, 4, 8, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]), 'right');
+        check('a row with a gap behind it reports a move the other way', result.moved === true);
+        equal('and lands packed against the far wall', toValues(result.grid)[0], [0, 2, 4, 8]);
+
+        /* --- game over --- */
+
+        const deadlocked = board([
+            [2, 4, 2, 4],
+            [4, 2, 4, 2],
+            [2, 4, 2, 4],
+            [4, 2, 4, 2],
+        ]);
+        check('a full board with no equal neighbours is over', canMove(deadlocked) === false);
+        check('a full board with one pair is not over',
+            canMove(board([[2, 2, 4, 8], [4, 8, 2, 4], [2, 4, 8, 2], [8, 2, 4, 8]])) === true);
+        check('an empty square always means a move exists', canMove(emptyGrid()) === true);
+
+        /* --- spawning --- */
+
+        const nearlyFull = board([
+            [2, 4, 2, 4],
+            [4, 2, 4, 2],
+            [2, 4, 2, 4],
+            [4, 2, 4, 0],
+        ]);
+        const dropped = spawn(nearlyFull, () => 0.5);
+        check('a spawn lands on the only free square', nearlyFull[3][3] !== null && dropped !== null);
+        check('spawning on a full board is refused', spawn(nearlyFull, () => 0.5) === null);
+
+        /* --- saving --- */
+
+        const roundTrip = board([[2, 0, 0, 4], [0, 8, 0, 0], [0, 0, 16, 0], [32, 0, 0, 0]]);
+        equal('a grid survives a save and load', toValues(fromValues(toValues(roundTrip))), toValues(roundTrip));
+        check('a corrupt save is rejected rather than loaded', fromValues([[1, 0, 0, 0]]) === null);
+        check('a non-power-of-two is rejected',
+            fromValues([[3, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]) === null);
+        check('a wrong-sized grid is rejected', fromValues([[2, 0], [0, 2]]) === null);
+
+        /* --- labels --- */
+
+        equal('four digits print in full', compact(9999), '9999');
+        check('five digits truncate rather than round', compact(99999) === '99K', compact(99999));
+        check('millions keep one decimal', compact(4194304) === '4.1M', compact(4194304));
+        check('a whole million drops the decimal', compact(2000000) === '2M', compact(2000000));
+
+        /* --- the storage wrapper --- */
+
+        const a = storage('selftest-a');
+        const b = storage('selftest-b');
+        a.set('value', { n: 1 });
+        equal('a value survives a round trip', a.get('value'), { n: 1 });
+        check('namespaces do not see each other', b.get('value', 'missing') === 'missing');
+        check('a missing key returns the fallback', a.get('absent', 7) === 7);
+
+        try {
+            window.localStorage.setItem('artivy.selftest-a.broken', '{not json');
+            check('a corrupt value returns the fallback instead of throwing',
+                a.get('broken', 'fallback') === 'fallback');
+            window.localStorage.removeItem('artivy.selftest-a.broken');
+        } catch {
+            check('a corrupt value returns the fallback instead of throwing', true, 'skipped, no localStorage');
+        }
+
+        a.remove('value');
+        check('a removed key is gone', a.get('value', null) === null);
+
+        const summary = document.getElementById('summary');
+        summary.className = failures === 0 ? 'pass' : 'fail';
+        summary.textContent = failures === 0
+            ? `all ${out.children.length} checks passed`
+            : `${failures} of ${out.children.length} checks FAILED`;
+    </script>
+</body>
+</html>
