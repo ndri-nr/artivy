@@ -58,11 +58,15 @@
         .game-links-grid {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 40px;
-            flex-wrap: wrap;
+            gap: 14px;
+            /* Close under the play button: these three are one block of actions, and 40px
+               here read as three unrelated things that happened to be stacked. */
+            margin-top: 14px;
         }
         .game-link-card {
+            /* Equal halves of the row, whatever the label length. */
+            flex: 1 1 0;
+            text-align: center;
             background: var(--secondary-color);
             padding: 15px 30px;
             border-radius: 30px;
@@ -148,6 +152,13 @@
         <h1>Rekta</h1>
         <p>A Shikaku puzzle in cold neon. Drag across the grid to cut out a rectangle: each one must hold exactly one number, and that number is how many cells it covers. Fill the grid and the level is done. Levels never run out — each grid size has its own endless run, and every level is the same puzzle on every device. Fully offline.</p>
 
+        <p class="play-now"><a href="play.html">▶ Play in your browser</a></p>
+
+        <div class="game-links-grid">
+            <a href="privacy-policy.html" class="game-link-card">Privacy Policy</a>
+            <a href="terms-and-conditions.html" class="game-link-card">Terms &amp; Conditions</a>
+        </div>
+
         <!-- READY, BUT NOT LIVE: Rekta is not published yet, and
              play.google.com/store/apps/details?id=id.artivy.rekta answers 404
              today — a badge leading to Google's "item not found" page is worse
@@ -161,13 +172,6 @@
             <img src="../assets/google-play-badge.png" alt="Get it on Google Play">
         </a>
         -->
-
-        <p class="play-now"><a href="play.html">▶ Play in your browser</a></p>
-
-        <div class="game-links-grid">
-            <a href="privacy-policy.html" class="game-link-card">Privacy Policy</a>
-            <a href="terms-and-conditions.html" class="game-link-card">Terms &amp; Conditions</a>
-        </div>
     </div>
 
     <!-- Footer -->

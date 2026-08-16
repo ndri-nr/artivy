@@ -261,16 +261,37 @@ h1, h2, h3 {
    Hover lifts the badge without touching the artwork itself — no scale, no
    filter, nothing that would count as modifying it. Defined once here so the
    game pages cannot drift apart. */
+/*
+ * The store badge, last in the block of actions and as wide as the ones above it.
+ *
+ * The asset was cropped to the badge itself. Google ships it with 41px of transparent margin
+ * on every side — their required clear space, a quarter of the badge height, baked into the
+ * file — and stretching *that* to the row width meant a badge drawn at 84% of the box it sat
+ * in, so it read as small and as not lining up with the buttons above it. The clear space is
+ * spacing, not part of the mark, and it is supplied below instead.
+ *
+ * `height: auto` keeps the proportions their guidelines require.
+ */
 .play-badge {
-    display: inline-block;
-    margin-top: 10px;
+    display: block;
+    /* A quarter of the rendered badge height, which is the clear space Google asks for. The
+       badge is ~1/3.36 of its width, so a quarter of that is ~7.4%. */
+    margin-top: 7.4%;
+    /*
+     * Full width is what a phone wants, and it is where this was asked for. Left uncapped it
+     * also applies to a 716px desktop column, where the badge comes out 213px tall — four
+     * times the play button above it, which stops reading as a badge and starts reading as a
+     * banner. The cap only engages past ~380px, so a phone is untouched.
+     */
+    max-width: min(100%, 380px);
+    margin-inline: auto;
     transition: transform 0.3s ease;
 }
 
 .play-badge img {
     display: block;
-    height: 80px;
-    width: auto;
+    width: 100%;
+    height: auto;
 }
 
 .play-badge:hover {
@@ -580,12 +601,22 @@ footer {
  * "Play in your browser" — the primary action on a game page, above the store links.
  * Shared rather than per-game: every games/<slug>/index.html gets the same button.
  */
-.play-now {
+/*
+ * Two class names, not one. .play-now is a <p> inside .game-info-container, and each game page
+ * carries an inline `.game-info-container p { margin-bottom: 30px }` — higher specificity, so a
+ * plain `.play-now` loses however late it is declared. That 30px sat on top of the grid's own
+ * margin and put twice as much space above the legal links as below them.
+ */
+.game-info-container .play-now {
     margin-top: 30px;
+    margin-bottom: 0;
 }
 
 .play-now a {
-    display: inline-flex;
+    /* The whole row: playing here is the primary action on the page, and the two legal links
+       and the store badge below it are all full-width too. */
+    display: flex;
+    justify-content: center;
     align-items: center;
     gap: 8px;
     padding: 14px 30px;
@@ -609,6 +640,23 @@ footer {
 .card-links {
     gap: 10px;
     flex-wrap: wrap;
+}
+
+/* Play and About split the row evenly. Sized to their labels they came out lopsided — "About"
+   is half the width of "▶ Play" — which read as one real button beside an afterthought. */
+.card-play,
+.card-info {
+    flex: 1 1 0;
+    text-align: center;
+    padding-inline: 0 !important;
+    box-sizing: border-box;
+    /*
+     * About carries a 1px border and Play does not, and that alone made the two halves 2px
+     * apart: a border-box flex basis cannot resolve below the border it contains, so About
+     * started 2px ahead and kept the lead through the even split of the free space. A
+     * transparent border on Play costs nothing and makes the two identical boxes.
+     */
+    border: 1px solid transparent;
 }
 
 /* Play is the primary action on the front page, because four of these are playable in the
@@ -710,9 +758,16 @@ footer {
 }
 
 .card-store img {
-    height: 44px;
-    width: auto;
-    display: inline-block;
+    /* Full width of the card, like .play-badge on the game pages. */
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* The clear space the cropped asset no longer carries — a quarter of the badge height, and the
+   badge is 1/3.36 of its width. The row's own 10px gap is not enough on its own. */
+.card-store {
+    margin-top: 4%;
 }
 
 .card-store:hover {
