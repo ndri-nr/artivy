@@ -175,6 +175,10 @@ function say(message) {
     statusEl.textContent = message;
 }
 
+/* Dropped as soon as the flash is over. Left on, it would fire again on any tile rebuilt
+   later — switching word length, for instance — at a moment nobody asked for it. */
+boardEl.addEventListener('animationend', () => boardEl.classList.remove('refreshed'));
+
 /* ---------- the game ---------- */
 
 function shake() {
@@ -306,7 +310,15 @@ async function start(nextWord = false) {
     persist();
 
     if (finished) showSheet(guesses.includes(answer));
-    else say('Guess the word in six tries.');
+    else if (nextWord) {
+        // Pressing New word on a board with nothing on it looks like nothing happened, since
+        // an empty grid is an empty grid whichever word is behind it. Say so, and flash the
+        // board, or the player presses it again wondering whether it took.
+        say(`New ${length}-letter word. Six tries.`);
+        boardEl.classList.remove('refreshed');
+        void boardEl.offsetWidth;
+        boardEl.classList.add('refreshed');
+    } else say('Guess the word in six tries.');
 }
 
 /* ---------- input ---------- */

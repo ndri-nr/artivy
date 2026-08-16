@@ -5,11 +5,11 @@
  * Shikaku: cut the grid into rectangles so that each rectangle holds exactly one clue, and
  * that clue equals the number of cells the rectangle covers.
  *
- * Levels are generated from their number rather than stored, so the run has no end and
- * level 40 is the same board every time it is opened. It is *not* the same board as level 40
- * of the Android app: matching that would mean reproducing java.util.Random's exact bit
- * sequence, which would pin this file to that one forever for no player's benefit. These are
- * separate saves and separate players.
+ * Levels are generated from their number rather than stored, so the run has no end and level
+ * 40 comes back as the same board every time it is opened — unless the player asks for
+ * another, which is what `variant` is for. It is *not* the same board as level 40 of the
+ * Android app: matching that would mean reproducing java.util.Random's exact bit sequence,
+ * which would pin this file to that one forever for no player's benefit.
  */
 
 /** Board shapes, and the largest clue each may hand out before the level bonus. */
@@ -24,9 +24,9 @@ export function difficultyFor(key) {
 }
 
 /**
- * A small seeded generator (mulberry32). Math.random cannot be seeded, and a level that is
- * generated from its number needs a stream that can be replayed — that is what lets a hint
- * recompute the answer instead of the board carrying one around.
+ * A small seeded generator (mulberry32). Math.random cannot be seeded, and a level generated
+ * from its number needs a stream that can be replayed — otherwise leaving a level and coming
+ * back would hand out a different puzzle.
  */
 export function rng(seed) {
     let state = seed >>> 0;
@@ -43,10 +43,16 @@ export function rng(seed) {
  * Seeds spread apart by odd constants. Levels one apart would otherwise start the generator
  * in near-identical states, and the opening draws — which decide the shape of the top-left
  * corner — would visibly rhyme from one level to the next.
+ *
+ * `variant` is how Regenerate hands out a different puzzle without moving the player forward.
+ * The level number is the progress; the variant is only which of its boards you are looking
+ * at, and it goes back to zero the moment the level changes.
  */
-function seedFor(difficulty, level) {
+function seedFor(difficulty, level, variant) {
     const index = DIFFICULTIES.indexOf(difficulty);
-    return (Math.imul(index + 1, 0x9e3779b1) + Math.imul(level, 0x85ebca77)) >>> 0;
+    return (Math.imul(index + 1, 0x9e3779b1)
+        + Math.imul(level, 0x85ebca77)
+        + Math.imul(variant, 0xc2b2ae35)) >>> 0;
 }
 
 /**
@@ -232,14 +238,14 @@ export function partition(cols, rows, maxArea, random) {
  * fits the same clues, and the game accepts any that does — which is also why placing a block
  * overwrites what it overlaps instead of refusing.
  */
-export function solutionFor(difficulty, level) {
+export function solutionFor(difficulty, level, variant = 0) {
     return partition(difficulty.cols, difficulty.rows, maxAreaFor(difficulty, level),
-        rng(seedFor(difficulty, level)));
+        rng(seedFor(difficulty, level, variant)));
 }
 
 /** A fresh board for a numbered level: the clue grid, with no blocks drawn on it yet. */
-export function boardFor(difficulty, level) {
-    const random = rng(seedFor(difficulty, level));
+export function boardFor(difficulty, level, variant = 0) {
+    const random = rng(seedFor(difficulty, level, variant));
     const blocks = partition(difficulty.cols, difficulty.rows,
         maxAreaFor(difficulty, level), random);
 

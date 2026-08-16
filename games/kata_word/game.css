@@ -158,6 +158,18 @@
     background: var(--absent);
 }
 
+/* A new word leaves the grid looking exactly as it did, so the board says so itself. */
+.gkata .play-board.refreshed .tile {
+    animation: kata-refresh 420ms ease-out;
+}
+
+@keyframes kata-refresh {
+    from {
+        border-color: var(--present);
+        background: #fdf6dd;
+    }
+}
+
 .gkata .row-invalid {
     animation: kata-shake 320ms;
 }

@@ -38,6 +38,9 @@ const difficultyRow = document.getElementById('difficulty');
 
 let difficulty = difficultyFor(save.get('difficulty', 'easy'));
 let level = 1;
+/* Which of the current level's boards is on screen. Regenerate bumps it; changing level or
+   size puts it back to zero, because the variant belongs to the level, not to the player. */
+let variant = 0;
 let board = null;
 
 /* The clock counts up and has no limit: it starts on the first block, stops on the solve, and
@@ -107,6 +110,7 @@ function persist() {
     save.set('board', {
         difficulty: difficulty.key,
         level,
+        variant,
         blocks: board.blocks,
         elapsed: Math.round(elapsed + (startedAt === null ? 0 : now() - startedAt)),
     });
@@ -205,6 +209,7 @@ function renderDifficulties() {
             persist();
             difficulty = entry;
             level = save.get(`level.${entry.key}`, 1);
+            variant = 0;
             load();
         });
         difficultyRow.appendChild(button);
@@ -214,7 +219,7 @@ function renderDifficulties() {
 /* ---------- level flow ---------- */
 
 function load(restore = null) {
-    board = boardFor(difficulty, level);
+    board = boardFor(difficulty, level, variant);
     elapsed = restore ? (Number(restore.elapsed) || 0) : 0;
     startedAt = null;
 
@@ -234,6 +239,20 @@ function load(restore = null) {
 
 function nextLevel() {
     level += 1;
+    variant = 0;
+    load();
+}
+
+/**
+ * A different board at the same level number.
+ *
+ * Not a way past a puzzle: the level is the progress and it does not move, so the only way
+ * forward is still to solve one. This exists because a player who has stared at a grid long
+ * enough to dislike it should be able to swap it, not because they should be able to skip it.
+ * Distinct from Clear, which wipes the rectangles off the board that is already there.
+ */
+function regenerate() {
+    variant += 1;
     load();
 }
 
@@ -348,7 +367,7 @@ document.getElementById('clear').addEventListener('click', () => {
     persist();
 });
 
-document.getElementById('skip').addEventListener('click', nextLevel);
+document.getElementById('regenerate').addEventListener('click', regenerate);
 
 /* ---------- boot ---------- */
 
@@ -357,6 +376,9 @@ if (!isPersistent()) document.getElementById('warning').hidden = false;
 const saved = save.get('board', null);
 if (saved && typeof saved === 'object' && saved.difficulty === difficulty.key) {
     level = Number.isInteger(saved.level) && saved.level > 0 ? saved.level : 1;
+    // The variant has to come back with the level, or a reload swaps the board out from under
+    // a half-finished puzzle.
+    variant = Number.isInteger(saved.variant) && saved.variant >= 0 ? saved.variant : 0;
     load(saved);
 } else {
     level = save.get(`level.${difficulty.key}`, 1);
