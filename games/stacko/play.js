@@ -43,7 +43,6 @@ const canvas = document.getElementById('scene');
 const context = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
 const bestEl = document.getElementById('best');
-const statusEl = document.getElementById('status');
 const hintEl = document.getElementById('hint');
 const sheet = document.getElementById('sheet');
 const sheetTitle = document.getElementById('sheet-title');
@@ -204,8 +203,14 @@ function updateHud() {
     scoreEl.textContent = String(run.score);
 }
 
-function say(message) {
-    statusEl.textContent = message;
+/**
+ * The board's readout. One line, in one place: the instruction to begin, then what the last
+ * drop was worth. A player watching the slab should not have to look away from it to read the
+ * result of their own tap.
+ */
+function say(message, perfect = false) {
+    hintEl.textContent = message;
+    hintEl.classList.toggle('perfect', perfect);
 }
 
 function finish() {
@@ -221,14 +226,15 @@ function finish() {
         + `. You ${run.reason}.`;
     sheetAction.textContent = 'Play again';
     sheet.hidden = false;
-    say(`${run.reason}.`);
+    say(run.reason === 'missed the tower completely' ? 'Missed' : run.reason);
 }
 
 /* ---------- playing ---------- */
 
 function tap() {
     if (!run || run.over) return;
-    hintEl.classList.add('gone');
+    // The pulse is an invitation, and it has been accepted.
+    hintEl.classList.remove('idle');
 
     const result = drop(run);
     if (result.result === 'none') return;
@@ -270,9 +276,10 @@ function tap() {
     }
 
     if (result.result === 'perfect') {
-        say(run.combo > 1 ? `Perfect ×${run.combo}` : 'Perfect');
+        say(run.combo > 1 ? `Perfect ×${run.combo}` : 'Perfect', true);
     } else {
-        say(`${run.placed - 1} blocks`);
+        const blocks = run.placed - 1;
+        say(`${blocks} block${blocks === 1 ? '' : 's'}`);
     }
 
     if (result.finished) finish();
@@ -285,11 +292,12 @@ function start() {
     squash = null;
     cameraY = 0;
     sheet.hidden = true;
-    hintEl.classList.remove('gone');
+    hintEl.classList.add('idle');
+    hintEl.classList.remove('perfect');
 
     bestEl.textContent = String(Number(save.get('best', 0)) || 0);
     resize();
-    say('Line the slab up with the tower.');
+    say('Tap to drop');
 }
 
 /* ---------- sizing ---------- */
@@ -337,7 +345,7 @@ document.getElementById('restart').addEventListener('click', start);
 // what starts another, which is why that button is not on the card alone.
 document.getElementById('sheet-close').addEventListener('click', () => {
     sheet.hidden = true;
-    say('Run over. New run to play again.');
+    say('Run over');
 });
 
 /* ---------- boot ---------- */

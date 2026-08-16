@@ -15,8 +15,11 @@
     --text-primary: #eaf3ff;
     --text-secondary: #7fa0c8;
 
-    /* Measured by adding up the parts at 375px wide: bar, panel, ad slot and the gaps. */
-    --play-chrome-stacked: 300px;
+    /* Measured by adding up the parts at 375px wide — bar, panel, ad slot and the gaps —
+       which comes to 230, plus slack. It read 300 while the panel still carried a status
+       line; that line moved onto the board, and the board should get the height back rather
+       than leave 70px of nothing under the ad slot. */
+    --play-chrome-stacked: 236px;
 }
 
 body.gstacko {
@@ -191,30 +194,41 @@ body.gstacko::before {
 }
 
 /*
- * The one instruction the game needs, on the board where the player is looking rather than
- * in the panel above it. It goes as soon as they drop their first slab — an instruction that
- * outstays the moment it was needed is just something in the way.
+ * The board's readout: the one instruction to begin, then the block count and the streak.
+ * It lives here rather than in the panel because a player watching the slab should not have
+ * to look away from it to read what their own tap was worth.
+ *
+ * Only the opening line pulses. Once the run is under way the text changes on every drop, and
+ * a number that also breathes is harder to read, not livelier.
  */
 .gstacko .board-hint {
     position: absolute;
     left: 0;
     right: 0;
-    top: 34%;
+    /* High in the frame, clear of the tower. The tower's top is held around the middle by the
+       camera, so anything lower than this ends up reading through the slab. */
+    top: 8%;
     margin: 0;
     text-align: center;
     font-size: 1.05rem;
     font-weight: 800;
     letter-spacing: 0.06em;
-    color: rgba(234, 243, 255, 0.9);
-    text-shadow: 0 0 18px rgba(61, 224, 255, 0.75);
+    color: rgba(234, 243, 255, 0.72);
+    text-shadow: 0 0 18px rgba(4, 6, 15, 0.9);
     pointer-events: none;
-    animation: stacko-hint 1.8s ease-in-out infinite;
-    transition: opacity 0.3s ease;
+    transition: color 0.2s ease, text-shadow 0.2s ease;
 }
 
-.gstacko .board-hint.gone {
-    opacity: 0;
-    animation: none;
+.gstacko .board-hint.idle {
+    color: rgba(234, 243, 255, 0.92);
+    text-shadow: 0 0 18px rgba(61, 224, 255, 0.75);
+    animation: stacko-hint 1.8s ease-in-out infinite;
+}
+
+/* A perfect is the one thing worth shouting about, so it is the one thing that changes. */
+.gstacko .board-hint.perfect {
+    color: #fff;
+    text-shadow: 0 0 22px rgba(61, 224, 255, 0.95);
 }
 
 @keyframes stacko-hint {

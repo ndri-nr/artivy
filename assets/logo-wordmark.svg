@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 179 80" role="img" aria-label="Artivy">
+  <title>Artivy</title>
+  <!--
+    The wordmark on its own, for anywhere the tile would be redundant — a header that already
+    shows the mark, a footer, a wide banner.
+
+    Same letters as the wordmark half of logo.svg, copied rather than referenced: this file is
+    meant to be loaded through <img>, and an <img>-rendered SVG cannot fetch anything external,
+    so a <use href="logo.svg#word"> would resolve to nothing. Edit a letter here and in logo.svg
+    together.
+
+    Letters are stroked paths rather than text for the same reason — font-family="Nunito" would
+    fall back silently to whatever the visitor happens to have installed.
+
+    Geometry is monoline: x-height band y=35..69, bowls r=13, stroke 7, all in the untranslated
+    coordinates the group below shifts into view. Those three numbers are tied together — the
+    bowl's hole is 2r minus the stroke, so a heavier stroke or a smaller radius closes the 'a'
+    into a blob. Keep the hole at roughly half the x-height if you touch any of them.
+  -->
+  <defs>
+    <linearGradient id="ink" x1="112" y1="0" x2="280" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7048e8"/>
+      <stop offset="0.55" stop-color="#ff5f8f"/>
+      <stop offset="1" stop-color="#ff8a5b"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#fff" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+
+    <g id="word" fill="none" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+      <!-- a: circle bowl tangent to a full-height stem, the Quicksand shape the site already
+           sets its headings in. -->
+      <path d="M138 52a13 13 0 1 1-26 0 13 13 0 1 1 26 0"/>
+      <path d="M138 35v34"/>
+      <!-- r -->
+      <path d="M151 35v34"/>
+      <path d="M151 49a13 13 0 0 1 13-13"/>
+      <!-- t -->
+      <path d="M183 25v36a8 8 0 0 0 8 8"/>
+      <path d="M173 40h20"/>
+      <!-- i -->
+      <path d="M205 35v34"/>
+      <path d="M205 19.9v.2" stroke-width="9"/>
+      <!-- v -->
+      <path d="m217 35 12 34 12-34"/>
+      <!-- y -->
+      <path d="m253 35 12.5 29"/>
+      <path d="m277 35-19 48"/>
+    </g>
+
+    <mask id="wordmask">
+      <use href="#word" stroke="#fff"/>
+    </mask>
+  </defs>
+
+  <style>
+    /* CSS animation rather than SMIL: this is the only one of the two that a visitor who has
+       asked for less motion can turn off. */
+    .sheen { animation: sweep 5s ease-in-out infinite; }
+    @keyframes sweep {
+      0%, 12%   { transform: translateX(-150px); }
+      50%, 100% { transform: translateX(200px); }
+    }
+    @media (prefers-reduced-motion: reduce) { .sheen { animation: none; opacity: 0; } }
+  </style>
+
+  <!-- The letters are drawn where logo.svg puts them, to the right of a tile that is not here.
+       One translate brings them back to the origin, so the paths stay comparable between the
+       two files. -->
+  <g transform="translate(-105 -11)">
+    <use href="#word" stroke="url(#ink)"/>
+    <g mask="url(#wordmask)">
+      <g class="sheen">
+        <rect x="100" y="0" width="44" height="100" fill="url(#sheen)" transform="skewX(-18)"/>
+      </g>
+    </g>
+  </g>
+</svg>

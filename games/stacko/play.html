@@ -51,7 +51,6 @@
                 <button class="play-button" id="restart">New run</button>
             </div>
 
-            <p class="play-hint" id="status">Tap to drop.</p>
             <p class="play-warning" id="warning" hidden>
                 This browser is not letting the page save, so your best scores will not survive
                 a reload.
@@ -60,9 +59,10 @@
 
         <div class="play-board" id="board" role="application" aria-label="StackO! tower">
             <canvas id="scene"></canvas>
-            <!-- On the board, where the player is looking, not in the panel above it. Gone
-                 the moment they drop their first slab: it has done its job by then. -->
-            <p class="board-hint" id="hint">Tap to drop</p>
+            <!-- The whole of this game's running commentary, on the board where the player
+                 is looking rather than in the panel above it. It opens as the one instruction
+                 the game needs, then becomes the block count and the streak. -->
+            <p class="board-hint idle" id="hint">Tap to drop</p>
         </div>
 
         <!-- Ad slot, empty on purpose: no AdSense unit is placed yet. The height is reserved
