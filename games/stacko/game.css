@@ -15,11 +15,18 @@
     --text-primary: #eaf3ff;
     --text-secondary: #7fa0c8;
 
-    /* Measured by adding up the parts at 375px wide — bar, panel, ad slot and the gaps —
-       which comes to 230, plus slack. It read 300 while the panel still carried a status
-       line; that line moved onto the board, and the board should get the height back rather
-       than leave 70px of nothing under the ad slot. */
-    --play-chrome-stacked: 236px;
+    /*
+     * Measured by adding up the parts at 375px wide — bar, panel, ad slot and the gaps. It read
+     * 300 while the panel still carried a status line; that line moved onto the board, and the
+     * board should get the height back rather than leave 70px of nothing under the ad slot.
+     *
+     * Re-measured after the gap below the board went from 16px to 32px, and at a desktop
+     * width as well as a phone one — the figure came out the same at both, so there is one
+     * number here rather than Rekta's split. It was 236, which is under the real 256, and
+     * declaring less than the chrome takes lets the board grow into space the page does not
+     * have.
+     */
+    --play-chrome-stacked: 258px;
 }
 
 body.gstacko {

@@ -24,7 +24,14 @@
      * viewport — so it was measuring the screen and shrinking the board by two hundred pixels
      * for nothing. Measure the parts, not the document.
      */
-    --play-chrome-stacked: 276px;
+    /*
+     * Re-measured after the gap below the board went from 16px to 32px, and at a desktop
+     * width as well as a phone one — the figure came out the same at both, so there is one
+     * number here rather than Rekta's split. It was 276, which is under the real 289, and
+     * declaring less than the chrome takes lets the board grow into space the page does not
+     * have.
+     */
+    --play-chrome-stacked: 292px;
 }
 
 body.gpaw {

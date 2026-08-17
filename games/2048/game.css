@@ -8,6 +8,14 @@
  */
 
 .g2048 {
+    /*
+     * This game never declared one, so it used the shell's 310px default against a real 340 —
+     * bar, panel, ad slot and gaps, measured the same at 375px and at 1440px. It only escaped
+     * overflowing because the board is bounded by width on both, but a short window would have
+     * found it.
+     */
+    --play-chrome-stacked: 344px;
+
     --ink: #15120f;
     --board: #1d1814;
     --ochre: #d98e3e;
