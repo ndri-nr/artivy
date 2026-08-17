@@ -377,6 +377,79 @@ h1, h2, h3 {
     scroll-snap-align: center;
 }
 
+/* ---------- the strip's arrows ---------- */
+
+/*
+ * The positioning context for the two arrows. It sits outside .card-strip on purpose: inside,
+ * an absolutely positioned arrow would scroll away with the cards.
+ */
+.strip-wrap {
+    position: relative;
+}
+
+.strip-arrow {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    z-index: 3;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 6px 18px rgba(31, 38, 135, 0.18);
+    cursor: pointer;
+    /* The strip is a rapid-tap surface too — without this a double tap zooms the page. */
+    touch-action: manipulation;
+    transition: background 0.2s ease;
+}
+
+.strip-arrow[hidden] {
+    display: none;
+}
+
+.strip-arrow:hover {
+    background: #fff;
+}
+
+.strip-arrow:focus-visible {
+    outline: 3px solid var(--accent-deep);
+    outline-offset: 2px;
+}
+
+/* Left and right sit over the strip's bleed, so a card is never fully covered by one. */
+.strip-arrow-left {
+    left: -6px;
+}
+
+.strip-arrow-right {
+    right: -6px;
+}
+
+/* Two borders of a square, turned 45°. A glyph would sit differently in every fallback font. */
+.strip-chevron {
+    width: 11px;
+    height: 11px;
+    border-top: 2.5px solid #4a5568;
+    border-right: 2.5px solid #4a5568;
+}
+
+.strip-arrow-left .strip-chevron {
+    rotate: -135deg;
+    /* The arrow's ink sits off-centre once rotated; nudge it back under the circle's middle. */
+    margin-left: 3px;
+}
+
+.strip-arrow-right .strip-chevron {
+    rotate: 45deg;
+    margin-right: 3px;
+}
+
 /*
  * A strip's cards do not do the entrance animation. .reveal holds an element 30px down and
  * fully transparent until it intersects the viewport, which suits a column you scroll past and

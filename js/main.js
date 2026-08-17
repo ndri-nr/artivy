@@ -160,11 +160,50 @@ if (reduceMotion || !('IntersectionObserver' in window)) {
 
 /*
  * The cards used to tilt up to 9 degrees under the pointer, driven from here on every
- * mousemove. It made a card that is mostly text lean away from you while you were reading it,
- * and on a strip you swipe through, five of them leaning independently is restless rather than
- * responsive. The hover state is a plain lift in CSS now — no script, and the same behaviour on
- * a phone as on a laptop.
- *
- * The sheen the tilt also drove stays: --mx/--my fall back to 50%/0%, which is a fixed
- * highlight along the card's top edge.
+ * mousemove, and briefly lifted on hover instead. Both are gone: a card that is mostly text
+ * should not move while you are reading it. The hover state is a shadow, in CSS.
  */
+
+/*
+ * Arrows for the card strip, each shown only while there is somewhere to go that way.
+ *
+ * Built here rather than written into the HTML, because they do nothing without this script and
+ * a dead control is worse than no control — the strip swipes and scrolls on its own either way.
+ *
+ * A click advances by one card. `scrollBy` is smooth and cooperates with the strip's scroll
+ * snapping, so the strip settles on a card rather than between two.
+ */
+document.querySelectorAll('.strip-wrap').forEach((wrap) => {
+    const strip = wrap.querySelector('.card-strip');
+    if (!strip) return;
+
+    const arrows = ['left', 'right'].map((side) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `strip-arrow strip-arrow-${side}`;
+        button.setAttribute('aria-label', side === 'left' ? 'Previous game' : 'Next game');
+        // Drawn rather than typed: an arrow glyph sits differently in every fallback font.
+        button.innerHTML = '<span class="strip-chevron"></span>';
+        button.addEventListener('click', () => {
+            const card = strip.querySelector(':scope > *');
+            const gap = parseFloat(getComputedStyle(strip).columnGap) || 0;
+            const step = card ? card.getBoundingClientRect().width + gap : strip.clientWidth;
+            strip.scrollBy({ left: side === 'left' ? -step : step, behavior: 'smooth' });
+        });
+        wrap.appendChild(button);
+        return button;
+    });
+
+    const update = () => {
+        // A pixel of slack: scrollLeft is fractional on a zoomed or high-DPI display, so an
+        // exact comparison leaves the far arrow showing at the end of the strip forever.
+        const max = strip.scrollWidth - strip.clientWidth - 1;
+        arrows[0].hidden = strip.scrollLeft <= 1;
+        arrows[1].hidden = strip.scrollLeft >= max;
+    };
+
+    update();
+    strip.addEventListener('scroll', update, { passive: true });
+    // Cards are a share of the viewport, so a resize changes both ends of the range.
+    new ResizeObserver(update).observe(strip);
+});

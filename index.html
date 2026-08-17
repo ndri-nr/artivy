@@ -85,6 +85,12 @@
     <!-- Games Section -->
     <section id="games" class="games-section">
         <h2 class="reveal">Featured Games</h2>
+        <!--
+          The two arrows are added by js/main.js rather than written here: without the script
+          they would be buttons that scroll nothing, and a control that does not work is worse
+          than one that is absent. Everything still swipes and scrolls without them.
+        -->
+        <div class="strip-wrap">
         <div class="game-cards card-strip">
             <div class="card reveal">
                 <div class="card-image">
@@ -196,6 +202,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </section>
 
