@@ -202,7 +202,14 @@ body.playing::before {
 .play-ad {
     width: min(520px, 100%);
     min-height: 100px;
-    margin: 4px auto 0 auto;
+    /*
+     * 20px on top of the stage's own 12px gap, so there are 32px between the board and the
+     * advert. It was 16, which is thinner than a thumb: a drag that runs off the bottom of
+     * Rekta's grid, or a swipe that overshoots 2048's, ends inside the advert. The cost is
+     * 16px of board height, and every game had at least that much slack except Kata·Word,
+     * whose constant is raised to match.
+     */
+    margin: 20px auto 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;

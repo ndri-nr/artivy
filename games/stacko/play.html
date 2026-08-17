@@ -81,7 +81,34 @@
 
         <!-- Ad slot, empty on purpose: no AdSense unit is placed yet. The height is reserved
              so switching one on later cannot shove the tower around. -->
-        <div class="play-ad" id="ad"></div>
+        <!--
+          One display unit per game, so AdSense reports which game earns what — a single unit
+          shared across five pages would merge the figures, and that cannot be split later.
+
+          The size is fixed rather than `data-ad-format="auto"`, which is what AdSense hands you
+          and which lets Google choose the height at runtime. It cannot be that here: the board
+          is sized `100dvh - var(--play-chrome)`, --play-chrome is a constant we declare, and it
+          has exactly this 100px budgeted into it. An advert that arrived 280px tall would push
+          every one of these pages off the bottom of the screen, and nothing in the layout could
+          see it coming. A shorter slot earns less. A board that overflows is worse.
+        -->
+        <div class="play-ad" id="ad">
+            <ins class="adsbygoogle"
+                 style="display:block;width:100%;height:100px"
+                 data-ad-client="ca-pub-8668013395284480"
+                 data-ad-slot="7431283902"
+                 data-ad-format="horizontal"
+                 data-full-width-responsive="false"></ins>
+            <script>
+                /* Landscape phones hide this slot outright — there is no room for an advert
+                   there that is not either over the board or under a thumb (see play.css) —
+                   and pushing into a hidden container throws "No slot size for
+                   availableWidth=0". Ask whether the slot has a width before filling it. */
+                if (document.getElementById('ad').offsetWidth > 0) {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                }
+            </script>
+        </div>
     </main>
 
     <div class="sheet" id="sheet" hidden>
