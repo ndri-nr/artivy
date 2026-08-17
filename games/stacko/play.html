@@ -47,6 +47,30 @@
         </details>
     </div>
 
+    <!--
+      Side rails, desktop only. They are absolutely positioned against this wrapper rather than
+      being flex items beside the stage, because the board's width is `min(..., 100%, ...)` and
+      that 100% resolves against the stage — turning the stage into a content-sized flex item
+      would change the number the whole board-sizing model is built on. Out of flow, it cannot.
+    -->
+    <div class="play-with-rails">
+    <aside class="ad-rail ad-rail-left" id="rail-left" aria-label="Advertisement"></aside>
+    <script>
+        /*
+          The <ins> is created here rather than written above, and only when the rail is wide
+          enough to exist. adsbygoogle.push() does not fill the slot nearest the call — it fills
+          the next uninitialised <ins> in document order. With a hidden rail left in the markup,
+          the banner below the board pushed and AdSense handed that push to the hidden rail
+          instead, so the rail failed on availableWidth=0 and the banner was never filled at all.
+          No element, no misdirected push.
+        */
+        if (matchMedia('(min-width: 1024px)').matches) {
+            document.getElementById('rail-left').innerHTML =
+                '<ins class="adsbygoogle" style="display:block;width:160px;height:600px"'
+                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="7431283902"></ins>';
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        }
+    </script>
     <main class="play-stage" id="stage">
         <div class="play-panel">
             <div class="play-row">
@@ -110,6 +134,24 @@
             </script>
         </div>
     </main>
+    <aside class="ad-rail ad-rail-right" id="rail-right" aria-label="Advertisement"></aside>
+    <script>
+        /*
+          The <ins> is created here rather than written above, and only when the rail is wide
+          enough to exist. adsbygoogle.push() does not fill the slot nearest the call — it fills
+          the next uninitialised <ins> in document order. With a hidden rail left in the markup,
+          the banner below the board pushed and AdSense handed that push to the hidden rail
+          instead, so the rail failed on availableWidth=0 and the banner was never filled at all.
+          No element, no misdirected push.
+        */
+        if (matchMedia('(min-width: 1024px)').matches) {
+            document.getElementById('rail-right').innerHTML =
+                '<ins class="adsbygoogle" style="display:block;width:160px;height:600px"'
+                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="7431283902"></ins>';
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        }
+    </script>
+    </div>
 
     <div class="sheet" id="sheet" hidden>
         <div class="sheet-card">

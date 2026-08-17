@@ -600,6 +600,69 @@ h1, h2, h3 {
     padding: 0 20px;
 }
 
+/* ---------- the side rails ---------- */
+
+/*
+ * On a wide screen everything here is a centred column and the space either side of it is
+ * empty, so it carries a 160x600 advert on each side. They are absent below the widths named
+ * here: a rail that does not fit either overlaps the content or hangs off the page, and there
+ * is no version of a narrow screen where three adverts is the right answer.
+ *
+ * Absolutely positioned, not flex items. On a play page the board's width is
+ * `min(..., 100%, ...)`, and that 100% resolves against the stage — making the stage a
+ * content-sized flex item would move the number the whole board-sizing model rests on. Out of
+ * flow, a rail cannot touch it.
+ *
+ * The offsets are measured from the centre: half the content's own width, then the gap, then
+ * the rail. Each context has its own half-width, which is why there are two blocks.
+ */
+.ad-rail {
+    display: none;
+}
+
+.play-with-rails,
+.page-with-rails {
+    position: relative;
+}
+
+/* Play pages: the board is at most 520px, so half of it is 260. 260 + 32 gap + 160 rail + 24
+   clear of the window edge means the rails need 476px either side of the centre. */
+@media (min-width: 1024px) {
+    .play-with-rails .ad-rail {
+        display: block;
+        position: absolute;
+        top: 0;
+        width: 160px;
+    }
+
+    .play-with-rails .ad-rail-left {
+        left: calc(50% - 452px);
+    }
+
+    .play-with-rails .ad-rail-right {
+        left: calc(50% + 292px);
+    }
+}
+
+/* About pages: the card is at most 800px, so the same arithmetic from a half-width of 400
+   needs 616px either side, and the rails cannot appear until the window is 1280. */
+@media (min-width: 1280px) {
+    .page-with-rails .ad-rail {
+        display: block;
+        position: absolute;
+        top: 40px;
+        width: 160px;
+    }
+
+    .page-with-rails .ad-rail-left {
+        left: calc(50% - 592px);
+    }
+
+    .page-with-rails .ad-rail-right {
+        left: calc(50% + 432px);
+    }
+}
+
 /* Footer */
 footer {
     text-align: center;

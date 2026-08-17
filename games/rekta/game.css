@@ -18,10 +18,16 @@
     --cyan: #3de0ff;
     --coral: #ff5c6e;
 
-    /* Measured after the panel went from three rows to two: see the note in play.html. The
-       old figure was 392 against a real 399, so the page overflowed by seven pixels while the
-       board was already being squeezed. */
-    --play-chrome-stacked: 330px;
+    /*
+     * Measured after the panel went from three rows to two: see the note in play.html. The old
+     * figure was 392 against a real 399, so the page overflowed by seven pixels while the board
+     * was already being squeezed.
+     *
+     * 344 is the figure for a window wide enough to show the title and the roomier stats — the
+     * phone block below drops both and declares 330 there. One number for both was 12px short
+     * on a desktop window, which is the same overflow bug in the other direction.
+     */
+    --play-chrome-stacked: 344px;
 }
 
 body.grekta {
@@ -300,6 +306,12 @@ body.grekta::before {
      * that was too large. It is not bled to the bezel: lining up with everything else on the
      * page is worth more than the twelve pixels either side.
      */
+    .grekta {
+        /* The title is hidden and the stats are tighter below, so the chrome is 14px shorter
+           than the figure declared for a desktop window. */
+        --play-chrome-stacked: 330px;
+    }
+
     .grekta .play-board {
         --board-max: 100%;
     }

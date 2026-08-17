@@ -144,6 +144,24 @@
         </details>
     </nav>
 
+    <div class="page-with-rails">
+    <aside class="ad-rail ad-rail-left" id="rail-left" aria-label="Advertisement"></aside>
+    <script>
+        /*
+          The <ins> is created here rather than written above, and only when the rail is wide
+          enough to exist. adsbygoogle.push() does not fill the slot nearest the call — it fills
+          the next uninitialised <ins> in document order. With a hidden rail left in the markup,
+          the banner below the board pushed and AdSense handed that push to the hidden rail
+          instead, so the rail failed on availableWidth=0 and the banner was never filled at all.
+          No element, no misdirected push.
+        */
+        if (matchMedia('(min-width: 1280px)').matches) {
+            document.getElementById('rail-left').innerHTML =
+                '<ins class="adsbygoogle" style="display:block;width:160px;height:600px"'
+                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="7345126176"></ins>';
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        }
+    </script>
     <div class="game-info-container">
         <a href="../index.html" class="back-button">← All games</a>
         <div class="game-icon-wrapper">
@@ -189,6 +207,25 @@
     </div>
 
     <!-- Footer -->
+    <aside class="ad-rail ad-rail-right" id="rail-right" aria-label="Advertisement"></aside>
+    <script>
+        /*
+          The <ins> is created here rather than written above, and only when the rail is wide
+          enough to exist. adsbygoogle.push() does not fill the slot nearest the call — it fills
+          the next uninitialised <ins> in document order. With a hidden rail left in the markup,
+          the banner below the board pushed and AdSense handed that push to the hidden rail
+          instead, so the rail failed on availableWidth=0 and the banner was never filled at all.
+          No element, no misdirected push.
+        */
+        if (matchMedia('(min-width: 1280px)').matches) {
+            document.getElementById('rail-right').innerHTML =
+                '<ins class="adsbygoogle" style="display:block;width:160px;height:600px"'
+                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="7345126176"></ins>';
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        }
+    </script>
+    </div>
+
     <footer>
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>
