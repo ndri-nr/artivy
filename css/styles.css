@@ -588,6 +588,18 @@ h1, h2, h3 {
 }
 
 
+/*
+ * The advert on a game's about page. Its width matches the card the actions sit in, so it reads
+ * as part of the page rather than as something bolted underneath it, and no height is reserved:
+ * this page has nothing sized from a constant, so the advert can be whatever Google fills it
+ * with without pushing anything off a screen.
+ */
+.page-ad {
+    max-width: 800px;
+    margin: 30px auto 0 auto;
+    padding: 0 20px;
+}
+
 /* Footer */
 footer {
     text-align: center;
