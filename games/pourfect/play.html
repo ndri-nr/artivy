@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="Play StackO! in your browser. A neon slab slides in over the tower — tap to drop it, and whatever hangs over the edge is sliced away. Three modes, no account, no download.">
-    <meta name="theme-color" content="#060a1c">
-    <title>Play StackO! - Artivy</title>
+    <meta name="description" content="Play PourFect! in your browser. Pour the colours until every bottle holds one, with a collector tube that takes a single colour and never gives it back. Endless levels, no account, no download.">
+    <meta name="theme-color" content="#3b3e63">
+    <title>Play PourFect! - Artivy</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/play.css?v=BUILD">
@@ -20,9 +20,9 @@
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
         crossorigin="anonymous"></script>
 </head>
-<!-- main.js is deliberately not loaded: it is the home page's Three.js particle field, and
-     this is the one game here with a render loop of its own to compete with. -->
-<body class="playing gstacko">
+<!-- main.js is deliberately not loaded: it is the home page's Three.js particle field, a
+     continuous repaint that would compete with the board for frames. -->
+<body class="playing gpourfect">
     <div class="play-bar">
         <a class="play-home" href="../index.html">
             <img src="../assets/logo.svg" alt="Artivy">
@@ -34,13 +34,13 @@
                 <ul>
                     <li><a href="../pawdoku/play.html">PawDoku</a></li>
                     <li><a href="../kata_word/play.html">Kata·Word</a></li>
-                    <li><a href="play.html" aria-current="page">StackO!</a></li>
+                    <li><a href="../stacko/play.html">StackO!</a></li>
                     <li><a href="../2048/play.html">2048</a></li>
                     <li><a href="../rekta/play.html">Rekta</a></li>
-                    <li><a href="../pourfect/play.html">PourFect!</a></li>
+                    <li><a href="play.html" aria-current="page">PourFect!</a></li>
                 </ul>
                 <ul class="play-menu-pages">
-                    <li><a href="index.html">About StackO!</a></li>
+                    <li><a href="index.html">About PourFect!</a></li>
                     <li><a href="privacy-policy.html">Privacy</a></li>
                     <li><a href="terms-and-conditions.html">Terms</a></li>
                 </ul>
@@ -68,60 +68,61 @@
         if (matchMedia('(min-width: 1024px)').matches) {
             document.getElementById('rail-left').innerHTML =
                 '<ins class="adsbygoogle" style="display:block;width:160px;height:600px"'
-                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="7431283902"></ins>';
+                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="0000000000"></ins>';
             (adsbygoogle = window.adsbygoogle || []).push({});
         }
     </script>
     <main class="play-stage" id="stage">
         <div class="play-panel">
+            <!-- Stats and actions share one row. Every row above the board is height the board
+                 does not get, and these bottles are bounded by height at every size. -->
             <div class="play-row">
-                <h1 class="play-title">StackO!</h1>
+                <h1 class="play-title"><b>Pour</b>Fect!</h1>
+                <div class="stat">
+                    <span class="stat-label">LEVEL</span>
+                    <span class="stat-value" id="level">1</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">BOTTLES</span>
+                    <span class="stat-value" id="bottle-count">3</span>
+                </div>
                 <span class="play-spacer"></span>
-                <div class="stat">
-                    <span class="stat-label">SCORE</span>
-                    <span class="stat-value" id="score">0</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">BEST</span>
-                    <span class="stat-value" id="best">0</span>
-                </div>
-                <!-- Always here, not only on the game-over card. Closing that card used to
-                     leave a finished run with nothing on screen that could start another. -->
-                <button class="play-button" id="restart">New run</button>
+                <button class="play-button" id="undo" disabled>Undo</button>
+                <button class="play-button" id="restart">Restart</button>
             </div>
 
+            <p class="play-hint">Tap a bottle, then tap where it pours. Or drag one onto another.</p>
             <p class="play-warning" id="warning" hidden>
-                This browser is not letting the page save, so your best scores will not survive
-                a reload.
+                This browser is not letting the page save, so your level will not survive a
+                reload.
             </p>
         </div>
 
-        <div class="play-board" id="board" role="application" aria-label="StackO! tower">
-            <canvas id="scene"></canvas>
-            <!-- The whole of this game's running commentary, on the board where the player
-                 is looking rather than in the panel above it. It opens as the one instruction
-                 the game needs, then becomes the block count and the streak. -->
-            <p class="board-hint idle" id="hint">Tap to drop</p>
+        <div class="play-board" id="board" role="application" aria-label="PourFect bottles" tabindex="0">
+            <div class="board-wrap" id="wrap">
+                <div class="bottles" id="bottles"></div>
+            </div>
         </div>
 
-        <!-- Ad slot, empty on purpose: no AdSense unit is placed yet. The height is reserved
-             so switching one on later cannot shove the tower around. -->
         <!--
           One display unit per game, so AdSense reports which game earns what — a single unit
-          shared across five pages would merge the figures, and that cannot be split later.
+          shared across six pages would merge the figures, and that cannot be split later.
+
+          data-ad-slot is a placeholder until a unit is created for PourFect!. It must not be
+          filled in with another game's slot: that is precisely the merge this arrangement
+          exists to avoid.
 
           The size is fixed rather than `data-ad-format="auto"`, which is what AdSense hands you
           and which lets Google choose the height at runtime. It cannot be that here: the board
           is sized `100dvh - var(--play-chrome)`, --play-chrome is a constant we declare, and it
-          has exactly this 100px budgeted into it. An advert that arrived 280px tall would push
-          every one of these pages off the bottom of the screen, and nothing in the layout could
-          see it coming. A shorter slot earns less. A board that overflows is worse.
+          has exactly this 100px budgeted into it. An advert arriving 280px tall would push the
+          page off the bottom of the screen and nothing in the layout could see it coming.
         -->
         <div class="play-ad" id="ad">
             <ins class="adsbygoogle"
                  style="display:block;width:100%;height:100px"
                  data-ad-client="ca-pub-8668013395284480"
-                 data-ad-slot="7431283902"
+                 data-ad-slot="0000000000"
                  data-ad-format="horizontal"
                  data-full-width-responsive="false"></ins>
             <script>
@@ -137,32 +138,15 @@
     </main>
     <aside class="ad-rail ad-rail-right" id="rail-right" aria-label="Advertisement"></aside>
     <script>
-        /*
-          The <ins> is created here rather than written above, and only when the rail is wide
-          enough to exist. adsbygoogle.push() does not fill the slot nearest the call — it fills
-          the next uninitialised <ins> in document order. With a hidden rail left in the markup,
-          the banner below the board pushed and AdSense handed that push to the hidden rail
-          instead, so the rail failed on availableWidth=0 and the banner was never filled at all.
-          No element, no misdirected push.
-        */
+        /* Same reasoning as the left rail: no element until the media query matches, so the
+           banner's push cannot be handed to a hidden slot. */
         if (matchMedia('(min-width: 1024px)').matches) {
             document.getElementById('rail-right').innerHTML =
                 '<ins class="adsbygoogle" style="display:block;width:160px;height:600px"'
-                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="7431283902"></ins>';
+                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="0000000000"></ins>';
             (adsbygoogle = window.adsbygoogle || []).push({});
         }
     </script>
-    </div>
-
-    <div class="sheet" id="sheet" hidden>
-        <div class="sheet-card">
-            <h2 id="sheet-title"></h2>
-            <p id="sheet-text"></p>
-            <div class="play-row">
-                <button class="play-button" id="sheet-action"></button>
-                <button class="play-button ghost" id="sheet-close">Close</button>
-            </div>
-        </div>
     </div>
 
     <script type="module" src="play.js?v=BUILD"></script>

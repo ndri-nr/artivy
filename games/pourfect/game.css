@@ -1,0 +1,204 @@
+/*
+ * PourFect!'s own layer over css/play.css: the board's grid, the glassware, and the panel.
+ *
+ * The bottles are SVG, one element each, sized by `preserveAspectRatio` inside a CSS grid cell.
+ * That is the whole sizing model and it is deliberate: nothing here measures the layout from
+ * JavaScript. A vessel fits its cell and keeps its shape, so a board that does not match the
+ * space it was given loses a little size rather than overflowing — the cheap way to be wrong.
+ */
+
+:root {
+    /*
+     * The site's own tokens are light; a game page declares its own. Without these the panel
+     * text stays near-black and the glass — white at low opacity — has nothing to sit against.
+     */
+    --text-primary: #eef2ff;
+    --text-secondary: #a6b0dd;
+    --board-bg: #2b2f52;
+
+    /*
+     * Everything above the board on a phone: the bar, the panel's two rows, the hint line and
+     * the ad slot. play.css subtracts this from 100dvh to size the board, so it is a number we
+     * declare rather than one anybody reads back. Too small and the board runs off the bottom
+     * of the screen with nothing able to see it coming; too large only costs a smaller board.
+     */
+    --play-chrome-stacked: 300px;
+}
+
+body.gpourfect {
+    background: linear-gradient(180deg, #3b3e63 0%, #22243c 100%);
+    color: var(--text-primary);
+}
+
+/*
+ * The home page's mesh is `position: fixed` over the whole viewport with an opaque light
+ * gradient as its last layer, and a body background propagates to the canvas *below* a
+ * negative-z pseudo-element. So it wins, and the page comes out light with dark text no matter
+ * what this file says about the body. Every game page turns it off; this one did not, and that
+ * was the whole bug.
+ */
+body.gpourfect::before {
+    display: none;
+}
+
+.gpourfect .play-bar .play-home,
+.gpourfect .play-bar a.play-quiet {
+    color: var(--text-secondary);
+}
+
+/* --- the panel ------------------------------------------------------------------ */
+
+.gpourfect .play-title {
+    /* "Pour" in glass blue, the rest in ink, the same split the app's wordmark uses. */
+    color: #eef2ff;
+}
+
+.gpourfect .play-title b {
+    color: #7ba4f0;
+    font-weight: inherit;
+}
+
+.gpourfect .stat-value {
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- the board ------------------------------------------------------------------ */
+
+.gpourfect .play-board {
+    --board-max: 560px;
+    background: transparent;
+    border: 0;
+    display: grid;
+    place-items: center;
+}
+
+.gpourfect .bottles {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    /* Both set from the level's shape by play.js — declared constants per level, not
+       measurements. --board-ratio then tells play.css what box to reserve. */
+    grid-template-columns: var(--columns);
+    grid-template-rows: repeat(var(--rows), 1fr);
+    gap: 2.2% 1.6%;
+    place-items: center;
+}
+
+.gpourfect .vessel {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    /* Lifted when picked up, the way a hand would. Cheaper to read than a glow and it survives
+       every liquid colour behind it. */
+    transition: transform 140ms ease-out, filter 140ms ease-out;
+    touch-action: none;
+}
+
+.gpourfect .vessel.picked {
+    transform: translateY(-4%);
+    filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+}
+
+.gpourfect .vessel.target {
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.85));
+}
+
+/* The collector is a destination and nothing else: pouring out of it is against the rules, so
+   it never lifts and never takes the pointer. */
+.gpourfect .vessel.collector {
+    cursor: default;
+    grid-row: 1 / -1;
+}
+
+.gpourfect .vessel.settled {
+    /* A finished bottle is out of play; the cap says so, and this keeps a stray tap quiet. */
+    cursor: default;
+}
+
+/* The bottle in flight during a pour. Absolutely positioned over the board so the grid does
+   not reflow while one of its cells is in the air. */
+.gpourfect .pouring {
+    position: absolute;
+    pointer-events: none;
+    transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 3;
+}
+
+.gpourfect .board-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- the pointing hand ---------------------------------------------------------- */
+
+.gpourfect .hand {
+    position: absolute;
+    width: 11%;
+    max-width: 46px;
+    pointer-events: none;
+    z-index: 4;
+    animation: pourfect-hand 2.6s ease-in-out infinite;
+}
+
+@keyframes pourfect-hand {
+    0%, 6% { opacity: 0; }
+    8% { opacity: 1; transform: translate(var(--from-x), var(--from-y)) scale(1); }
+    14% { transform: translate(var(--from-x), var(--from-y)) scale(0.86); }
+    20% { transform: translate(var(--from-x), var(--from-y)) scale(1); }
+    48% { transform: translate(var(--to-x), var(--to-y)) scale(1); }
+    54% { transform: translate(var(--to-x), var(--to-y)) scale(0.86); }
+    60% { transform: translate(var(--to-x), var(--to-y)) scale(1); }
+    74% { opacity: 1; }
+    82%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gpourfect .hand { animation: none; opacity: 1; }
+    .gpourfect .pouring { transition: none; }
+}
+
+/* --- overlays ------------------------------------------------------------------- */
+
+.gpourfect .overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    gap: 10px;
+    background: rgba(20, 22, 40, 0.72);
+    border-radius: 14px;
+    z-index: 5;
+    text-align: center;
+    padding: 16px;
+}
+
+.gpourfect .overlay h2 {
+    margin: 0;
+    font-size: clamp(1.4rem, 6cqw, 2.2rem);
+}
+
+.gpourfect .overlay p {
+    margin: 0;
+    color: var(--text-secondary);
+    max-width: 30ch;
+}
+
+.gpourfect .overlay-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* --- landscape phones ----------------------------------------------------------- */
+
+@media (max-height: 520px) and (orientation: landscape) {
+    :root {
+        /* play.css swaps to --play-chrome-beside here and hides the ad slot; the panel is one
+           row, so the chrome above the board is most of what is left. */
+        --play-chrome-stacked: 96px;
+    }
+
+    .gpourfect .play-hint { display: none; }
+}

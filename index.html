@@ -37,6 +37,7 @@
                     <a href="stacko/play.html">StackO!</a>
                     <a href="2048/play.html">2048</a>
                     <a href="rekta/play.html">Rekta</a>
+                    <a href="pourfect/play.html">PourFect!</a>
                 </div>
             </li>
         </ul>
@@ -56,6 +57,7 @@
                 <li><a href="stacko/play.html">StackO!</a></li>
                 <li><a href="2048/play.html">2048</a></li>
                 <li><a href="rekta/play.html">Rekta</a></li>
+                <li><a href="pourfect/play.html">PourFect!</a></li>
             </ul>
         </details>
     </nav>
@@ -85,6 +87,21 @@
     <!-- Games Section -->
     <section id="games" class="games-section">
         <h2 class="reveal">Featured Games</h2>
+        <!--
+          Straight to a game, without crossing the strip. The strip is the showcase and it works,
+          but finding one title among six already means swiping, and this row is the part that
+          keeps working at twelve: it wraps rather than scrolling, and each tile is a plain link
+          so it needs no script to be useful.
+        -->
+        <nav class="game-quick reveal" aria-label="All games">
+            <a href="pawdoku/play.html"><img src="assets/pawdoku-icon.png" alt=""><span>PawDoku</span></a>
+            <a href="kata_word/play.html"><img src="assets/kata_word-icon.png" alt=""><span>Kata·Word</span></a>
+            <a href="stacko/play.html"><img src="assets/stacko-icon.png" alt=""><span>StackO!</span></a>
+            <a href="2048/play.html"><img src="assets/2048-icon.svg" alt=""><span>2048</span></a>
+            <a href="rekta/play.html"><img src="assets/rekta-icon.svg" alt=""><span>Rekta</span></a>
+            <a href="pourfect/play.html"><img src="assets/pourfect-icon.svg" alt=""><span>PourFect!</span></a>
+        </nav>
+
         <!--
           The two arrows are added by js/main.js rather than written here: without the script
           they would be buttons that scroll nothing, and a control that does not work is worse
@@ -201,7 +218,30 @@
                         -->
                     </div>
                 </div>
+                <div class="card reveal" style="--reveal-delay:0.60s">
+                <div class="card-image">
+                    <img src="assets/pourfect-icon.svg" alt="PourFect!" class="game-icon">
+                </div>
+                <div class="card-content">
+                    <h3>PourFect!</h3>
+                    <p>Water sort with one bottle that takes a single colour and never gives it back. Pour like onto like until every bottle holds one colour. Endless levels, each one checked to be solvable before you get it.</p>
+                    <div class="card-links">
+                        <a href="pourfect/play.html" class="card-play">▶ Play</a>
+                        <a href="pourfect/index.html" class="card-info">About</a>
+                        <!-- READY, BUT NOT LIVE: PourFect!'s listing answers 404 today. Delete the
+                             two comment markers below on the day it goes live, and confirm the
+                             URL really resolves before pushing. -->
+                        <!--
+                        <a href="https://play.google.com/store/apps/details?id=id.artivy.pourfect"
+                           class="card-store" target="_blank" rel="noopener"
+                           aria-label="Get PourFect! on Google Play">
+                            <img src="assets/google-play-badge.png" alt="Get it on Google Play">
+                        </a>
+                        -->
+                    </div>
+                </div>
             </div>
+        </div>
         </div>
         </div>
     </section>

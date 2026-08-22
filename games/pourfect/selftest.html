@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PourFect! self-check</title>
+    <style>
+        body { font: 14px/1.6 ui-monospace, monospace; padding: 24px; background: #2b2f52; color: #eef2ff; }
+        h1 { font-size: 1rem; margin: 0 0 12px 0; }
+        .pass { color: #6ff0b8; }
+        .fail { color: #ff6b7a; font-weight: 700; }
+        .note { color: #a6b0dd; }
+        #summary { margin-top: 16px; font-weight: 700; }
+    </style>
+</head>
+<!--
+  Open this page and read it. A generator that promises every board can be won is exactly the
+  kind of code that needs a check: it runs unattended, its output differs every level, and a
+  board that cannot be solved looks like a hard board until somebody gives up on it.
+
+  Paths resolve against the published layout (games/ flattened to the site root), so serve the
+  flattened copy — see the preview one-liner in the workspace CLAUDE.md.
+-->
+<body>
+    <h1>PourFect! self-check</h1>
+    <div id="out"></div>
+    <div id="summary"></div>
+
+    <script type="module">
+        import {
+            CAPACITY, EXTRA_BOTTLE_FROM, MAX_BOTTLES, MAX_PLAIN_COLOURS, UNSOLVABLE, advise,
+            apply, board, clone, forcedMoves, generate, grantExtra, hasDeadEnd, isStuck, isWon,
+            key, legalMoves, paramsFor, pourAmount, solve, topRun, undo,
+        } from './model.js';
+
+        const out = document.getElementById('out');
+        let failures = 0;
+
+        function check(name, condition, detail = '') {
+            const line = document.createElement('div');
+            line.className = condition ? 'pass' : 'fail';
+            line.textContent = `${condition ? 'ok  ' : 'FAIL'} ${name}`
+                + (detail && !condition ? ` — ${detail}` : '');
+            out.appendChild(line);
+            if (!condition) failures++;
+        }
+
+        function note(text) {
+            const line = document.createElement('div');
+            line.className = 'note';
+            line.textContent = `    ${text}`;
+            out.appendChild(line);
+        }
+
+        /* --- the pour rules --- */
+
+        const twoReds = board([[1, 1, 0, 0], [0], []], [4, 4, 4]);
+        check('a whole block moves when it fits', pourAmount(twoReds, 0, 1) === 2);
+        check('a block is cut down to the room left',
+            pourAmount(board([[1, 0, 0, 0], [1, 1, 0]], [4, 4]), 0, 1) === 1);
+        check('a different colour is refused',
+            pourAmount(board([[0], [1]], [4, 4]), 0, 1) === 0);
+        check('a full bottle is refused',
+            pourAmount(board([[0], [0, 0, 0, 0]], [4, 4]), 0, 1) === 0);
+
+        const withCollector = board([[0], [1], [1, 1]], [4, 4, 6], 2, 1);
+        check('the collector takes its own colour only',
+            pourAmount(withCollector, 0, 2) === 0 && pourAmount(withCollector, 1, 2) === 1);
+        check('nothing pours out of the collector',
+            pourAmount(withCollector, 2, 0) === 0
+            && legalMoves(withCollector).every((move) => move.from !== 2));
+
+        check('a win needs every bottle empty or full of one colour',
+            isWon(board([[0, 0, 0, 0], []], [4, 4])) && !isWon(board([[0, 0], []], [4, 4])));
+
+        /* --- undo puts the board back exactly --- */
+
+        const roundTrip = generate(9);
+        const before = key(roundTrip);
+        let undoFaults = 0;
+        for (const move of legalMoves(roundTrip)) {
+            apply(roundTrip, move);
+            undo(roundTrip, move);
+            if (key(roundTrip) !== before) undoFaults++;
+        }
+        check('undo restores the board exactly', undoFaults === 0, `${undoFaults} faults`);
+
+        /* --- the level table --- */
+
+        const TABLE = {
+            1: [3, 2, 0], 2: [4, 3, 0], 3: [5, 3, 0], 4: [5, 4, 0], 5: [5, 4, 0],
+            6: [6, 4, 0], 7: [8, 6, 0], 8: [9, 7, 0], 9: [9, 7, 0],
+            10: [8, 6, 10], 14: [8, 6, 10], 15: [10, 8, 10], 19: [10, 8, 10],
+            20: [12, 9, 14], 25: [14, 9, 14], 50: [24, 9, 18],
+        };
+        function shapeOf(level) {
+            const b = generate(level);
+            return [
+                b.tubes.length - (b.collector < 0 ? 0 : 1)
+                    + (level >= EXTRA_BOTTLE_FROM ? 1 : 0),
+                new Set(b.tubes.flat()).size,
+                b.collector < 0 ? 0 : b.caps[b.collector],
+            ];
+        }
+        let tableFaults = [];
+        for (const [level, want] of Object.entries(TABLE)) {
+            const got = shapeOf(Number(level));
+            if (got.join(',') !== want.join(',')) {
+                tableFaults.push(`level ${level}: ${got.join('/')} not ${want.join('/')}`);
+            }
+        }
+        check('the level table is what it says it is', tableFaults.length === 0,
+            tableFaults.join('; '));
+
+        /* --- the ramp, and colours that never fall --- */
+
+        let rampFaults = [];
+        let previousColours = 0;
+        for (let level = 10; level <= 70; level++) {
+            const want = Math.min(Math.max(8 + 2 * Math.floor((level - 10) / 5), 8), MAX_BOTTLES);
+            const [bottles, colours] = shapeOf(level);
+            if (bottles !== want) rampFaults.push(`level ${level}: ${bottles} not ${want}`);
+            if (colours > MAX_PLAIN_COLOURS + 1) {
+                rampFaults.push(`level ${level}: ${colours} colours`);
+            }
+            // A wider board must never have fewer colours than a narrower one.
+            if (colours < previousColours) {
+                rampFaults.push(`level ${level}: ${previousColours} -> ${colours} colours`);
+            }
+            previousColours = colours;
+        }
+        check('the board grows by two every five levels, colours never falling',
+            rampFaults.length === 0, rampFaults.slice(0, 3).join('; '));
+
+        /* --- every level is solvable, and not already won --- */
+
+        let unsolvable = [];
+        let tooShort = [];
+        for (let level = 1; level <= 40; level++) {
+            const b = generate(level);
+            if (isWon(b)) unsolvable.push(`level ${level} starts won`);
+            const result = solve(b);
+            if (!result.path) unsolvable.push(`level ${level}`);
+            else if (result.path.length < paramsFor(level).minMoves) tooShort.push(`level ${level}`);
+        }
+        check('levels 1-40 are solvable', unsolvable.length === 0, unsolvable.join('; '));
+        check('and none falls apart in a couple of pours', tooShort.length === 0,
+            tooShort.join('; '));
+
+        /* --- the tutorial cannot be ruined --- */
+
+        let ruinable = [];
+        for (const level of [1, 2, 3]) {
+            if (!paramsFor(level).forgiving) ruinable.push(`level ${level} is not forgiving`);
+            else if (hasDeadEnd(generate(level))) ruinable.push(`level ${level} has a dead end`);
+        }
+        check('tutorial levels 1-3 have no reachable dead end', ruinable.length === 0,
+            ruinable.join('; '));
+
+        /* --- the early curve --- */
+
+        const CEILINGS = { 4: 0, 5: 0, 6: 0, 7: 2, 8: 3, 9: 3 };
+        let cruel = [];
+        for (const [level, ceiling] of Object.entries(CEILINGS)) {
+            const forced = forcedMoves(generate(Number(level)));
+            if (forced > ceiling) cruel.push(`level ${level}: ${forced} > ${ceiling}`);
+        }
+        check('the early levels stay inside their forced-move ceiling', cruel.length === 0,
+            cruel.join('; '));
+        note('forced moves = positions where only one legal move keeps the board winnable');
+
+        /* --- a dead board is proved, and says how little room is left --- */
+
+        const dead = board([[2, 0, 1, 0], [1, 0, 2, 1], [2, 0, 1], [2]], [4, 4, 4, 4]);
+        const verdict = advise(dead);
+        check('a board with moves but no solution is proved unsolvable',
+            !isStuck(dead) && verdict.verdict === UNSOLVABLE && verdict.move === null);
+        check('and reports a reachable space small enough to be visibly circular',
+            verdict.reachable > 0 && verdict.reachable <= 24, `${verdict.reachable} positions`);
+        check('a healthy board reports no reachable count',
+            advise(generate(9)).reachable === -1);
+
+        /* --- the extra bottle only ever helps --- */
+
+        let brokenByExtra = [];
+        for (const level of [7, 10, 20]) {
+            const b = generate(level);
+            grantExtra(b);
+            if (!solve(b).path) brokenByExtra.push(`level ${level}`);
+        }
+        check('the extra bottle leaves every board solvable', brokenByExtra.length === 0,
+            brokenByExtra.join('; '));
+
+        /* --- generation stays quick enough to run on a tap --- */
+
+        const started = performance.now();
+        for (let level = 1; level <= 30; level++) generate(level);
+        const elapsed = Math.round(performance.now() - started);
+        check('levels 1-30 generate in under 4 seconds', elapsed < 4000, `${elapsed}ms`);
+        note(`generating levels 1-30 took ${elapsed}ms`);
+
+        const summary = document.getElementById('summary');
+        summary.className = failures === 0 ? 'pass' : 'fail';
+        summary.textContent = failures === 0
+            ? 'all checks passed'
+            : `${failures} check${failures === 1 ? '' : 's'} failed`;
+    </script>
+</body>
+</html>
