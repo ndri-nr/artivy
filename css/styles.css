@@ -985,6 +985,14 @@ footer {
 
 
 /*
+ * The navbar is sticky, so an anchor jump lands with the heading underneath it. Every jump on
+ * this site goes to a section, so the offset belongs on the sections rather than on each link.
+ */
+section[id] {
+    scroll-margin-top: 88px;
+}
+
+/*
  * The all-games tile row, above the featured strip.
  *
  * Wraps rather than scrolls, which is the whole point: the strip is a showcase and it needs a
@@ -1030,14 +1038,35 @@ footer {
     display: block;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 620px) {
+    /*
+     * A grid rather than a wrapping flex row, and the difference matters. Hand-fitting six
+     * tiles into a phone's width came out one pixel over — 304 against 303 — and wrapped to
+     * five-and-one, a single icon alone on a second row, which reads as a mistake rather than
+     * as a row. auto-fit works out how many columns actually fit and shares the space between
+     * them, so six fit today and twelve would come out as two rows of six rather than eleven
+     * and one.
+     */
+    .game-quick {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+        gap: 6px;
+    }
+
     .game-quick a {
-        /* Icon only below this width: six labels wrapped to four rows and pushed the strip off
-           the first screen, which is the opposite of the point. */
-        padding: 8px;
+        padding: 6px;
+        justify-content: center;
     }
 
     .game-quick span {
+        /* Icon only: six labels wrapped to four rows and pushed the strip off the first
+           screen, which is the opposite of the point. */
         display: none;
     }
+
+    .game-quick img {
+        width: 30px;
+        height: 30px;
+    }
+}
 }
