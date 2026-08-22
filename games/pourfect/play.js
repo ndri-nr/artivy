@@ -268,13 +268,24 @@ function pourable(from, to) {
     return pourAmount(board, from, to);
 }
 
+/**
+ * Can this vessel be picked up at all?
+ *
+ * Three cannot, for one reason: no legal pour starts there, so lifting one is a selection with
+ * nothing behind it, which reads as the tap not working. Empty is obvious; the collector is
+ * one-way by the rules; a sealed bottle is finished, and pouring it back out can only undo
+ * progress, since the win wants exactly the state it is already in.
+ */
+function pickable(index) {
+    return index !== board.collector
+        && board.tubes[index].length > 0
+        && !isSettled(board, index);
+}
+
 function tap(index) {
     if (pouring || isWon(board) || index < 0) return;
     if (picked < 0) {
-        // The collector is a destination and nothing else: picking it up would be a selection
-        // with no legal move behind it, which reads as the tap not working.
-        if (index === board.collector) return;
-        if (board.tubes[index].length > 0) {
+        if (pickable(index)) {
             picked = index;
             render();
         }
@@ -287,7 +298,7 @@ function tap(index) {
     }
     const count = pourable(picked, index);
     if (count === 0) {
-        picked = index !== board.collector && board.tubes[index].length > 0 ? index : -1;
+        picked = pickable(index) ? index : -1;
         render();
         return;
     }
@@ -370,7 +381,7 @@ els.bottles.addEventListener('pointerdown', (event) => {
     touched();
     if (pouring) return;
     const index = vesselAt(event.clientX, event.clientY);
-    if (index < 0 || index === board.collector || board.tubes[index].length === 0) return;
+    if (index < 0 || !pickable(index)) return;
     dragFrom = index;
     dragMoved = false;
     els.bottles.setPointerCapture(event.pointerId);
