@@ -223,6 +223,9 @@ function render() {
     els.bottles.style.setProperty('--columns', hasCollector
         ? `repeat(${left}, 1fr) 1.2fr repeat(${right}, 1fr)`
         : `repeat(${widest}, 1fr)`);
+    // Which column the tall tube stands in. Grid places a row-spanning item before the
+    // auto-flow ones, so without this it takes column 1 rather than the middle.
+    els.bottles.style.setProperty('--collector-column', String(left + 1));
     // width ÷ height of the box the board should reserve. A bottle is about 0.3 as wide as it
     // is tall; being slightly generous costs a slightly smaller board, which is the cheap way
     // to be wrong.

@@ -28,6 +28,34 @@
 body.gpourfect {
     background: linear-gradient(180deg, #3b3e63 0%, #22243c 100%);
     color: var(--text-primary);
+    /*
+     * These bottles are the one board on the site bound by *width* rather than height: three
+     * of them across a phone cannot grow taller without growing wider. So the page came out
+     * shorter than the viewport and the site's own light background showed as a band under the
+     * game. Fill the screen, then let the board take the slack.
+     */
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* The rails wrapper is the body's flex child, not the stage — the stage sits inside it — so
+   the height has to be handed down one level before the stage can pass it to the board. */
+.gpourfect .play-with-rails {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.gpourfect .play-stage {
+    flex: 1;
+}
+
+.gpourfect .play-board {
+    /* Centred in whatever the panel and the advert leave, rather than pushed against the
+       panel with the gap dumped underneath. The advert stays at the far edge, which is where
+       it belongs anyway — a banner near a board is a banner under a missed swipe. */
+    margin-block: auto;
 }
 
 /*
@@ -66,6 +94,15 @@ body.gpourfect::before {
 
 .gpourfect .play-board {
     --board-max: 560px;
+    /*
+     * A ceiling, because the width rule alone is not enough here. --board-ratio is an estimate
+     * — 0.32 per bottle column — and the collector, spanning every row in a 1.2fr column, is
+     * taller per unit of width than that estimate allows. So the grid's own content pushed the
+     * board past the aspect box it was given, and on a landscape phone that overflow ran off
+     * the bottom of the screen. play.css spends the same number on the width; spending it on
+     * the height too costs nothing when the board is already the smaller of the two.
+     */
+    max-height: calc(100dvh - var(--play-chrome));
     background: transparent;
     border: 0;
     display: grid;
@@ -108,6 +145,14 @@ body.gpourfect::before {
 .gpourfect .vessel.collector {
     cursor: default;
     grid-row: 1 / -1;
+    /*
+     * The column is named, not left to auto-placement. An item with a definite row span is
+     * placed before the auto-flow items, at the first free column — so the collector took
+     * column 1 and the bottles filled in around it, six and six, with the tall tube stranded
+     * down the left edge. It belongs in the middle, three bottles either side, the way the app
+     * lays it out.
+     */
+    grid-column: var(--collector-column, auto);
 }
 
 .gpourfect .vessel.settled {
@@ -125,32 +170,48 @@ body.gpourfect::before {
 }
 
 .gpourfect .board-wrap {
-    position: relative;
-    width: 100%;
-    height: 100%;
+    /*
+     * Absolute rather than `height: 100%`. The board's height comes from `aspect-ratio`, which
+     * is not a definite height, so a percentage on the child fell back to auto and the grid
+     * sized itself from its own content — 27px taller than the board it sits in, which on a
+     * landscape phone put the bottom row of bottles off the screen. Pinning to all four edges
+     * takes the board's used height, whatever produced it.
+     */
+    position: absolute;
+    inset: 0;
 }
 
 /* --- the pointing hand ---------------------------------------------------------- */
 
 .gpourfect .hand {
     position: absolute;
-    width: 11%;
-    max-width: 46px;
+    /* Pinned to the wrap's own corner, because the offsets below are measured from there.
+       Without this the hand keeps its static position — after `.bottles`, which is the full
+       height of the wrap — so every hint pointed at a bottle one whole board below the one it
+       meant. */
+    top: 0;
+    left: 0;
+    width: 13%;
+    max-width: 52px;
     pointer-events: none;
     z-index: 4;
     animation: pourfect-hand 2.6s ease-in-out infinite;
 }
 
+/* Every frame carries a transform, including the invisible ones. A keyframe without one
+   interpolates from `none` — the wrap's own corner — so the hand slid in diagonally from the
+   top of the board on its way to the bottle it meant, and that first glimpse reads as the
+   hint pointing at the wrong place. */
 @keyframes pourfect-hand {
-    0%, 6% { opacity: 0; }
+    0%, 6% { opacity: 0; transform: translate(var(--from-x), var(--from-y)) scale(1); }
     8% { opacity: 1; transform: translate(var(--from-x), var(--from-y)) scale(1); }
     14% { transform: translate(var(--from-x), var(--from-y)) scale(0.86); }
     20% { transform: translate(var(--from-x), var(--from-y)) scale(1); }
     48% { transform: translate(var(--to-x), var(--to-y)) scale(1); }
     54% { transform: translate(var(--to-x), var(--to-y)) scale(0.86); }
     60% { transform: translate(var(--to-x), var(--to-y)) scale(1); }
-    74% { opacity: 1; }
-    82%, 100% { opacity: 0; }
+    74% { opacity: 1; transform: translate(var(--to-x), var(--to-y)) scale(1); }
+    82%, 100% { opacity: 0; transform: translate(var(--to-x), var(--to-y)) scale(1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
