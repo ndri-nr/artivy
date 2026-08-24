@@ -414,7 +414,11 @@ els.bottles.addEventListener('pointerup', (event) => {
         return;
     }
     if (!dragMoved) {
-        picked = -1;
+        // A tap, not a drag. The selection has to survive into tap(): clearing it here made
+        // every second tap start a new selection instead of pouring, so tap-then-tap worked
+        // only onto an empty bottle — the one target that is not pickable and so never took
+        // the selection for itself. tap() already knows how to deselect and how to move a
+        // selection; it needs the current one to do either.
         tap(from);
         return;
     }
