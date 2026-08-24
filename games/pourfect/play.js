@@ -397,6 +397,23 @@ function checkDead(budget) {
 
 let dragFrom = -1;
 let dragMoved = false;
+let downX = 0;
+let downY = 0;
+
+/*
+ * How far a finger may travel and still be a tap.
+ *
+ * A finger never lands still: a real touch emits a pointermove of a pixel or two before it
+ * lifts. Treating any movement at all as a drag meant almost every tap took the drag path, and
+ * that path releases "over nothing" — the pointer never left the bottle it started on — which
+ * keeps the bottle picked up instead of pouring. So tap-then-tap only ever worked onto an empty
+ * bottle: empty is not pickable, so the second tap never armed a drag in the first place and
+ * fell through to the tap branch. Everything else silently moved the selection.
+ *
+ * Flutter's gesture arena does this for the app with a slop of 18px; the browser gives us
+ * nothing, so it is measured here.
+ */
+const DRAG_SLOP = 10;
 
 els.bottles.addEventListener('pointerdown', (event) => {
     touched();
@@ -405,11 +422,18 @@ els.bottles.addEventListener('pointerdown', (event) => {
     if (index < 0 || !pickable(index)) return;
     dragFrom = index;
     dragMoved = false;
+    downX = event.clientX;
+    downY = event.clientY;
     els.bottles.setPointerCapture(event.pointerId);
 });
 
 els.bottles.addEventListener('pointermove', (event) => {
     if (dragFrom < 0) return;
+    if (!dragMoved
+        && Math.abs(event.clientX - downX) < DRAG_SLOP
+        && Math.abs(event.clientY - downY) < DRAG_SLOP) {
+        return;
+    }
     dragMoved = true;
     const over = vesselAt(event.clientX, event.clientY);
     // Only a legal destination lights up. Highlighting an illegal one and then refusing the
