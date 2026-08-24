@@ -255,16 +255,34 @@ function render() {
 
 /* ----------------------------------------------------------------------- interaction */
 
+/**
+ * Which bottle a finger meant: the nearest one, not the first one that answers.
+ *
+ * A bottle is narrow and the gaps between them are narrower still — about five pixels on a
+ * phone — so the padding that makes a near miss count for something is wider than the gap it
+ * crosses. Testing each box in turn and taking the first hit therefore handed every ambiguous
+ * point to whichever bottle came earlier in the grid: a tap on a bottle's left edge poured from
+ * its neighbour, and on a thirteen-bottle board a fifth of each column behaved that way. Which
+ * is exactly what "sometimes it works" looks like.
+ *
+ * Distance to the box, zero inside it, decides. Ties cannot happen in practice and would go to
+ * the earlier bottle, which is at least the same answer every time.
+ */
 function vesselAt(x, y) {
+    const REACH = 14; // px past the glass that still counts as meaning it
+    let best = -1;
+    let nearest = Infinity;
     for (const svg of els.bottles.querySelectorAll('.vessel')) {
         const box = svg.getBoundingClientRect();
-        // Generous vertically: a bottle is narrow, and a finger landing just above or below one
-        // still meant it.
-        if (x >= box.left - 6 && x <= box.right + 6 && y >= box.top - 10 && y <= box.bottom + 10) {
-            return Number(svg.dataset.index);
+        const dx = Math.max(box.left - x, 0, x - box.right);
+        const dy = Math.max(box.top - y, 0, y - box.bottom);
+        const distance = dx * dx + dy * dy;
+        if (distance < nearest) {
+            nearest = distance;
+            best = Number(svg.dataset.index);
         }
     }
-    return -1;
+    return nearest <= REACH * REACH ? best : -1;
 }
 
 function pourable(from, to) {
@@ -431,6 +449,20 @@ els.bottles.addEventListener('pointerup', (event) => {
     }
     picked = from;
     tap(over);
+});
+
+/*
+ * A cancelled pointer is not a released one: the browser takes the gesture away — a second
+ * finger, a system edge swipe, the page deciding to scroll — and no pointerup ever arrives. The
+ * drag state stayed armed through that, so the next touch anywhere on the board carried on
+ * dragging from a bottle the player had let go of long before. Nothing about that is
+ * reproducible from the outside, which is why it read as the game being unreliable.
+ */
+els.bottles.addEventListener('pointercancel', () => {
+    dragFrom = -1;
+    dragMoved = false;
+    hover = -1;
+    render();
 });
 
 els.undo.addEventListener('click', () => {
