@@ -40,6 +40,34 @@
             margin-top: 26px;
             padding-top: 0;
         }
+
+        /* The consent button. Shares the contact page's shape rather than inventing a
+           second button style for the one control on this page. */
+        .contact-email {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1rem;
+            font-family: inherit;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 13px 26px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
+            transition: all 0.3s ease;
+        }
+        .contact-email:hover {
+            background: #3db8b0;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(78, 205, 196, 0.4);
+        }
+        #consent-unavailable {
+            display: inline-block;
+            color: #3d4657;
+            line-height: 1.75;
+        }
         @media (max-width: 600px) {
             .page-container {
                 margin: 90px 15px 30px 15px;
@@ -132,7 +160,45 @@
 
             <p>Google's own description of how it handles data when you use its partners' sites is at <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">policies.google.com/technologies/partner-sites</a>.</p>
 
-            <p>Advertising cookies require consent in some regions, including the European Economic Area, the United Kingdom and Switzerland. Where that applies, consent is collected by Google's own consent message before any personalised advert is served — not by us, and we do not receive your answer. The message can be reopened from the link it provides to change that answer, and declining does not stop you playing anything on this site.</p>
+            <h3>Consent, if you are in the EEA, the UK or Switzerland</h3>
+
+            <p>Advertising cookies require your consent in those regions. It is collected by Google's own certified consent message, which appears before any personalised advert is served — not by us, and we never receive your answer. The message offers three choices: <strong>Consent</strong>, <strong>Do not consent</strong>, and <strong>Manage options</strong>, which lets you accept or refuse each purpose and each advertising partner individually.</p>
+
+            <p>Refusing changes which adverts you see and nothing else. Every game on this site remains completely playable, with no feature withheld and nothing asked of you a second time.</p>
+
+            <p>You can change your mind at any time:</p>
+
+            <p>
+                <button type="button" id="consent-revoke" class="contact-email" hidden>Manage advertising consent</button>
+                <span id="consent-unavailable">The consent message applies only where the law requires it. If you are outside those regions, no consent was asked for and there is nothing here to change — you can still switch off personalisation through <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a>.</span>
+            </p>
+
+            <!--
+              Google's CMP does not place a "change your choices" control on the page by
+              itself — the publisher has to, or the answer a visitor gave is final and this
+              policy's promise that it can be changed would be untrue.
+
+              googlefc arrives with the AdSense tag, but only where a consent message applies,
+              so the button starts hidden and is revealed by the CMP's own ready callback.
+              A visitor who was never asked for consent therefore never sees a button that
+              would do nothing.
+            -->
+            <script>
+                window.googlefc = window.googlefc || {};
+                window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
+                window.googlefc.callbackQueue.push({
+                    CONSENT_DATA_READY: function () {
+                        var button = document.getElementById('consent-revoke');
+                        var note = document.getElementById('consent-unavailable');
+                        if (typeof window.googlefc.showRevocationMessage !== 'function') return;
+                        button.addEventListener('click', function () {
+                            window.googlefc.showRevocationMessage();
+                        });
+                        button.hidden = false;
+                        note.hidden = true;
+                    },
+                });
+            </script>
 
             <p>We do not run Google Auto ads, we place no advert within reach of a game board, and no advert on this site is a video you are asked to watch in exchange for anything. Every advert here is a plain display banner, loaded once when the page loads and never refreshed.</p>
 
