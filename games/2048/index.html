@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2048 - Artivy</title>
+    <title>2048 — rules, strategy and free browser version | Artivy</title>
+    <meta name="description" content="How to play 2048: the merge rules people get wrong, corner strategy, and why reaching 2048 does not end the run. Play free in your browser, no download.">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <style>
@@ -48,7 +49,10 @@
             margin-bottom: 20px;
             font-size: 3rem;
         }
-        .game-info-container p {
+        /* Direct children only: the blurb and the play link. A `.game-info-container p`
+           here also caught every paragraph of the how-to-play guide below, which wants the
+           reading size .guide sets in styles.css, not a 1.2rem blurb weight. */
+        .game-info-container > p {
             color: #4a5568;
             line-height: 1.6;
             margin-bottom: 30px;
@@ -128,6 +132,8 @@
                     <a href="../pourfect/play.html">PourFect!</a>
                 </div>
             </li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
         </ul>
 
         <!-- The phone menu, the same <details> the home page uses. Below 768px .nav-links is
@@ -142,6 +148,8 @@
                 <li><a href="play.html">2048</a></li>
                 <li><a href="../rekta/play.html">Rekta</a></li>
                 <li><a href="../pourfect/play.html">PourFect!</a></li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../contact.html">Contact</a></li>
             </ul>
         </details>
     </nav>
@@ -193,6 +201,52 @@
         </a>
         -->
 
+        <section class="guide" id="how-to-play">
+            <h2>How to play 2048</h2>
+
+            <p>Every move slides <strong>all sixteen squares at once</strong>. Swipe on a phone, or use the arrow keys on a keyboard; tiles travel as far as they can in that direction, and two tiles carrying the same number collide into one tile of double the value. A 2 meeting a 2 becomes a 4, two 4s become an 8, and the number you scored is added to your score — so your score is the sum of every merge you have ever made, not a count of moves.</p>
+
+            <p>After each move that actually changed something, one new tile appears on a random empty square: a <strong>2 nine times out of ten, a 4 the remaining tenth</strong>. That single rule is why the board fills faster than beginners expect, and why a run ends not when you run out of moves but when you run out of <em>useful</em> ones.</p>
+
+            <h3>The three rules people get wrong</h3>
+
+            <ul>
+                <li><strong>A merged tile cannot merge again in the same move.</strong> A row of <code>2 2 4 4</code> becomes <code>4 8</code>, never a single 16. The 4s produced by the merge are new tiles, and new tiles rest until your next swipe.</li>
+                <li><strong>With three in a row, the pair nearest the wall goes first.</strong> Swipe left on <code>2 2 2</code> and you get <code>4 2</code> — the two leftmost tiles pair up and the third is left over. Which two combine depends on which way you swiped, so the same row gives a different result left and right.</li>
+                <li><strong>A move that changes nothing spawns nothing.</strong> Swiping into a wall is a free action. You cannot flood your own board by pressing the same key repeatedly, and you cannot use a dead swipe to shuffle the tiles you have.</li>
+            </ul>
+
+            <p>The run is over when no square is empty <em>and</em> no two neighbours match — those two conditions together, which is why a completely full board is not automatically a loss. If any pair of touching tiles is equal, you still have a move.</p>
+
+            <h3>Reaching 2048 is not the end</h3>
+
+            <p>Most versions of this puzzle stop you at 2048 and offer a "keep going" button. This one simply does not interrupt. The tile at 2048 is a milestone the game notes and then forgets about; 4096, 8192 and 16384 are all reachable on a 4×4 board, and the score display switches to a short form once the numbers get long — <code>99999</code> reads as <code>99K</code>. It truncates rather than rounds, so the label never flatters your score by a single point.</p>
+
+            <h2>Strategy that actually holds up</h2>
+
+            <h3>Pick a corner and never leave it</h3>
+
+            <p>The single highest-value habit is to choose one corner — bottom-left is as good as any — and keep your largest tile there for the whole run. That means committing to two directions, say <em>down</em> and <em>left</em>, and treating the other two as emergencies. Every time you swipe <em>up</em> with a big tile parked at the bottom, you invite a fresh 2 to spawn underneath it, and a small tile trapped below a large one is a wall you now have to dismantle.</p>
+
+            <h3>Build a staircase, not a pile</h3>
+
+            <p>Aim for your bottom row to descend in order: largest in the corner, then the next largest beside it, and so on. A row like <code>256 128 64 32</code> is worth far more than the same four numbers scattered, because each tile has exactly one neighbour it wants to meet, and every merge along it moves the whole row one step closer to collapsing into a single big tile. Scattered equals are a lottery; an ordered row is a machine.</p>
+
+            <h3>Keep the fourth row for spawns</h3>
+
+            <p>Try to work in three rows and leave the far row breathing. New tiles arrive on empty squares only, so empty squares are the resource the game meters out — every one you spend is one fewer chance to land a spawn somewhere harmless. Players who lose at 512 usually did not run out of merges; they ran out of room to receive the next 2.</p>
+
+            <h3>Undo is for reading, not rescuing</h3>
+
+            <p>The <strong>Undo</strong> button rolls back your last move and the tile that spawned with it. It holds one step, deliberately. Used to reverse a genuine slip it is a small mercy; used to probe which of four swipes spawns most conveniently it turns the puzzle into a search, and the game stops being interesting long before your score stops climbing. The lesson from a bad move is usually worth more than the twelve points it cost you.</p>
+
+            <h2>What this browser version includes</h2>
+
+            <p>This is the full 4×4 puzzle with score, personal best, undo and a new game — no account, no sign-in, nothing to install. Your best score and the board you left behind are stored in your own browser, so closing the tab and coming back later resumes the same run. In a private window some browsers refuse to save at all, and the page tells you so rather than losing your run silently.</p>
+
+            <p>Compared with the Android app, the browser build leaves out the interface language switch, the personal top-ten table and the interstitial between runs. The puzzle itself is identical — same spawn odds, same merge rules, same 4×4 grid — because the rules are the part worth being faithful to.</p>
+        </section>
+
         <!--
           The same unit as this game's play page, deliberately: reports stay per-game rather
           than splitting into play-versus-about, which is not a distinction worth having.
@@ -235,6 +289,12 @@
     </div>
 
     <footer>
+        <nav class="footer-links" aria-label="Site">
+            <a href="../index.html">Home</a>
+            <a href="../about.html">About Artivy</a>
+            <a href="../contact.html">Contact</a>
+            <a href="../privacy.html">Website privacy</a>
+        </nav>
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>
 </body>

@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PawDoku - Artivy</title>
+    <title>PawDoku — rules, tips and free browser logic puzzle | Artivy</title>
+    <meta name="description" content="PawDoku's four placement rules, the double-tap that summons a cat, and the region-first technique that solves a board. Every puzzle has exactly one solution. Play free.">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <style>
@@ -48,7 +49,10 @@
             margin-bottom: 20px;
             font-size: 3rem;
         }
-        .game-info-container p {
+        /* Direct children only: the blurb and the play link. A `.game-info-container p`
+           here also caught every paragraph of the how-to-play guide below, which wants the
+           reading size .guide sets in styles.css, not a 1.2rem blurb weight. */
+        .game-info-container > p {
             color: #4a5568;
             line-height: 1.6;
             margin-bottom: 30px;
@@ -128,6 +132,8 @@
                     <a href="../pourfect/play.html">PourFect!</a>
                 </div>
             </li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
         </ul>
 
         <!-- The phone menu, the same <details> the home page uses. Below 768px .nav-links is
@@ -142,6 +148,8 @@
                 <li><a href="../2048/play.html">2048</a></li>
                 <li><a href="../rekta/play.html">Rekta</a></li>
                 <li><a href="../pourfect/play.html">PourFect!</a></li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../contact.html">Contact</a></li>
             </ul>
         </details>
     </nav>
@@ -187,6 +195,78 @@
             <img src="../assets/google-play-badge.png" alt="Get it on Google Play">
         </a>
 
+        <section class="guide" id="how-to-play">
+            <h2>How to play PawDoku</h2>
+
+            <p>A grid divided into coloured regions, and a number of cats to place on it equal to the width of the board. On a 5×5 board you place five cats, and the placement has to satisfy four conditions at once:</p>
+
+            <ul>
+                <li>Exactly <strong>one cat per row</strong>.</li>
+                <li>Exactly <strong>one cat per column</strong>.</li>
+                <li>Exactly <strong>one cat per coloured region</strong>.</li>
+                <li><strong>No two cats may touch</strong> — not side by side, not corner to corner. If you can move a chess king from one cat to another in a single step, the arrangement is illegal.</li>
+            </ul>
+
+            <p>Every board has <strong>exactly one</strong> valid arrangement. That is a promise the generator keeps, not a hope: each puzzle is checked for a second solution before you ever see it, and rejected if one exists. Without that guarantee a player could reason flawlessly, place cats somewhere perfectly consistent, and still be told they were wrong — which is the fastest way to make a logic puzzle feel broken.</p>
+
+            <h3>The controls, which are not the obvious ones</h3>
+
+            <div class="guide-note">
+                <p><strong>A single tap does not place a cat.</strong> It marks the square with your own X — a note to yourself that nothing goes there. Tap again to clear it. To actually place a cat, <strong>double-tap</strong> the square, or <strong>press and hold</strong> it. You can also <strong>drag across the board</strong> to paint X's over a whole run of squares at once.</p>
+            </div>
+
+            <p>The split is deliberate. Marking squares off is the work of the puzzle and you do it constantly, so it gets the cheapest gesture. Committing a cat is a decision with consequences, so it asks for a moment of intent.</p>
+
+            <h3>A wrong cat costs a life, immediately</h3>
+
+            <p>You have <strong>three hearts</strong>. When you place a cat, the board does not check whether the placement is <em>legal</em> — it checks whether it is <em>correct</em>, against the one solution the puzzle has. This is the whole difficulty of the game and it catches everyone once.</p>
+
+            <p>A square can break none of the four rules given what is already on the board and still be the wrong square, because the contradiction only emerges further along. Judging by legality would let you fill the board with locally reasonable guesses and discover the problem at the very end, with no way to tell which of your cats was the mistake. Judging against the solution tells you on the spot: you lose a heart, and that square is marked with a permanent red cross which you cannot clear for the rest of the level.</p>
+
+            <p>Which means the red crosses are not just punishment — they are information you paid for. Lose a heart and you have narrowed the board.</p>
+
+            <h2>How to actually solve one</h2>
+
+            <h3>Start with the smallest region</h3>
+
+            <p>Rows and columns are all the same size; the coloured regions are not. A region of three squares constrains far harder than a region of eight, and a region confined to a single row tells you instantly that <em>no other square in that row</em> can hold a cat. Work smallest-first and the board opens up; work left-to-right and you will mostly be guessing.</p>
+
+            <h3>Use the no-touching rule as a spreader, not a filter</h3>
+
+            <p>Beginners treat adjacency as something to check after choosing a square. It is much stronger used forwards: place a cat and you have eliminated up to <em>eight</em> squares around it, which usually finishes off a neighbouring region or a neighbouring row on its own. Two cats in adjacent rows can never be in the same column <em>or</em> in the columns either side of it — so consecutive rows must jump at least two columns apart.</p>
+
+            <h3>Count regions against rows</h3>
+
+            <p>On an n×n board there are exactly n regions and n rows, and each takes exactly one cat. So if three regions all lie entirely within the same two rows, you have a contradiction and one of your assumptions is wrong. Conversely, if a set of k rows contains all of k regions, then no cat from any other region can appear in those rows. This kind of counting resolves the hard middle stretch of a 7×7 or larger board, where local deduction runs out.</p>
+
+            <h3>Mark, do not remember</h3>
+
+            <p>The X marks exist because holding eliminations in your head is where mistakes come from. Paint them by dragging — a whole row, a whole ring around a cat — and the remaining candidates become something you can see instead of something you reconstruct. The players who lose hearts are almost always the ones playing on a clean board.</p>
+
+            <h2>Boards get bigger, endlessly</h2>
+
+            <div class="guide-table-wrap">
+                <table>
+                    <thead><tr><th>Levels</th><th>Board</th><th>Cats to place</th></tr></thead>
+                    <tbody>
+                        <tr><td>1 – 20</td><td>5 × 5</td><td>5</td></tr>
+                        <tr><td>21 – 40</td><td>6 × 6</td><td>6</td></tr>
+                        <tr><td>41 – 60</td><td>7 × 7</td><td>7</td></tr>
+                        <tr><td>61 – 80</td><td>8 × 8</td><td>8</td></tr>
+                        <tr><td>81 and up</td><td>9 × 9</td><td>9</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>It stops at 9×9 rather than climbing forever, because past that size the puzzles stop getting more interesting and simply take longer. Levels themselves never run out. Each level is generated from its own number, so level 34 is the same board every time you open it — losing all three hearts and pressing <strong>Try again</strong> gives you another attempt at the puzzle you were beaten by, not a different one.</p>
+
+            <h2>What this browser version includes</h2>
+
+            <p>Endless levels, three hearts, the level counter and <strong>Restart</strong>. Your level and the board you left mid-solve are stored in your own browser, so you can close the tab and pick the same puzzle back up. If the browser will not save — a private window, storage disabled — the page tells you rather than losing your progress quietly.</p>
+
+            <p>The Android app adds a timed daily challenge, coins, a store, themes, trophies and hint paws. None of that is here: this is the logic puzzle by itself. Level numbers do not line up between the two, either — each build generates its own boards, and matching them would mean freezing one to the other's random number generator for no player's benefit.</p>
+        </section>
+
         <!--
           The same unit as this game's play page, deliberately: reports stay per-game rather
           than splitting into play-versus-about, which is not a distinction worth having.
@@ -229,6 +309,12 @@
     </div>
 
     <footer>
+        <nav class="footer-links" aria-label="Site">
+            <a href="../index.html">Home</a>
+            <a href="../about.html">About Artivy</a>
+            <a href="../contact.html">Contact</a>
+            <a href="../privacy.html">Website privacy</a>
+        </nav>
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>
 </body>

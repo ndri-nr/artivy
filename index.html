@@ -40,6 +40,8 @@
                     <a href="pourfect/play.html">PourFect!</a>
                 </div>
             </li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
         </ul>
 
         <!--
@@ -58,6 +60,8 @@
                 <li><a href="2048/play.html">2048</a></li>
                 <li><a href="rekta/play.html">Rekta</a></li>
                 <li><a href="pourfect/play.html">PourFect!</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
             </ul>
         </details>
     </nav>
@@ -246,6 +250,37 @@
         </div>
     </section>
 
+    <section class="home-prose reveal">
+        <div class="guide">
+            <h2>Six small games, and what they have in common</h2>
+
+            <p>Artivy is an independent one-person studio. Every game here is a puzzle or an arcade puzzle, built to be picked up for five minutes and put down without losing anything — and every one of them exists twice: as an Android app on Google Play, and as a browser version on this site that needs no download, no account and no sign-in.</p>
+
+            <p>The browser versions are not ports. The rules of each game were rewritten from scratch in JavaScript, because the Android builds are written in Dart, Java and GDScript, and none of that runs in a browser. Six games therefore mean six independent implementations of six sets of rules — which is more work than a port, and the reason for it is that a push to this website should never be able to break a game that is live on Google Play.</p>
+
+            <h3>What that means for you</h3>
+
+            <ul>
+                <li><strong>Nothing to install.</strong> Open a game page and play. It works on a phone, a tablet and a laptop, in portrait or landscape.</li>
+                <li><strong>Your progress stays on your device.</strong> Levels, best scores and half-finished boards are kept by your own browser and never uploaded. There is no account to make and no profile of you anywhere.</li>
+                <li><strong>No purchases, ever.</strong> No Artivy game has an in-app purchase, a real-money currency, a loot box or an energy meter — not on Google Play and not here.</li>
+                <li><strong>Offline once loaded.</strong> Nothing waits on a server, because nothing is on a server.</li>
+            </ul>
+
+            <h3>Where to start</h3>
+
+            <p>If you like <strong>deduction</strong>, try <a href="rekta/index.html">Rekta</a> — Shikaku, where you split a grid into rectangles and every level is solvable by pure reasoning — or <a href="pawdoku/index.html">PawDoku</a>, where each board is proved to have exactly one solution before you ever see it.</p>
+
+            <p>If you like <strong>tidying things up</strong>, <a href="pourfect/index.html">PourFect!</a> sorts coloured liquid between bottles, and every board has been run through a solver before it is dealt to you.</p>
+
+            <p>If you like <strong>words</strong>, <a href="kata_word/index.html">Kata·Word</a> plays at four, five and six letters in English and Bahasa Indonesia, with word lists that were filtered by hand rather than dumped from a dictionary.</p>
+
+            <p>If you want something <strong>faster</strong>, <a href="2048/index.html">2048</a> is the sliding-tile classic with no cap at 2048, and <a href="stacko/index.html">StackO!</a> is a test of timing where every imperfect drop costs you width you have to earn back.</p>
+
+            <p>Every game's page explains its rules properly, including the parts players usually get wrong, and links straight to the browser version. More about how the games are made is on the <a href="about.html">about page</a>.</p>
+        </div>
+    </section>
+
     <!--
       The front page's own unit, not one of the games'. Mixing it into a game's slot would
       dirty the per-game figures the five separate units exist to keep.
@@ -270,6 +305,12 @@
 
     <!-- Footer -->
     <footer>
+        <nav class="footer-links" aria-label="Site">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Artivy</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Website privacy</a>
+        </nav>
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>
 

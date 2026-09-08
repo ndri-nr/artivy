@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PourFect! - Artivy</title>
+    <title>PourFect! — water sort rules, tips and browser game | Artivy</title>
+    <meta name="description" content="How PourFect!'s pours work, why the collector tube is one-way, and the habits that stop a board dead-ending. Every board proved solvable first. Play free in your browser.">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <style>
@@ -48,7 +49,10 @@
             margin-bottom: 20px;
             font-size: 3rem;
         }
-        .game-info-container p {
+        /* Direct children only: the blurb and the play link. A `.game-info-container p`
+           here also caught every paragraph of the how-to-play guide below, which wants the
+           reading size .guide sets in styles.css, not a 1.2rem blurb weight. */
+        .game-info-container > p {
             color: #4a5568;
             line-height: 1.6;
             margin-bottom: 30px;
@@ -128,6 +132,8 @@
                     <a href="play.html">PourFect!</a>
                 </div>
             </li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
         </ul>
 
         <!-- The phone menu, the same <details> the home page uses. Below 768px .nav-links is
@@ -142,6 +148,8 @@
                 <li><a href="../2048/play.html">2048</a></li>
                 <li><a href="../rekta/play.html">Rekta</a></li>
                 <li><a href="play.html">PourFect!</a></li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../contact.html">Contact</a></li>
             </ul>
         </details>
     </nav>
@@ -193,6 +201,73 @@
         </a>
         -->
 
+        <section class="guide" id="how-to-play">
+            <h2>How to play PourFect!</h2>
+
+            <p>A row of bottles, each holding <strong>four units</strong> of coloured liquid, all mixed up. Sort them: every bottle either empty, or filled to the top with a single colour. That is the win condition, and it is checked exactly — a bottle holding three units of one colour is not done, it is nearly done.</p>
+
+            <p><strong>Tap a bottle to pick it up, then tap another to pour</strong> — or drag straight from one to the other, whichever suits you. Only a legal destination lights up while you drag. Two rules govern whether a pour is allowed:</p>
+
+            <ul>
+                <li>The target must be <strong>empty</strong>, or its topmost unit must be the <strong>same colour</strong> as the unit you are pouring.</li>
+                <li>The target must have <strong>room</strong>. Nothing spills, and nothing is ever destroyed.</li>
+            </ul>
+
+            <p>When a pour is legal, the whole <strong>run of matching colour on top</strong> travels at once — three greens stacked on top will move as three, not one at a time — but only as much as will fit. Pour three greens into a bottle with two spaces and two go across, leaving one behind. Learning to see the top run as a single block, rather than as individual units, is the difference between fumbling and playing.</p>
+
+            <h3>The tall tube is not a bottle</h3>
+
+            <div class="guide-note">
+                <p>From level 10 there is a <strong>collector</strong> on the board: a tall tube that accepts one colour only, holds 10, 14 or 18 units, and <strong>never pours back out</strong>. Its colour has nowhere else to go — there is more of it than can be arranged into full bottles of four — so getting all of it into the collector is not optional, it is part of the solution.</p>
+            </div>
+
+            <p>Its capacity is deliberately never a multiple of four. If it held twelve, that colour could be packed into three ordinary bottles and the tube would be decoration. Holding ten means two units are left over no matter how you arrange them, so the tube is the only home they have. And it is one-way because pouring back out can never be part of any solution — allowing it would only give players a way to accidentally undo their own progress.</p>
+
+            <h2>How to actually solve these</h2>
+
+            <h3>Empty bottles are your only real resource</h3>
+
+            <p>Everything else on the board is fixed. The number of free bottles you hold at any moment <em>is</em> your remaining freedom, and the most common way to lose a board is to spend the last one on a pour that gained nothing. Before you use an empty bottle, ask what it gets you: a colour completed, or a buried unit uncovered. "Somewhere to put this" is not a reason.</p>
+
+            <h3>Never split a run you cannot reunite</h3>
+
+            <p>Pouring three units into a space of two leaves a stranded unit behind, and that unit now needs a matching top somewhere to rejoin. Sometimes that trade is worth it. Often it turns one problem into two. Count the space before you pour, not after.</p>
+
+            <h3>Work out what is under things</h3>
+
+            <p>The unit you want is frequently the one at the bottom of a bottle. Getting to it means moving everything above, which means finding homes for two or three other colours first. Good play is mostly this: planning three moves back from the pour you actually want, rather than making the pour that is available.</p>
+
+            <h3>Finish bottles completely</h3>
+
+            <p>A bottle full of one colour is out of the puzzle — nothing can be poured into it, and you will never need to touch it again. Every completed bottle shrinks the board you are reasoning about. Chase completions over tidiness.</p>
+
+            <h3>Feed the collector early</h3>
+
+            <p>Once the collector appears, its colour is dead weight on the rest of the board: those units cannot help you and cannot be stored anywhere useful. Move them across as they surface rather than shuffling them between bottles.</p>
+
+            <h2>Levels, and how they get harder</h2>
+
+            <p>The first nine levels are written out one at a time rather than generated from a curve, because the shape of each is a decision — two colours and a spare bottle at level 1, four colours with room to breathe at level 6 as a deliberate breather before six colours arrive at level 7. From level 10 the board ramps: <strong>two more bottles every five levels</strong>, up to twenty-four, with the collector's capacity stepping 10 → 14 → 18 as it goes.</p>
+
+            <p>Colours top out at <strong>eight</strong> plus the collector's own, and that ceiling is not a shortage. The palette is chosen so the hues stay distinguishable under the common forms of colour blindness; a ninth or tenth would make some pair identical for some players, which is not a difficulty increase, it is a defect. So wider boards get harder by giving each colour <em>two or four</em> bottles instead — and unevenly, because insisting every colour take the same number would force a whole-number division that once made the colour count <em>fall</em> as boards grew.</p>
+
+            <p>An extra bottle joins the board from <strong>level 7</strong>. In the app it is padlocked from level 10 and opened with a rewarded advert; here there are no rewarded adverts, so it is simply an ordinary bottle you always have.</p>
+
+            <h3>Every board is proved solvable before you see it</h3>
+
+            <p>Boards are generated and then verified, never shuffled backwards from a solved state. A solver has to exist regardless, and rather than adding a second piece of logic that might disagree with the first, generation reuses it: if the solver cannot finish a board, that board is discarded and another is dealt.</p>
+
+            <p>The same solver measures difficulty, and it does not measure it by solution length. It counts <strong>forced moves</strong> — the positions where exactly one legal pour keeps the board winnable — which is what "hard" actually means in a sorting puzzle. Levels 1 to 5 contain none at all, by declaration rather than by luck, and each level after can refuse the cruellest boards of its own shape.</p>
+
+            <p>A board can still be poured into a dead end by a player, and when that happens the game says so — but only once it is <em>provable</em> and only once you can see why: no legal move at all, or a position so tight there is nothing left to explore. A board that is technically lost while still looking wide open says nothing, because a playable-looking level declaring itself over reads as the game breaking rather than as a mistake you made.</p>
+
+            <h2>What this browser version includes</h2>
+
+            <p>The full level run, <strong>Undo</strong> and <strong>Restart</strong>, with your level and the board you left stored in your own browser. No account, no install. If the browser will not save, the page tells you instead of dropping your progress silently.</p>
+
+            <p>The Android app adds rewarded adverts for undo and the extra bottle, an interstitial from level 6, and analytics. None of that is here. Level numbering does not match between the two, either — each build seeds its own boards.</p>
+        </section>
+
         <!--
           The same unit as this game's play page, deliberately: reports stay per-game rather
           than splitting into play-versus-about, which is not a distinction worth having.
@@ -235,6 +310,12 @@
     </div>
 
     <footer>
+        <nav class="footer-links" aria-label="Site">
+            <a href="../index.html">Home</a>
+            <a href="../about.html">About Artivy</a>
+            <a href="../contact.html">Contact</a>
+            <a href="../privacy.html">Website privacy</a>
+        </nav>
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>
 </body>

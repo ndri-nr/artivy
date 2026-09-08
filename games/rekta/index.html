@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekta - Artivy</title>
+    <title>Rekta — Shikaku rules, tips and free browser puzzle | Artivy</title>
+    <meta name="description" content="Shikaku explained: split the grid into rectangles, one clue each, clue equals area. Five deduction techniques, three difficulties, endless levels. Play free in your browser.">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <style>
@@ -48,7 +49,10 @@
             margin-bottom: 20px;
             font-size: 3rem;
         }
-        .game-info-container p {
+        /* Direct children only: the blurb and the play link. A `.game-info-container p`
+           here also caught every paragraph of the how-to-play guide below, which wants the
+           reading size .guide sets in styles.css, not a 1.2rem blurb weight. */
+        .game-info-container > p {
             color: #4a5568;
             line-height: 1.6;
             margin-bottom: 30px;
@@ -128,6 +132,8 @@
                     <a href="../pourfect/play.html">PourFect!</a>
                 </div>
             </li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
         </ul>
 
         <!-- The phone menu, the same <details> the home page uses. Below 768px .nav-links is
@@ -142,6 +148,8 @@
                 <li><a href="../2048/play.html">2048</a></li>
                 <li><a href="play.html">Rekta</a></li>
                 <li><a href="../pourfect/play.html">PourFect!</a></li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../contact.html">Contact</a></li>
             </ul>
         </details>
     </nav>
@@ -193,6 +201,74 @@
         </a>
         -->
 
+        <section class="guide" id="how-to-play">
+            <h2>How to play Rekta</h2>
+
+            <p>Rekta is Shikaku, a Japanese pencil puzzle with two rules and no arithmetic beyond multiplication. The grid is scattered with numbered clues, and your job is to <strong>divide the whole grid into rectangles</strong> so that:</p>
+
+            <ul>
+                <li>every rectangle contains <strong>exactly one</strong> clue, and</li>
+                <li>the clue's number equals the <strong>number of cells</strong> that rectangle covers.</li>
+            </ul>
+
+            <p>A clue of 6 therefore marks a rectangle of 1×6, 2×3, 3×2 or 6×1 — those four shapes and no others. When every cell on the board belongs to exactly one rectangle and every clue is satisfied, the level is done. Nothing overlaps, nothing is left over: the rectangles tile the grid completely.</p>
+
+            <h3>Drawing them</h3>
+
+            <p><strong>Drag</strong> from one corner of the rectangle you want to the opposite corner and release. A preview follows your finger so you can see the shape before you commit. <strong>Tap</strong> a rectangle to remove it; tap an empty cell and it becomes a 1×1 rectangle of its own, which is the only way to answer a clue of 1.</p>
+
+            <p><strong>Clear</strong> wipes the board back to bare clues and restarts the clock. <strong>New grid</strong> deals a different puzzle of the same level — useful when a board has you stuck — and <strong>Next level</strong> moves you on. The counters above the board show how many rectangles you have placed against how many clues there are, so you always know how much is left.</p>
+
+            <h2>How to solve one properly</h2>
+
+            <p>Shikaku is fully deducible. You never need to guess, and the technique is a small set of habits applied in the right order.</p>
+
+            <h3>1. Clues of 1 first, then the primes</h3>
+
+            <p>A clue of 1 is its own rectangle and can be placed immediately. Then look for <strong>prime numbers</strong> — 2, 3, 5, 7, 11 — because a prime has only two possible shapes, a single row or a single column of that length. A 7 in a 6-wide grid can only be vertical. A 5 with a wall four cells to its left must extend right. Primes are where a board cracks open.</p>
+
+            <h3>2. Let the edges do the work</h3>
+
+            <p>A clue sitting on the top row cannot have cells above it, which halves its options at a stroke; a clue in a corner is pinned to a quadrant. Large clues near an edge are often the most constrained things on the board even though they look like the hardest. Always ask what a clue <em>cannot</em> reach before you ask what it can.</p>
+
+            <h3>3. Find cells only one clue can reach</h3>
+
+            <p>This is the strongest single technique in the puzzle. Pick an awkward cell — a corner, a cell hemmed in by rectangles you have already placed — and work out which clues could possibly cover it. If the answer is exactly one, that cell <em>must</em> belong to that clue's rectangle, and often that fact alone fixes the rectangle's orientation. Isolated corners are the classic case: a corner cell reachable by a single 4 tells you the whole 4.</p>
+
+            <h3>4. Count</h3>
+
+            <p>The clues on any board sum to exactly the number of cells in the grid — 48 on an Easy board, 80 on Medium, 130 on Hard. That gives you a check and sometimes a deduction: if you have placed everything but two clues and eleven cells remain, the two clues must be the ones that add to eleven.</p>
+
+            <h3>5. Two clues can never share a row segment</h3>
+
+            <p>If a 3 and a 4 sit side by side in the same row with walls at both ends, neither rectangle can be horizontal through the other. Adjacent clues constrain each other constantly, and much of the middle game is noticing that two rectangles both want the same cell and only one of them can bend.</p>
+
+            <h2>Difficulty and the level ramp</h2>
+
+            <p>Three board shapes, and the choice is genuine rather than cosmetic — a bigger grid with the same clue sizes is a longer puzzle, not a harder one, so each difficulty raises the largest block it will hand out as well:</p>
+
+            <div class="guide-table-wrap">
+                <table>
+                    <thead><tr><th>Difficulty</th><th>Grid</th><th>Cells</th><th>Largest block at level 1</th></tr></thead>
+                    <tbody>
+                        <tr><td>Easy</td><td>6 × 8</td><td>48</td><td>6</td></tr>
+                        <tr><td>Medium</td><td>8 × 10</td><td>80</td><td>9</td></tr>
+                        <tr><td>Hard</td><td>10 × 13</td><td>130</td><td>12</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p>Within a difficulty, that block cap creeps upward as you climb — by one every twelve levels, up to four higher than where it started. This is what makes a late level harder on an identical grid: <strong>bigger blocks mean fewer clues, and fewer clues mean less to anchor a deduction on</strong>. It stops climbing after four, because beyond that the boards stop being harder and start being guesswork, which is not the same thing.</p>
+
+            <p>Levels are generated from their number rather than stored, so the run never ends and <strong>level 40 is the same board every time you open it</strong>. Leaving mid-puzzle and coming back gives you the puzzle you left. Asking for a new grid gives you a different board <em>at the same level</em> — the level number is your progress, the grid is just which of its boards you are looking at, and it resets the moment you move on.</p>
+
+            <h2>What this browser version includes</h2>
+
+            <p>All three difficulties, endless levels, a clock, and your best time per level — stored in your own browser, no account, nothing to install. If the browser refuses to save, the page says so rather than losing your progress without telling you.</p>
+
+            <p>The Android app adds a rewarded hint that reveals one rectangle, and its own analytics. There are no hints here at all, which is a fair trade for a puzzle that is always solvable by reasoning. Level numbers do not match between the two builds either: matching them would mean reproducing Java's random number generator bit for bit, which buys a player exactly nothing.</p>
+        </section>
+
         <!--
           The same unit as this game's play page, deliberately: reports stay per-game rather
           than splitting into play-versus-about, which is not a distinction worth having.
@@ -235,6 +311,12 @@
     </div>
 
     <footer>
+        <nav class="footer-links" aria-label="Site">
+            <a href="../index.html">Home</a>
+            <a href="../about.html">About Artivy</a>
+            <a href="../contact.html">Contact</a>
+            <a href="../privacy.html">Website privacy</a>
+        </nav>
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>
 </body>

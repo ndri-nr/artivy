@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StackO! - Artivy</title>
+    <title>StackO! — how it works, timing tips and browser game | Artivy</title>
+    <meta name="description" content="How StackO! slices an imperfect drop, why a perfect wins width back, and how the streak bonus scores. Timing advice that survives the speed cap. Play free in your browser.">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <style>
@@ -48,7 +49,10 @@
             margin-bottom: 20px;
             font-size: 3rem;
         }
-        .game-info-container p {
+        /* Direct children only: the blurb and the play link. A `.game-info-container p`
+           here also caught every paragraph of the how-to-play guide below, which wants the
+           reading size .guide sets in styles.css, not a 1.2rem blurb weight. */
+        .game-info-container > p {
             color: #4a5568;
             line-height: 1.6;
             margin-bottom: 30px;
@@ -128,6 +132,8 @@
                     <a href="../pourfect/play.html">PourFect!</a>
                 </div>
             </li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
         </ul>
 
         <!-- The phone menu, the same <details> the home page uses. Below 768px .nav-links is
@@ -142,6 +148,8 @@
                 <li><a href="../2048/play.html">2048</a></li>
                 <li><a href="../rekta/play.html">Rekta</a></li>
                 <li><a href="../pourfect/play.html">PourFect!</a></li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../contact.html">Contact</a></li>
             </ul>
         </details>
     </nav>
@@ -193,6 +201,60 @@
         </a>
         -->
 
+        <section class="guide" id="how-to-play">
+            <h2>How to play StackO!</h2>
+
+            <p>A slab slides back and forth above your tower. <strong>Tap the board</strong> — or press any key — and it drops. Whatever part of it overlaps the slab below stays; the overhang is sliced clean off and falls away. That sliced-off piece is gone for good, so the slab you get next is exactly as wide as the one you just landed. Miss the tower entirely and the run ends there.</p>
+
+            <p>That is the whole game, and it is a harsher deal than it first looks: <strong>every imperfect drop makes the tower permanently narrower</strong>. There is no repair mechanic, no lives, no continue. A run is a sequence of small errors accumulating into a sliver you can no longer hit.</p>
+
+            <h3>Except that perfection pays width back</h3>
+
+            <div class="guide-note">
+                <p>Land a slab within a whisker of dead centre and the game counts it as <strong>perfect</strong>: it snaps into exact alignment, and the tower gets a little of its width <em>back</em>. That is the only way a tower ever recovers, and it is why a long run is not simply a slow slide into nothing.</p>
+            </div>
+
+            <p>The tolerance is tight — a fraction of a block — and the width returned per perfect is smaller still, roughly a quarter of one unit against a base width of nine. So one perfect will not undo a bad drop. A <em>run</em> of them will, and that asymmetry is the shape of the whole game: sloppiness compounds fast, accuracy compounds slowly, and staying alive past a hundred blocks means the slow one has to win.</p>
+
+            <h3>Scoring rewards streaks, not survival</h3>
+
+            <p>Every block you land scores <strong>1</strong>. A perfect scores 1 <em>plus</em> the length of your current perfect streak, so consecutive perfects pay 2, 3, 4 and upward. The streak bonus is capped at 8 and it is added rather than multiplied — a streak of twenty should feel excellent without ending the scoring system, and a linear cap keeps a hundred-block run readable next to a fifty-block one.</p>
+
+            <p>One imperfect drop resets the streak to zero. It does not cost you points already banked, but it does cost you the ramp, and rebuilding a streak from 2 upward is slower than it sounds. The practical consequence: a careful player at block 40 is scoring several times what a survivor is.</p>
+
+            <h3>The slab speeds up, then stops</h3>
+
+            <p>It starts slow and accelerates as the tower grows, reaching its top speed at around <strong>forty-five blocks</strong> and holding there for the rest of the run. It stops climbing on purpose. Past that point extra speed does not test your reactions, it tests whether you can <em>see</em> where the slab is — and a game that becomes unreadable rather than demanding is a different and much less interesting kind of hard. So the ceiling is real: block 300 moves at exactly the speed of block 45. If you can survive the transition, you can survive indefinitely.</p>
+
+            <h3>The direction alternates</h3>
+
+            <p>Each drop switches the axis, so slabs arrive alternately from the lower-right and the lower-left of the isometric view — always from a near corner, never from behind the tower. Your eye therefore has two positions to learn rather than four, and the rhythm becomes a two-beat pattern once you stop treating each drop as a fresh problem.</p>
+
+            <h2>Getting good at it</h2>
+
+            <h3>Drop early, not on time</h3>
+
+            <p>There is a delay between deciding and tapping, and at full speed the slab covers real distance inside it. Almost every miss high up in a run is a tap that was <em>late</em>. Aim to release when the slab's leading edge reaches alignment, not when the slab looks centred — you will overshoot at first, then calibrate within a dozen runs.</p>
+
+            <h3>Watch the tower edge, not the slab</h3>
+
+            <p>The reliable cue is the corner of the block below, because it does not move. Fix your eye on that edge and tap when the incoming slab's matching edge crosses it. Tracking the moving slab means your eye is doing the estimating, and eyes are worse at that than they feel.</p>
+
+            <h3>Fix a narrow tower before you climb it</h3>
+
+            <p>If two bad drops have left you thin, the instinct is to keep going carefully. The better play is to treat the next several drops as width repair rather than as progress: each perfect widens you, and a slab three units wide is enormously more forgiving than one at half a unit. Points come from streaks anyway, so the repair drops are also the high-scoring ones.</p>
+
+            <h3>There is no slow point in the travel</h3>
+
+            <p>The slab moves at a constant speed and reverses instantly at each end — it does not decelerate into the turn. Waiting for an easier moment does not work; there is not one. Take the alignment you are given.</p>
+
+            <h2>What this browser version includes</h2>
+
+            <p>Endless Classic mode, score, personal best, and <strong>New run</strong>. Your best is stored in your own browser; there is no account and nothing to install, and if a browser will not save the page says so instead of quietly forgetting your record.</p>
+
+            <p>The Android build is a real 3D scene with three modes — a thirty-second Speed run and a ten-block Precision run alongside Classic — plus gems, a shop and themes. Here the tower is drawn as flat quads under a fixed isometric projection, which is exactly what that camera ever showed: it never rotates, and three faces of a block is the entirety of what is visible. No 3D library, no WebGL, no download. The physics is not physics either — placement is arithmetic on overlapping intervals, which is why a perfect is exact rather than approximately exact. The falling scraps are the only decoration in it.</p>
+        </section>
+
         <!--
           The same unit as this game's play page, deliberately: reports stay per-game rather
           than splitting into play-versus-about, which is not a distinction worth having.
@@ -235,6 +297,12 @@
     </div>
 
     <footer>
+        <nav class="footer-links" aria-label="Site">
+            <a href="../index.html">Home</a>
+            <a href="../about.html">About Artivy</a>
+            <a href="../contact.html">Contact</a>
+            <a href="../privacy.html">Website privacy</a>
+        </nav>
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>
 </body>

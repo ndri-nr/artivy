@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kata·Word - Artivy</title>
+    <title>Kata·Word — rules, tips and free browser word game | Artivy</title>
+    <meta name="description" content="How Kata·Word scores duplicate letters, why greys matter as much as greens, and opening-word strategy in English and Bahasa Indonesia. Play free in your browser.">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <style>
@@ -48,7 +49,10 @@
             margin-bottom: 20px;
             font-size: 3rem;
         }
-        .game-info-container p {
+        /* Direct children only: the blurb and the play link. A `.game-info-container p`
+           here also caught every paragraph of the how-to-play guide below, which wants the
+           reading size .guide sets in styles.css, not a 1.2rem blurb weight. */
+        .game-info-container > p {
             color: #4a5568;
             line-height: 1.6;
             margin-bottom: 30px;
@@ -128,6 +132,8 @@
                     <a href="../pourfect/play.html">PourFect!</a>
                 </div>
             </li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
         </ul>
 
         <!-- The phone menu, the same <details> the home page uses. Below 768px .nav-links is
@@ -142,6 +148,8 @@
                 <li><a href="../2048/play.html">2048</a></li>
                 <li><a href="../rekta/play.html">Rekta</a></li>
                 <li><a href="../pourfect/play.html">PourFect!</a></li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../contact.html">Contact</a></li>
             </ul>
         </details>
     </nav>
@@ -193,6 +201,62 @@
         </a>
         -->
 
+        <section class="guide" id="how-to-play">
+            <h2>How to play Kata·Word</h2>
+
+            <p>A hidden word, <strong>six attempts</strong>, and after every attempt the board tells you exactly how close you were. Type a real word of the right length, press Enter, and each letter turns one of three colours:</p>
+
+            <ul>
+                <li><strong>Green</strong> — right letter, right position.</li>
+                <li><strong>Yellow</strong> — the letter is in the word, but not there.</li>
+                <li><strong>Grey</strong> — the letter is not in the word at all.</li>
+            </ul>
+
+            <p>Pick your word length before you start — <strong>4, 5 or 6 letters</strong> — and your language, <strong>English or Bahasa Indonesia</strong>. Both are complete games with their own word lists rather than one list translated, and they play quite differently; more on that below. The on-screen keyboard colours itself as you go, and a key is <em>never</em> downgraded: once a letter has gone green it stays green even if a later guess puts it in the wrong slot.</p>
+
+            <h3>Repeated letters, the part everyone argues about</h3>
+
+            <div class="guide-note">
+                <p>Guess <code>sasa</code> against the answer <code>kasa</code> and only <strong>one</strong> of your two s's lights up. The answer holds a single s, so a single s is all the colour there is to hand out.</p>
+            </div>
+
+            <p>The board scores a guess in two passes. Greens are settled first and each one consumes its letter from the answer; only then are the leftovers considered for yellow, and a repeated letter goes yellow only while an unclaimed copy remains. This is worth internalising, because the naive version — colouring every letter that appears anywhere in the answer — would light both s's and quietly mislead you. When you guess a doubled letter and get one colour back, you have learned something precise: the answer contains exactly one of it.</p>
+
+            <h3>Guesses have to be real words</h3>
+
+            <p>The game will not accept letter salad. Every attempt is checked against a list of permitted guesses, which is much larger than the list of possible answers — so plenty of obscure words are legal to guess even though they will never be the solution. That asymmetry is a gift: you can spend a guess on a word you would never expect to be right, purely to test five new letters.</p>
+
+            <h2>Strategy</h2>
+
+            <h3>Spend the first guess on coverage, not on a hunch</h3>
+
+            <p>Your opening word cannot be wrong, only wasteful. What you want is five or six <em>different</em> common letters, mixing vowels and frequent consonants — in English something along the lines of <code>slate</code>, <code>crane</code> or <code>raise</code>; in Indonesian, words built from <code>a</code>, <code>i</code>, <code>u</code>, <code>n</code>, <code>k</code>, <code>r</code>, <code>s</code>, <code>t</code> and <code>m</code> earn their keep, because Indonesian leans on those far harder than English does. A guess with a repeated letter tests one fewer letter, which is why <code>sassy</code> is a poor opener however satisfying it feels.</p>
+
+            <h3>Grey letters are information too</h3>
+
+            <p>New players chase yellows and greens and treat greys as failure. Half of what you need is elimination: knowing that <code>t</code>, <code>o</code> and <code>d</code> are all absent narrows the field as sharply as a yellow does. If you have two guesses left and a dozen candidates, the strongest play is often a word that <em>cannot</em> be the answer but splits the remaining candidates cleanly in half.</p>
+
+            <h3>Yellow means "not here" — use it</h3>
+
+            <p>A yellow is two facts, not one: the letter is present, and that particular position is ruled out. On the next guess, deliberately move it somewhere new. Re-testing a yellow in the same slot spends a guess to learn nothing.</p>
+
+            <h3>Short words are not easier</h3>
+
+            <p>The four-letter game looks gentle and often is not. Fewer positions mean each guess carries less information, while the pool of four-letter words is dense enough that several candidates survive four greens' worth of clues — <code>bake</code>, <code>bale</code>, <code>bane</code>, <code>base</code>. Six letters gives you more room to deduce and more letters per guess; many players find it the most tractable of the three once they stop equating length with difficulty.</p>
+
+            <h2>About the word lists</h2>
+
+            <p>The lists are not a dictionary dump. The English answers were filtered using capitalisation across source texts as a proper-noun detector, so places and names do not turn up as solutions; the Indonesian lists were built from agreement between multiple dictionaries, which is what keeps out both regional spellings and words no player would recognise. The result is a list where every answer is a word you can reasonably be expected to know, and being beaten feels like being beaten rather than being cheated.</p>
+
+            <p>Word selection also has a short memory. A purely random draw repeats itself far sooner than the size of the list suggests — on a list of around 1,900 words, the first repeat is expected after roughly <em>fifty-five</em> games, not nineteen hundred. The game keeps track of what you have seen recently and rerolls past it, so a session of a dozen words gives you a dozen different words.</p>
+
+            <h2>What this browser version includes</h2>
+
+            <p>All three lengths, both languages, and your streak, wins and best run stored in your own browser — no account, nothing to install. <strong>New word</strong> deals a fresh puzzle whenever you want one.</p>
+
+            <p>There is no daily challenge here. In the Android app everyone gets the same word on the same date, along with coins, themes and a store; the browser build is the word game on its own. If a browser refuses to store data — a private window, or storage switched off — the page says so plainly rather than silently forgetting your streak.</p>
+        </section>
+
         <!--
           The same unit as this game's play page, deliberately: reports stay per-game rather
           than splitting into play-versus-about, which is not a distinction worth having.
@@ -235,6 +299,12 @@
     </div>
 
     <footer>
+        <nav class="footer-links" aria-label="Site">
+            <a href="../index.html">Home</a>
+            <a href="../about.html">About Artivy</a>
+            <a href="../contact.html">Contact</a>
+            <a href="../privacy.html">Website privacy</a>
+        </nav>
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>
 </body>
