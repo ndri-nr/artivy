@@ -873,22 +873,14 @@ footer {
 }
 
 /*
- * The play triangle, drawn rather than typed — the same reason the strip's chevrons are.
+ * There is no play triangle on this button any more.
  *
- * The label was "▶ Play". Nunito has no U+25B6, so it fell through to a system symbol font
- * whose line box is 12px taller than the type around it, and that made this pill 54px next
- * to a 42px sibling and broke the row of three. A glyph nobody chose the metrics of is not
- * worth a shape three borders can draw.
+ * It began as the glyph "▶", which Nunito does not have — it fell through to a system
+ * symbol font whose line box is taller than the type around it. Drawing it from three
+ * borders fixed the metrics, and then the shape had to justify 15px of a row that could not
+ * spare them on a phone. It could not: "Play" is unambiguous on its own, and the primary
+ * action is already the only one with a filled background.
  */
-.card-play::before {
-    content: "";
-    display: inline-block;
-    vertical-align: -1px;
-    margin-right: 7px;
-    border-style: solid;
-    border-width: 5px 0 5px 8px;
-    border-color: transparent transparent transparent currentColor;
-}
 
 .card-play:hover {
     background: #5c34d4 !important;
@@ -957,10 +949,13 @@ footer {
     }
 
     /* A share of the screen rather than a fixed width, so one card fills a phone and the
-       next one peeks. */
+       next one peeks. 90% rather than 84%: the strip already holds 24px of padding either
+       side, so the share is taken twice and 84% left a 281px card on a 375px phone — two
+       pixels short of fitting its own three buttons on one row. A tenth of a card is still
+       plainly a card, so the peek survives. */
     .card {
-        flex: 0 0 84%;
-        max-width: 330px;
+        flex: 0 0 90%;
+        max-width: 340px;
     }
 
     /* Half the height of the desktop banner: on a phone the icon is the identifier, and the
@@ -995,11 +990,33 @@ footer {
     box-sizing: border-box;
 }
 
-/* Below this the three labels stop fitting side by side, and a cramped row reads worse
-   than an honest second line. */
-@media (max-width: 430px) {
+/*
+ * A phone card gives the row less to work with than the pills need at desktop measure:
+ * .card-content's 30px of padding either side leaves 255px of a 315px card, and the three
+ * labels want 289px. So the padding comes in and the pills tighten, rather than the store
+ * link being pushed onto a line of its own — which is what a `flex-basis: 100%` here used
+ * to do, from back when the pills were an even split and "Google Play" could not fit at any
+ * padding.
+ *
+ * Below about 340px the row still wraps, and it is left to wrap on its own terms.
+ */
+@media (max-width: 768px) {
+    .card-content {
+        /* 30px either side left 243px of a 281px card, and the three labels want 261px.
+           The padding is what was oversized, not the buttons. */
+        padding: 24px 16px;
+    }
+
+    .card-links {
+        gap: 6px;
+    }
+
+    .card-play,
+    .card-info,
     .card-store {
-        flex-basis: 100%;
+        /* The triangle's 15px bought this back from 10px. */
+        padding-inline: 12px !important;
+        font-size: 0.85rem;
     }
 }
 
