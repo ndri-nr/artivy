@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Artivy | Who makes these games, and how</title>
-    <meta name="description" content="Artivy is an independent one-person game studio in Indonesia making six small puzzle games for Android and the browser. How they are built, what they collect, and what they deliberately leave out.">
+    <meta name="description" content="Artivy is an independent one-person game studio in Indonesia making small puzzle games for Android and the browser. How they are built, what they collect, and what they deliberately leave out.">
     <link rel="canonical" href="https://ndri-nr.github.io/artivy/about.html">
 
     <!-- Icons. SVG first so the mark stays sharp at any size; the PNGs are for the
@@ -20,15 +20,15 @@
     <meta property="og:site_name" content="Artivy">
     <meta property="og:locale" content="en">
     <meta property="og:title" content="About Artivy | Who makes these games, and how">
-    <meta property="og:description" content="Artivy is an independent one-person game studio in Indonesia making six small puzzle games for Android and the browser. How they are built, what they collect, and what they deliberately leave out.">
+    <meta property="og:description" content="Artivy is an independent one-person game studio in Indonesia making small puzzle games for Android and the browser. How they are built, what they collect, and what they deliberately leave out.">
     <meta property="og:url" content="https://ndri-nr.github.io/artivy/about.html">
     <meta property="og:image" content="https://ndri-nr.github.io/artivy/assets/og-artivy.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="The Artivy wordmark above the icons of its six puzzle games">
+    <meta property="og:image:alt" content="The Artivy wordmark above the icons of the Artivy puzzle games">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="About Artivy | Who makes these games, and how">
-    <meta name="twitter:description" content="Artivy is an independent one-person game studio in Indonesia making six small puzzle games for Android and the browser. How they are built, what they collect, and what they deliberately leave out.">
+    <meta name="twitter:description" content="Artivy is an independent one-person game studio in Indonesia making small puzzle games for Android and the browser. How they are built, what they collect, and what they deliberately leave out.">
     <meta name="twitter:image" content="https://ndri-nr.github.io/artivy/assets/og-artivy.png">
 
     <script type="application/ld+json">
@@ -169,20 +169,20 @@
     <main class="page-container">
         <a href="index.html" class="back-button">← Home</a>
         <h1>About Artivy</h1>
-        <p class="page-lede">Artivy is an independent, one-person game studio based in Indonesia. It makes small puzzle games — six of them so far — for Android and for the browser, and it is run by a developer who writes every line of them.</p>
+        <p class="page-lede">Artivy is an independent, one-person game studio based in Indonesia. It makes small puzzle games for Android and for the browser, and it is run by a developer who writes every line of them.</p>
 
         <div class="guide">
             <h2>What we make</h2>
 
-            <p>Six games, all of them puzzles or arcade puzzles, all of them playable in short sittings. <a href="pawdoku/index.html">PawDoku</a> is a one-cat-per-row logic puzzle with a guaranteed unique solution. <a href="kata_word/index.html">Kata·Word</a> is a word game in English and Bahasa Indonesia at three word lengths. <a href="stacko/index.html">StackO!</a> is a block-stacking arcade game about precision. <a href="2048/index.html">2048</a> is the sliding-tile classic. <a href="rekta/index.html">Rekta</a> is Shikaku, a Japanese pencil puzzle of rectangles and clues. <a href="pourfect/index.html">PourFect!</a> is a water-sorting puzzle with a solver behind it.</p>
+            <p>Every game here is a puzzle or an arcade puzzle, and all of them are meant for short sittings. <a href="pawdoku/index.html">PawDoku</a> is a one-cat-per-row logic puzzle with a guaranteed unique solution. <a href="kata_word/index.html">Kata·Word</a> is a word game in English and Bahasa Indonesia at three word lengths. <a href="stacko/index.html">StackO!</a> is a block-stacking arcade game about precision. <a href="2048/index.html">2048</a> is the sliding-tile classic. <a href="rekta/index.html">Rekta</a> is Shikaku, a Japanese pencil puzzle of rectangles and clues. <a href="pourfect/index.html">PourFect!</a> is a water-sorting puzzle with a solver behind it.</p>
 
-            <p>Each one exists in two forms: an Android app on Google Play, and a browser version on this site that needs no download and no account. The browser versions are not ports. The rules were rewritten from scratch in JavaScript from what each game actually does, because the Android builds are written in Dart, Java and GDScript and none of that runs in a browser. That means six independent implementations of six sets of rules, which is more work than a port — and the reason for it is that a website should not be able to break a game on Google Play, nor the other way round.</p>
+            <p>Each one exists in two forms: an Android app on Google Play, and a browser version on this site that needs no download and no account. The browser versions are not ports. The rules were rewritten from scratch in JavaScript from what each game actually does, because the Android builds are written in Dart, Java and GDScript and none of that runs in a browser. That means a separate implementation of every game's rules, which is more work than a port — and the reason for it is that a website should not be able to break a game on Google Play, nor the other way round.</p>
 
             <h2>How the games get made</h2>
 
             <h3>Puzzles are generated, then proved</h3>
 
-            <p>Four of the six generate their own puzzles rather than shipping a list of hand-made levels, which means the levels never run out. But a generator that can hand out an impossible board is worse than no generator at all, so generation is only half the job: PawDoku checks every board for a <em>second</em> solution and throws it away if one exists, and PourFect! runs a solver over every board and deals another if the solver cannot finish it. In both cases the level you are given has been proved solvable before you see it.</p>
+            <p>Several of them generate their own puzzles rather than shipping a list of hand-made levels, which means the levels never run out. But a generator that can hand out an impossible board is worse than no generator at all, so generation is only half the job: PawDoku checks every board for a <em>second</em> solution and throws it away if one exists, and PourFect! runs a solver over every board and deals another if the solver cannot finish it. In both cases the level you are given has been proved solvable before you see it.</p>
 
             <p>The reason to care is not tidiness. In a logic puzzle with two solutions, a player can reason perfectly, arrive somewhere consistent, and be told they are wrong — and there is no way for them to tell whether the fault was theirs. A puzzle has to be trustworthy before it can be enjoyable.</p>
 
