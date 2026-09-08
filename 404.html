@@ -8,7 +8,17 @@
     <!-- GitHub Pages serves this with a real 404 status, so a crawler already knows not to
          index it. The tag is for the other clients that only read the markup. -->
     <meta name="robots" content="noindex">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Nunito only. Quicksand was requested at three weights and named just once
+         in the stack, *after* Nunito — so it was three font files fetched on a
+         render-blocking request for a face that never rendered. It stays in the CSS
+         stack, where a locally installed copy is a real fallback and costs nothing.
+    
+         preconnect for both hosts: the stylesheet comes from one and the font files
+         from the other, and the second host is only discovered after the first
+         replies, so the handshake is a round trip in the critical path. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/artivy/css/styles.css">
     <link rel="icon" type="image/svg+xml" href="/artivy/assets/logo-mark.svg">
     <link rel="icon" type="image/png" sizes="32x32" href="/artivy/assets/favicon-32.png">
@@ -82,12 +92,12 @@
         <p>That address does not lead anywhere. If you followed a link from inside one of our games, it may have moved — the games below are all still here.</p>
 
         <div class="miss-games">
-            <a href="/artivy/pawdoku/play.html"><img src="/artivy/assets/pawdoku-icon.png" alt="">PawDoku</a>
-            <a href="/artivy/kata_word/play.html"><img src="/artivy/assets/kata_word-icon.png" alt="">Kata&middot;Word</a>
-            <a href="/artivy/stacko/play.html"><img src="/artivy/assets/stacko-icon.png" alt="">StackO!</a>
-            <a href="/artivy/2048/play.html"><img src="/artivy/assets/2048-icon.png" alt="">2048</a>
-            <a href="/artivy/rekta/play.html"><img src="/artivy/assets/rekta-icon.png" alt="">Rekta</a>
-            <a href="/artivy/pourfect/play.html"><img src="/artivy/assets/pourfect-icon.png" alt="">PourFect!</a>
+            <a href="/artivy/pawdoku/play.html"><img src="/artivy/assets/pawdoku-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">PawDoku</a>
+            <a href="/artivy/kata_word/play.html"><img src="/artivy/assets/kata_word-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">Kata&middot;Word</a>
+            <a href="/artivy/stacko/play.html"><img src="/artivy/assets/stacko-icon.png" alt="" width="512" height="512" loading="lazy" decoding="async">StackO!</a>
+            <a href="/artivy/2048/play.html"><img src="/artivy/assets/2048-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">2048</a>
+            <a href="/artivy/rekta/play.html"><img src="/artivy/assets/rekta-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">Rekta</a>
+            <a href="/artivy/pourfect/play.html"><img src="/artivy/assets/pourfect-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">PourFect!</a>
         </div>
 
         <p class="play-now"><a href="/artivy/">All games</a></p>

@@ -59,7 +59,17 @@
 }
     </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Nunito only. Quicksand was requested at three weights and named just once
+         in the stack, *after* Nunito — so it was three font files fetched on a
+         render-blocking request for a face that never rendered. It stays in the CSS
+         stack, where a locally installed copy is a real fallback and costs nothing.
+    
+         preconnect for both hosts: the stylesheet comes from one and the font files
+         from the other, and the second host is only discovered after the first
+         replies, so the handshake is a round trip in the critical path. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
     <style>
         .page-container {
@@ -129,7 +139,7 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo">
-            <a href="index.html" style="text-decoration: none;"><img src="assets/logo.svg" alt="Artivy Logo"></a>
+            <a href="index.html" style="text-decoration: none;"><img src="assets/logo.svg" alt="Artivy Logo" width="290" height="100"></a>
         </div>
         <ul class="nav-links">
             <li><a href="index.html">Home</a></li>

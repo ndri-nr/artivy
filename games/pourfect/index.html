@@ -139,7 +139,17 @@
 }
     </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Nunito only. Quicksand was requested at three weights and named just once
+         in the stack, *after* Nunito — so it was three font files fetched on a
+         render-blocking request for a face that never rendered. It stays in the CSS
+         stack, where a locally installed copy is a real fallback and costs nothing.
+    
+         preconnect for both hosts: the stylesheet comes from one and the font files
+         from the other, and the second host is only discovered after the first
+         replies, so the handshake is a round trip in the critical path. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <style>
         .game-info-container {
@@ -251,7 +261,7 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo">
-            <a href="../index.html" style="text-decoration: none;"><img src="../assets/logo.svg" alt="Artivy Logo"></a>
+            <a href="../index.html" style="text-decoration: none;"><img src="../assets/logo.svg" alt="Artivy Logo" width="290" height="100"></a>
         </div>
         <ul class="nav-links">
             <li><a href="../index.html">Home</a></li>
@@ -309,7 +319,7 @@
     <div class="game-info-container">
         <a href="../index.html" class="back-button">← All games</a>
         <div class="game-icon-wrapper">
-            <img src="../assets/pourfect-icon.png" alt="PourFect!" class="game-icon">
+            <img src="../assets/pourfect-icon.webp" alt="PourFect!" class="game-icon" width="512" height="512">
         </div>
         <h1>PourFect!</h1>
         <p>Water sort, with one bottle that only takes a single colour. Pour the top of one bottle onto another of the same colour, or into an empty one, until every bottle holds one colour and nothing else. From level 10 a tall collector stands in the middle of the board: it accepts one colour, it never gives any back, and its colour will not fit in ordinary bottles — so it is not decoration, it is the way through. Levels never run out, every level is the same board on every device, and the game checks each one can be finished before it hands it to you. Fully offline.</p>
@@ -331,7 +341,7 @@
         <!--
         <a href="https://play.google.com/store/apps/details?id=id.artivy.pourfect"
            class="play-badge" target="_blank" rel="noopener">
-            <img src="../assets/google-play-badge.png" alt="Get it on Google Play">
+            <img src="../assets/google-play-badge.webp" alt="Get it on Google Play" width="564" height="168" loading="lazy" decoding="async">
         </a>
         -->
 

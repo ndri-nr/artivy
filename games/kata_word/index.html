@@ -139,7 +139,17 @@
 }
     </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Nunito only. Quicksand was requested at three weights and named just once
+         in the stack, *after* Nunito — so it was three font files fetched on a
+         render-blocking request for a face that never rendered. It stays in the CSS
+         stack, where a locally installed copy is a real fallback and costs nothing.
+    
+         preconnect for both hosts: the stylesheet comes from one and the font files
+         from the other, and the second host is only discovered after the first
+         replies, so the handshake is a round trip in the critical path. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <style>
         .game-info-container {
@@ -251,7 +261,7 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo">
-            <a href="../index.html" style="text-decoration: none;"><img src="../assets/logo.svg" alt="Artivy Logo"></a>
+            <a href="../index.html" style="text-decoration: none;"><img src="../assets/logo.svg" alt="Artivy Logo" width="290" height="100"></a>
         </div>
         <ul class="nav-links">
             <li><a href="../index.html">Home</a></li>
@@ -309,7 +319,7 @@
     <div class="game-info-container">
         <a href="../index.html" class="back-button">← All games</a>
         <div class="game-icon-wrapper">
-            <img src="../assets/kata_word-icon.png" alt="Kata·Word" class="game-icon">
+            <img src="../assets/kata_word-icon.webp" alt="Kata·Word" class="game-icon" width="512" height="512">
         </div>
         <h1>Kata·Word</h1>
         <p>A minimalist word-guessing game that works fully offline. Crack a new word every day in the calendar Daily Challenge, or play unlimited rounds in Free Play. Guess in 4, 5, or 6 letters across English and Bahasa Indonesia, build streaks, earn trophies and coins, and unlock themes — all with clean, distraction-free visuals.</p>
@@ -331,7 +341,7 @@
         <!--
         <a href="https://play.google.com/store/apps/details?id=id.artivy.wordle"
            class="play-badge" target="_blank" rel="noopener">
-            <img src="../assets/google-play-badge.png" alt="Get it on Google Play">
+            <img src="../assets/google-play-badge.webp" alt="Get it on Google Play" width="564" height="168" loading="lazy" decoding="async">
         </a>
         -->
 

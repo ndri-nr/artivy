@@ -63,6 +63,11 @@
 
     <meta name="theme-color" content="#060a1c">
     <title>Play StackO! - Artivy</title>
+    <!-- The stylesheet comes from one host and the font files from another, and the second
+         is only discovered once the first replies — so the handshake sits in the critical
+         path of a page whose board cannot be drawn until the type settles. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/play.css?v=BUILD">
@@ -82,7 +87,7 @@
 <body class="playing gstacko">
     <div class="play-bar">
         <a class="play-home" href="../index.html">
-            <img src="../assets/logo.svg" alt="Artivy">
+            <img src="../assets/logo.svg" alt="Artivy" width="290" height="100">
         </a>
         <span class="play-spacer"></span>
         <details class="play-menu">
