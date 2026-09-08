@@ -74,7 +74,8 @@
         crossorigin="anonymous"></script>
 </head>
 <body>
-    <!-- Three.js Canvas Container -->
+    <!-- The speckle field. An empty element on purpose: three tiled dot layers drift
+         across it from CSS, where a WebGL canvas used to be built into it. -->
     <div id="canvas-container"></div>
 
     <!-- Navigation -->
@@ -144,14 +145,14 @@
     -->
     <!-- Games Section -->
     <section id="games" class="games-section">
-        <h2 class="reveal">Featured Games</h2>
+        <h2>Featured Games</h2>
         <!--
           Straight to a game, without crossing the strip. The strip is the showcase and it works,
           but finding one title among six already means swiping, and this row is the part that
           keeps working at twelve: it wraps rather than scrolling, and each tile is a plain link
           so it needs no script to be useful.
         -->
-        <nav class="game-quick reveal" aria-label="All games">
+        <nav class="game-quick" aria-label="All games">
             <a href="pawdoku/play.html"><img src="assets/pawdoku-icon.png" alt=""><span>PawDoku</span></a>
             <a href="kata_word/play.html"><img src="assets/kata_word-icon.png" alt=""><span>Kata·Word</span></a>
             <a href="stacko/play.html"><img src="assets/stacko-icon.png" alt=""><span>StackO!</span></a>
@@ -167,7 +168,7 @@
         -->
         <div class="strip-wrap">
         <div class="game-cards card-strip">
-            <div class="card reveal">
+            <div class="card">
                 <div class="card-image">
                     <img src="assets/pawdoku-icon.png" alt="PawDoku" class="game-icon">
                 </div>
@@ -185,7 +186,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card reveal" style="--reveal-delay:0.12s">
+            <div class="card">
                 <div class="card-image">
                     <img src="assets/kata_word-icon.png" alt="Kata·Word" class="game-icon">
                 </div>
@@ -208,7 +209,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card reveal" style="--reveal-delay:0.24s">
+            <div class="card">
                 <div class="card-image">
                     <img src="assets/stacko-icon.png" alt="StackO!" class="game-icon">
                 </div>
@@ -231,7 +232,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card reveal" style="--reveal-delay:0.36s">
+            <div class="card">
                 <div class="card-image">
                     <img src="assets/2048-icon.png" alt="2048" class="game-icon">
                 </div>
@@ -254,7 +255,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card reveal" style="--reveal-delay:0.48s">
+            <div class="card">
                 <div class="card-image">
                     <img src="assets/rekta-icon.png" alt="Rekta" class="game-icon">
                 </div>
@@ -278,7 +279,7 @@
                 </div>
     
         </div>
-            <div class="card reveal" style="--reveal-delay:0.60s">
+            <div class="card">
                 <div class="card-image">
                     <img src="assets/pourfect-icon.png" alt="PourFect!" class="game-icon">
                 </div>
@@ -305,7 +306,7 @@
         </div>
     </section>
 
-    <section class="home-prose reveal">
+    <section class="home-prose">
         <div class="guide">
             <h2>Six small games, and what they have in common</h2>
 
@@ -369,9 +370,8 @@
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>
 
-    <!-- Scripts -->
-    <!-- Three.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <!-- Scripts. No library and nothing that gates content: the speckle field behind the
+         page is CSS, and this file only builds the card strip's arrows. -->
     <script src="js/main.js"></script>
 </body>
 </html>

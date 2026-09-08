@@ -44,18 +44,20 @@ body::before {
     --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
 }
 
-/* Scroll-reveal (opt-in via .reveal; JS adds .in-view) */
-.reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.7s cubic-bezier(0.2, 0.8, 0.2, 1),
-                transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
-    transition-delay: var(--reveal-delay, 0s);
-}
-.reveal.in-view {
-    opacity: 1;
-    transform: none;
-}
+/*
+ * The scroll-reveal fade is gone, mechanism and all.
+ *
+ * It hid the home page's heading, its game strip and its 769-word prose section behind
+ * `opacity: 0` until an IntersectionObserver said otherwise — so the page's content was
+ * conditional on a callback. Guarding it on a class the script sets only moved the
+ * failure: a tab opened in the background, a prerender, or any context where the observer
+ * never reports still showed an empty page, which is what a 1500px-tall screenshot of it
+ * actually looked like.
+ *
+ * Nothing replaced it. A fade-up on scroll is the most templated effect on the web and it
+ * was buying a risk on the one page being judged for having no content. The cards' hover
+ * shadow and the strip's arrows are the interaction that remains.
+ */
 
 h1, h2, h3 {
     font-weight: 800;
@@ -63,13 +65,33 @@ h1, h2, h3 {
 }
 
 /* Three.js Canvas Container */
+/* The home page's speckle field. This was a WebGL particle grid — 3,600 points under a
+   mouse-tracked camera, animated from JavaScript on every frame, behind a 600KB library
+   fetched from a CDN. It cost a blocking request, a parse, and a repaint loop that never
+   stopped, on the one page a first-time visitor lands on.
+
+   Three tiled dot layers instead. They drift at different speeds and in different
+   directions, which is the parallax the camera used to give, and each travels exactly one
+   tile per cycle so the loop has no seam. Composited by the GPU, nothing to download, and
+   the reduced-motion rule at the foot of this file stops it dead for anyone who asks. */
 #canvas-container {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
     z-index: -1;
+    pointer-events: none;
+    background-image:
+        radial-gradient(rgba(255, 107, 107, 0.30) 1.5px, transparent 1.6px),
+        radial-gradient(rgba(78, 205, 196, 0.26) 1.2px, transparent 1.3px),
+        radial-gradient(rgba(254, 202, 87, 0.30) 1px, transparent 1.1px);
+    background-size: 96px 96px, 64px 64px, 132px 132px;
+    background-position: 0 0, 32px 24px, 68px 52px;
+    animation: dotDrift 48s linear infinite;
+}
+
+@keyframes dotDrift {
+    to {
+        background-position: 96px 96px, -32px 88px, 200px -80px;
+    }
 }
 
 /* Navigation Bar */
@@ -275,12 +297,15 @@ h1, h2, h3 {
        badge is ~1/3.36 of its width, so a quarter of that is ~7.4%. */
     margin-top: 7.4%;
     /*
-     * Full width is what a phone wants, and it is where this was asked for. Left uncapped it
-     * also applies to a 716px desktop column, where the badge comes out 213px tall — four
-     * times the play button above it, which stops reading as a badge and starts reading as a
-     * banner. The cap only engages past ~380px, so a phone is untouched.
+     * Sized against the buttons above it, not against the column. The badge is 1/3.36 of its
+     * width, so 380px drew it 113px tall beside 48px buttons — two and a half times their
+     * height, which is a banner rather than a badge, and it made the store the loudest thing
+     * on a page about the game. 200px puts it at ~60px: still the largest single control, and
+     * still comfortably over the 40px minimum Google's guidelines set for the web.
+     *
+     * A cap, never a height: the artwork's proportions have to stay as shipped.
      */
-    max-width: min(100%, 380px);
+    max-width: min(100%, 200px);
     margin-inline: auto;
     transition: transform 0.3s ease;
 }
@@ -355,10 +380,9 @@ h1, h2, h3 {
     /*
      * Explicit, and not redundant. CSS computes a `visible` overflow to `auto` on one axis as
      * soon as the other axis is not visible — so `overflow-x: auto` alone made this strip
-     * scrollable up and down as well. It had something to scroll, too: .reveal holds its cards
-     * at translateY(30px) until they enter the viewport, and the cards off the right-hand end
-     * of a horizontal strip never do, so that offset was permanent and so was the stray 18px
-     * of vertical travel.
+     * scrollable up and down as well. Keep it even though the entrance animation that gave it
+     * something to scroll is gone: any card that ever sits taller than the row brings the
+     * stray vertical travel straight back.
      */
     overflow-y: hidden;
     overscroll-behavior-x: contain;
@@ -451,18 +475,12 @@ h1, h2, h3 {
 }
 
 /*
- * A strip's cards do not do the entrance animation. .reveal holds an element 30px down and
- * fully transparent until it intersects the viewport, which suits a column you scroll past and
- * not a row you swipe along: the cards past the right-hand edge never intersect anything, so
- * they stayed at opacity 0 — swiping to one meant landing on a blank card and waiting for it
- * to fade in — and their 30px offset was permanent, which is what the strip found to scroll up
- * and down.
+ * There is no entrance animation on the cards any more, and this is where the reason was
+ * learned before the whole mechanism was removed: an observer that reveals an element when it
+ * intersects the viewport suits a column you scroll past, not a row you swipe along. Cards
+ * past the right-hand edge never intersected anything, so swiping to one meant landing on a
+ * blank card and waiting for a fade that had already been skipped.
  */
-.card-strip > .reveal {
-    opacity: 1;
-    transform: none;
-}
-
 @media (hover: none) {
     .card-strip {
         scrollbar-width: none;
@@ -695,7 +713,6 @@ footer {
         animation-iteration-count: 1 !important;
         transition-duration: 0.001ms !important;
     }
-    .reveal { opacity: 1; transform: none; }
     .hero-content { opacity: 1; }
 }
 
@@ -851,6 +868,18 @@ footer {
     background: none !important;
     box-shadow: none !important;
     line-height: 0;
+    text-align: center;
+}
+
+/*
+ * The row is full width; the badge inside it is not. Stretched to the row it came out
+ * 318x95 on a desktop card — over twice the height of the Play button beside it — so the
+ * store link outweighed the game the card is for. 168px puts it at ~50px, a shade taller
+ * than that button, which is what a secondary action should look like.
+ */
+.card-store img {
+    max-width: 168px;
+    margin-inline: auto;
 }
 
 .card-store img {
@@ -1230,6 +1259,15 @@ section[id] {
     border: 1px solid var(--glass-border);
     border-radius: 20px;
     backdrop-filter: blur(10px);
+}
+
+/* .guide's rule separates it from whatever sits above it on a game page — an icon, a
+   title and two buttons. This card starts with the guide, so there is nothing for the
+   rule to divide and it reads as a line drawn for no reason. */
+.home-prose .guide {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
 }
 
 @media (max-width: 700px) {
