@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found | Artivy</title>
+    <meta name="description" content="That page is not here. The six Artivy games and their pages are listed below.">
+    <!-- GitHub Pages serves this with a real 404 status, so a crawler already knows not to
+         index it. The tag is for the other clients that only read the markup. -->
+    <meta name="robots" content="noindex">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/artivy/css/styles.css">
+    <link rel="icon" type="image/svg+xml" href="/artivy/assets/logo-mark.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/artivy/assets/favicon-32.png">
+    <link rel="apple-touch-icon" href="/artivy/assets/icon-180.png">
+    <style>
+        /* Absolute paths everywhere in this file, unlike every other page. GitHub Pages
+           serves this one document for a miss at *any* depth — /artivy/nope.html and
+           /artivy/rekta/nope.html both land here — so a relative asset path would resolve
+           against whatever the visitor mistyped. */
+        .page-container {
+            max-width: 640px;
+            margin: 120px auto 50px auto;
+            padding: 44px 40px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        .page-container h1 {
+            color: var(--primary-color);
+            font-size: 2.4rem;
+            margin: 0 0 12px;
+        }
+        .page-container > p {
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .miss-games {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+        .miss-games a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 8px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.55);
+            text-decoration: none;
+            color: #2c3444;
+            font-weight: 700;
+            font-size: 0.92rem;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .miss-games a:hover {
+            transform: translateY(-3px);
+            background: #fff;
+        }
+        .miss-games img {
+            width: 54px;
+            height: 54px;
+            border-radius: 12px;
+        }
+        @media (max-width: 560px) {
+            .page-container { margin: 90px 15px 30px; padding: 32px 20px; }
+            .page-container h1 { font-size: 1.9rem; }
+            .miss-games { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <main class="page-container">
+        <h1>Page not found</h1>
+        <p>That address does not lead anywhere. If you followed a link from inside one of our games, it may have moved — the games below are all still here.</p>
+
+        <div class="miss-games">
+            <a href="/artivy/pawdoku/play.html"><img src="/artivy/assets/pawdoku-icon.png" alt="">PawDoku</a>
+            <a href="/artivy/kata_word/play.html"><img src="/artivy/assets/kata_word-icon.png" alt="">Kata&middot;Word</a>
+            <a href="/artivy/stacko/play.html"><img src="/artivy/assets/stacko-icon.png" alt="">StackO!</a>
+            <a href="/artivy/2048/play.html"><img src="/artivy/assets/2048-icon.png" alt="">2048</a>
+            <a href="/artivy/rekta/play.html"><img src="/artivy/assets/rekta-icon.png" alt="">Rekta</a>
+            <a href="/artivy/pourfect/play.html"><img src="/artivy/assets/pourfect-icon.png" alt="">PourFect!</a>
+        </div>
+
+        <p class="play-now"><a href="/artivy/">All games</a></p>
+    </main>
+
+    <footer>
+        <nav class="footer-links" aria-label="Site">
+            <a href="/artivy/">Home</a>
+            <a href="/artivy/about.html">About Artivy</a>
+            <a href="/artivy/contact.html">Contact</a>
+            <a href="/artivy/privacy.html">Website privacy</a>
+        </nav>
+        <p>&copy; 2026 Artivy. All rights reserved.</p>
+    </footer>
+</body>
+</html>
