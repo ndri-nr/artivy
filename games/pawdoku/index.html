@@ -81,6 +81,59 @@
           "item": "https://ndri-nr.github.io/artivy/pawdoku/"
         }
       ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "I tapped a square and got a cross instead of a cat. Why?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A single tap marks the square with your own X — a note that nothing goes there — and tapping again clears it. To place a cat, double-tap the square or press and hold it. You can also drag across the board to paint crosses over a whole run at once."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "I placed a cat that broke none of the rules and still lost a heart.",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "That is the game, not a bug. A cat is judged against the one solution the puzzle has, not against whether it is legal given what is on the board. A square can break no rule yet and still be the wrong square, because the contradiction only shows up further along. The red cross it leaves is permanent — and it is information you have now paid for."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a board have more than one valid arrangement?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, and that is checked rather than hoped for: every board is searched for a second solution before you see it and discarded if one exists. Without that a player could reason perfectly, arrive somewhere consistent, and be told they were wrong."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do two cats diagonally apart count as touching?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. If a chess king could step from one cat to the other in a single move, the arrangement is illegal. The diagonal is the rule people forget."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do the boards keep getting bigger forever?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "They grow to 9×9 and stop — 5×5 up to level 20, then a size larger every twenty levels. The levels themselves never run out. Past 9×9 the puzzles stop getting more interesting and simply take longer."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is level 30 here the same board as level 30 in the app?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Each build generates its own boards from the level number, so a level is the same board every time you open it, but the two builds do not agree with each other. Matching them would mean pinning one to the other's random number generator for no player's benefit."
+          }
+        }
+      ]
     }
   ]
 }
@@ -346,6 +399,35 @@
             <p>Endless levels, three hearts, the level counter and <strong>Restart</strong>. Your level and the board you left mid-solve are stored in your own browser, so you can close the tab and pick the same puzzle back up. If the browser will not save — a private window, storage disabled — the page tells you rather than losing your progress quietly.</p>
 
             <p>The Android app adds a timed daily challenge, coins, a store, themes, trophies and hint paws. None of that is here: this is the logic puzzle by itself. Level numbers do not line up between the two, either — each build generates its own boards, and matching them would mean freezing one to the other's random number generator for no player's benefit.</p>
+
+            <h2>Common questions</h2>
+
+            <div class="faq">
+                <details>
+                    <summary>I tapped a square and got a cross instead of a cat. Why?</summary>
+                    <p>A single tap marks the square with your own X — a note that nothing goes there — and tapping again clears it. To place a cat, <strong>double-tap</strong> the square or <strong>press and hold</strong> it. You can also drag across the board to paint crosses over a whole run at once.</p>
+                </details>
+                <details>
+                    <summary>I placed a cat that broke none of the rules and still lost a heart.</summary>
+                    <p>That is the game, not a bug. A cat is judged against the one solution the puzzle has, not against whether it is legal given what is on the board. A square can break no rule yet and still be the wrong square, because the contradiction only shows up further along. The red cross it leaves is permanent — and it is information you have now paid for.</p>
+                </details>
+                <details>
+                    <summary>Can a board have more than one valid arrangement?</summary>
+                    <p>No, and that is checked rather than hoped for: every board is searched for a second solution before you see it and discarded if one exists. Without that a player could reason perfectly, arrive somewhere consistent, and be told they were wrong.</p>
+                </details>
+                <details>
+                    <summary>Do two cats diagonally apart count as touching?</summary>
+                    <p>Yes. If a chess king could step from one cat to the other in a single move, the arrangement is illegal. The diagonal is the rule people forget.</p>
+                </details>
+                <details>
+                    <summary>Do the boards keep getting bigger forever?</summary>
+                    <p>They grow to 9×9 and stop — 5×5 up to level 20, then a size larger every twenty levels. The levels themselves never run out. Past 9×9 the puzzles stop getting more interesting and simply take longer.</p>
+                </details>
+                <details>
+                    <summary>Is level 30 here the same board as level 30 in the app?</summary>
+                    <p>No. Each build generates its own boards from the level number, so a level is the same board every time <em>you</em> open it, but the two builds do not agree with each other. Matching them would mean pinning one to the other's random number generator for no player's benefit.</p>
+                </details>
+            </div>
         </section>
 
         <!--

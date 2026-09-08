@@ -81,6 +81,59 @@
           "item": "https://ndri-nr.github.io/artivy/kata_word/"
         }
       ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "I guessed a word with two S's and only one lit up. Why?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because the answer holds one S, and one colour is all there is to hand out. The board settles greens first and each consumes its letter from the answer; a repeated letter only goes yellow while an unclaimed copy remains. So one colour back from a doubled letter is precise information: the answer contains exactly one of it."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why was my guess rejected?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Every attempt is checked against a list of permitted guesses. That list is much larger than the list of possible answers, so plenty of obscure words are legal even though they will never be the solution — but letter salad is not."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a daily word, the same for everyone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not in the browser version. The Android app has one, along with coins, themes and a store; here every game deals a fresh word and there is no shared puzzle for the day."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are the English and Indonesian games the same words translated?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. They are two separate word lists, each filtered on its own terms — the English answers used capitalisation across source texts to keep proper nouns out, and the Indonesian lists were built from agreement between several dictionaries. They play quite differently as a result."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which word length is easiest?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not the shortest, which surprises people. Four letters means fewer positions, so each guess carries less information, and four-letter words are dense enough that several candidates survive plenty of clues — bake, bale, bane, base. Six letters gives you more letters per guess and more room to deduce."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a coloured key on the keyboard go back to grey?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Never. A key is only ever upgraded: once a letter has gone green it stays green, even if a later guess puts that letter in the wrong slot."
+          }
+        }
+      ]
     }
   ]
 }
@@ -336,6 +389,35 @@
             <p>All three lengths, both languages, and your streak, wins and best run stored in your own browser — no account, nothing to install. <strong>New word</strong> deals a fresh puzzle whenever you want one.</p>
 
             <p>There is no daily challenge here. In the Android app everyone gets the same word on the same date, along with coins, themes and a store; the browser build is the word game on its own. If a browser refuses to store data — a private window, or storage switched off — the page says so plainly rather than silently forgetting your streak.</p>
+
+            <h2>Common questions</h2>
+
+            <div class="faq">
+                <details>
+                    <summary>I guessed a word with two S's and only one lit up. Why?</summary>
+                    <p>Because the answer holds one S, and one colour is all there is to hand out. The board settles greens first and each consumes its letter from the answer; a repeated letter only goes yellow while an unclaimed copy remains. So one colour back from a doubled letter is precise information: the answer contains exactly one of it.</p>
+                </details>
+                <details>
+                    <summary>Why was my guess rejected?</summary>
+                    <p>Every attempt is checked against a list of permitted guesses. That list is much larger than the list of possible answers, so plenty of obscure words are legal even though they will never be the solution — but letter salad is not.</p>
+                </details>
+                <details>
+                    <summary>Is there a daily word, the same for everyone?</summary>
+                    <p>Not in the browser version. The Android app has one, along with coins, themes and a store; here every game deals a fresh word and there is no shared puzzle for the day.</p>
+                </details>
+                <details>
+                    <summary>Are the English and Indonesian games the same words translated?</summary>
+                    <p>No. They are two separate word lists, each filtered on its own terms — the English answers used capitalisation across source texts to keep proper nouns out, and the Indonesian lists were built from agreement between several dictionaries. They play quite differently as a result.</p>
+                </details>
+                <details>
+                    <summary>Which word length is easiest?</summary>
+                    <p>Not the shortest, which surprises people. Four letters means fewer positions, so each guess carries less information, and four-letter words are dense enough that several candidates survive plenty of clues — bake, bale, bane, base. Six letters gives you more letters per guess and more room to deduce.</p>
+                </details>
+                <details>
+                    <summary>Can a coloured key on the keyboard go back to grey?</summary>
+                    <p>Never. A key is only ever upgraded: once a letter has gone green it stays green, even if a later guess puts that letter in the wrong slot.</p>
+                </details>
+            </div>
         </section>
 
         <!--

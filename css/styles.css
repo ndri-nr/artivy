@@ -1238,3 +1238,78 @@ section[id] {
         padding: 28px 22px;
     }
 }
+
+/* ---------------------------------------------------------------------------
+   The common-questions block at the foot of each guide.
+
+   <details> rather than a button and a script: the browser already has a
+   disclosure widget, it opens on click, Enter and Space, and reports its state
+   to a screen reader. Collapsed content is still indexed, so nothing is hidden
+   from a crawler by folding it away.
+   --------------------------------------------------------------------------- */
+.guide .faq {
+    margin-bottom: 10px;
+}
+
+.guide .faq details {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.guide .faq details:first-of-type {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.guide .faq summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 15px 34px 15px 0;
+    position: relative;
+    font-weight: 700;
+    font-size: 1.02rem;
+    color: #2c3444;
+    line-height: 1.5;
+}
+
+.guide .faq summary::-webkit-details-marker {
+    display: none;
+}
+
+/* The chevron is drawn rather than typed: a rotating glyph drifts off centre
+   because a character's box is not its ink. */
+.guide .faq summary::after {
+    content: "";
+    position: absolute;
+    right: 6px;
+    top: 22px;
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--accent-deep);
+    border-bottom: 2px solid var(--accent-deep);
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+.guide .faq details[open] summary::after {
+    transform: rotate(-135deg);
+    top: 25px;
+}
+
+.guide .faq summary:hover {
+    color: var(--accent-deep);
+}
+
+.guide .faq details > p {
+    margin: 0 0 16px;
+    padding-right: 34px;
+}
+
+@media (max-width: 600px) {
+    .guide .faq summary {
+        font-size: 0.98rem;
+        padding-right: 28px;
+    }
+
+    .guide .faq details > p {
+        padding-right: 0;
+    }
+}

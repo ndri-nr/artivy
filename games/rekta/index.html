@@ -81,6 +81,59 @@
           "item": "https://ndri-nr.github.io/artivy/rekta/"
         }
       ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Do I ever have to guess?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. Every Rekta board is solvable by deduction alone. If you are stuck, the technique you are missing is usually this one: pick an awkward cell and work out which clues could possibly cover it. When the answer is exactly one, that cell belongs to that clue's rectangle, and that often fixes its shape."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a rectangle contain two clues?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Never. Each rectangle holds exactly one clue, and the clue is how many cells that rectangle covers. A clue of 6 is therefore 1×6, 2×3, 3×2 or 6×1 — those four shapes and no others."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I answer a clue of 1?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Tap the cell. A tap removes the rectangle under your finger, or claims an empty cell as a 1×1 rectangle of its own, which is the only way to satisfy a clue of 1. Everything larger is drawn by dragging corner to corner."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a hint?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not in the browser version. The Android app has one behind a rewarded advert; here there are no rewarded adverts at all, which is a fair trade for a puzzle that is always solvable by reasoning."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is level 40 the same grid for everyone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Levels are generated from their number rather than stored, so level 40 is the same board every time you open it and the run never reaches an end. Asking for a new grid deals a different board at the same level, and that resets the moment you move on."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is a later level harder on the same size grid?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The largest block the generator may hand out creeps upward — by one every twelve levels, up to four higher than where it started. Bigger blocks mean fewer clues, and fewer clues mean less to anchor a deduction on. It stops climbing after four, because beyond that the boards stop being harder and start being guesswork."
+          }
+        }
+      ]
     }
   ]
 }
@@ -348,6 +401,35 @@
             <p>All three difficulties, endless levels, a clock, and your best time per level — stored in your own browser, no account, nothing to install. If the browser refuses to save, the page says so rather than losing your progress without telling you.</p>
 
             <p>The Android app adds a rewarded hint that reveals one rectangle, and its own analytics. There are no hints here at all, which is a fair trade for a puzzle that is always solvable by reasoning. Level numbers do not match between the two builds either: matching them would mean reproducing Java's random number generator bit for bit, which buys a player exactly nothing.</p>
+
+            <h2>Common questions</h2>
+
+            <div class="faq">
+                <details>
+                    <summary>Do I ever have to guess?</summary>
+                    <p>No. Every Rekta board is solvable by deduction alone. If you are stuck, the technique you are missing is usually this one: pick an awkward cell and work out which clues could possibly cover it. When the answer is exactly one, that cell belongs to that clue's rectangle, and that often fixes its shape.</p>
+                </details>
+                <details>
+                    <summary>Can a rectangle contain two clues?</summary>
+                    <p>Never. Each rectangle holds exactly one clue, and the clue is how many cells that rectangle covers. A clue of 6 is therefore 1×6, 2×3, 3×2 or 6×1 — those four shapes and no others.</p>
+                </details>
+                <details>
+                    <summary>How do I answer a clue of 1?</summary>
+                    <p>Tap the cell. A tap removes the rectangle under your finger, or claims an empty cell as a 1×1 rectangle of its own, which is the only way to satisfy a clue of 1. Everything larger is drawn by dragging corner to corner.</p>
+                </details>
+                <details>
+                    <summary>Is there a hint?</summary>
+                    <p>Not in the browser version. The Android app has one behind a rewarded advert; here there are no rewarded adverts at all, which is a fair trade for a puzzle that is always solvable by reasoning.</p>
+                </details>
+                <details>
+                    <summary>Is level 40 the same grid for everyone?</summary>
+                    <p>Yes. Levels are generated from their number rather than stored, so level 40 is the same board every time you open it and the run never reaches an end. Asking for a new grid deals a different board <em>at the same level</em>, and that resets the moment you move on.</p>
+                </details>
+                <details>
+                    <summary>Why is a later level harder on the same size grid?</summary>
+                    <p>The largest block the generator may hand out creeps upward — by one every twelve levels, up to four higher than where it started. Bigger blocks mean fewer clues, and fewer clues mean less to anchor a deduction on. It stops climbing after four, because beyond that the boards stop being harder and start being guesswork.</p>
+                </details>
+            </div>
         </section>
 
         <!--

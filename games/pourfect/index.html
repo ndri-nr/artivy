@@ -81,6 +81,59 @@
           "item": "https://ndri-nr.github.io/artivy/pourfect/"
         }
       ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Why won't the game let me pour?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "One of the two rules is failing. The target has to be empty, or its topmost unit has to be the same colour as the unit you are pouring; and it has to have room. Nothing spills and nothing is destroyed, so a pour that would break either rule is simply refused."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "I had three units on top and only two moved.",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The whole run of matching colour travels at once, but only as much as will fit. Three greens into a bottle with two spaces sends two across and leaves one behind — which now needs a matching top somewhere to rejoin. Count the space before you pour, not after."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I pour back out of the tall tube?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No, the collector is one-way. Its colour cannot be arranged into full bottles of four — there is deliberately more of it than that — so pouring back out could never be part of any solution, and allowing it would only give you a way to undo your own progress by accident."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a board become impossible?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can pour one into a dead end, yes. When that happens the game says so — but only once it is provable, and only once you can see why: no legal move at all, or a position tight enough that there is visibly nothing left to try. A board that is dead while still looking wide open says nothing, because a playable-looking level declaring itself over reads as the game breaking."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is every board solvable when it is dealt?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, and it is proved rather than assumed. Boards are generated and then run through a solver; if the solver cannot finish one, that board is discarded and another is dealt. Nothing is shuffled backwards from a solved state."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why are there only eight liquid colours?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Because a ninth would be indistinguishable from another for some players. The palette is built on the Okabe–Ito set so the hues survive the common forms of colour blindness, and that is a ceiling rather than a shortage — wider boards get harder by giving each colour two or four bottles instead."
+          }
+        }
+      ]
     }
   ]
 }
@@ -347,6 +400,35 @@
             <p>The full level run, <strong>Undo</strong> and <strong>Restart</strong>, with your level and the board you left stored in your own browser. No account, no install. If the browser will not save, the page tells you instead of dropping your progress silently.</p>
 
             <p>The Android app adds rewarded adverts for undo and the extra bottle, an interstitial from level 6, and analytics. None of that is here. Level numbering does not match between the two, either — each build seeds its own boards.</p>
+
+            <h2>Common questions</h2>
+
+            <div class="faq">
+                <details>
+                    <summary>Why won't the game let me pour?</summary>
+                    <p>One of the two rules is failing. The target has to be empty, or its topmost unit has to be the same colour as the unit you are pouring; and it has to have room. Nothing spills and nothing is destroyed, so a pour that would break either rule is simply refused.</p>
+                </details>
+                <details>
+                    <summary>I had three units on top and only two moved.</summary>
+                    <p>The whole run of matching colour travels at once, but only as much as will fit. Three greens into a bottle with two spaces sends two across and leaves one behind — which now needs a matching top somewhere to rejoin. Count the space before you pour, not after.</p>
+                </details>
+                <details>
+                    <summary>Can I pour back out of the tall tube?</summary>
+                    <p>No, the collector is one-way. Its colour cannot be arranged into full bottles of four — there is deliberately more of it than that — so pouring back out could never be part of any solution, and allowing it would only give you a way to undo your own progress by accident.</p>
+                </details>
+                <details>
+                    <summary>Can a board become impossible?</summary>
+                    <p>You can pour one into a dead end, yes. When that happens the game says so — but only once it is <em>provable</em>, and only once you can see why: no legal move at all, or a position tight enough that there is visibly nothing left to try. A board that is dead while still looking wide open says nothing, because a playable-looking level declaring itself over reads as the game breaking.</p>
+                </details>
+                <details>
+                    <summary>Is every board solvable when it is dealt?</summary>
+                    <p>Yes, and it is proved rather than assumed. Boards are generated and then run through a solver; if the solver cannot finish one, that board is discarded and another is dealt. Nothing is shuffled backwards from a solved state.</p>
+                </details>
+                <details>
+                    <summary>Why are there only eight liquid colours?</summary>
+                    <p>Because a ninth would be indistinguishable from another for some players. The palette is built on the Okabe–Ito set so the hues survive the common forms of colour blindness, and that is a ceiling rather than a shortage — wider boards get harder by giving each colour two or four bottles instead.</p>
+                </details>
+            </div>
         </section>
 
         <!--

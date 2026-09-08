@@ -81,6 +81,59 @@
           "item": "https://ndri-nr.github.io/artivy/2048/"
         }
       ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does reaching 2048 end the game?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The 2048 tile is a milestone the game notes once and then forgets about. Play continues through 4096, 8192 and beyond on the same 4×4 grid — the run ends only when no square is empty and no two neighbouring tiles match."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why didn't two matching tiles merge?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A tile produced by a merge cannot merge again in the same move. A row of 2 2 4 4 becomes 4 8, never a single 16: the 4s are new tiles, and new tiles rest until your next swipe."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why did three 2s become 4 and 2 rather than 2 and 4?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "With three in a row, the pair nearest the wall you swiped towards goes first. Swipe left on 2 2 2 and the two leftmost pair up, leaving the third over. Swipe right and the other pair combines instead, so the same row gives a different result in each direction."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why did a 4 appear instead of a 2?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "New tiles are a 2 nine times out of ten and a 4 the remaining tenth. Nothing you did caused it, and a 4 spawning is not a penalty — it is the single rule that makes the board fill faster than beginners expect."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is my game saved if I close the tab?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Your board and your best score are stored by your own browser and the run resumes where you left it. Nothing is uploaded, so clearing your browser's site data for this domain removes it and there is no copy anywhere to restore."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How many moves can I undo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "One. Undo rolls back your last move and the tile that spawned with it. It is deliberately a single step — a deeper stack turns the puzzle into a search of which swipe spawns most conveniently, and the game stops being interesting long before the score stops climbing."
+          }
+        }
+      ]
     }
   ]
 }
@@ -326,6 +379,35 @@
             <p>This is the full 4×4 puzzle with score, personal best, undo and a new game — no account, no sign-in, nothing to install. Your best score and the board you left behind are stored in your own browser, so closing the tab and coming back later resumes the same run. In a private window some browsers refuse to save at all, and the page tells you so rather than losing your run silently.</p>
 
             <p>Compared with the Android app, the browser build leaves out the interface language switch, the personal top-ten table and the interstitial between runs. The puzzle itself is identical — same spawn odds, same merge rules, same 4×4 grid — because the rules are the part worth being faithful to.</p>
+
+            <h2>Common questions</h2>
+
+            <div class="faq">
+                <details>
+                    <summary>Does reaching 2048 end the game?</summary>
+                    <p>No. The 2048 tile is a milestone the game notes once and then forgets about. Play continues through 4096, 8192 and beyond on the same 4×4 grid — the run ends only when no square is empty <em>and</em> no two neighbouring tiles match.</p>
+                </details>
+                <details>
+                    <summary>Why didn't two matching tiles merge?</summary>
+                    <p>A tile produced by a merge cannot merge again in the same move. A row of <code>2 2 4 4</code> becomes <code>4 8</code>, never a single 16: the 4s are new tiles, and new tiles rest until your next swipe.</p>
+                </details>
+                <details>
+                    <summary>Why did three 2s become 4 and 2 rather than 2 and 4?</summary>
+                    <p>With three in a row, the pair nearest the wall you swiped towards goes first. Swipe left on <code>2 2 2</code> and the two leftmost pair up, leaving the third over. Swipe right and the other pair combines instead, so the same row gives a different result in each direction.</p>
+                </details>
+                <details>
+                    <summary>Why did a 4 appear instead of a 2?</summary>
+                    <p>New tiles are a 2 nine times out of ten and a 4 the remaining tenth. Nothing you did caused it, and a 4 spawning is not a penalty — it is the single rule that makes the board fill faster than beginners expect.</p>
+                </details>
+                <details>
+                    <summary>Is my game saved if I close the tab?</summary>
+                    <p>Yes. Your board and your best score are stored by your own browser and the run resumes where you left it. Nothing is uploaded, so clearing your browser's site data for this domain removes it and there is no copy anywhere to restore.</p>
+                </details>
+                <details>
+                    <summary>How many moves can I undo?</summary>
+                    <p>One. Undo rolls back your last move and the tile that spawned with it. It is deliberately a single step — a deeper stack turns the puzzle into a search of which swipe spawns most conveniently, and the game stops being interesting long before the score stops climbing.</p>
+                </details>
+            </div>
         </section>
 
         <!--
