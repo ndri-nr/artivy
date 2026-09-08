@@ -673,12 +673,22 @@ h1, h2, h3 {
 
 /*
  * The advert on a game's about page. Its width matches the card the actions sit in, so it reads
- * as part of the page rather than as something bolted underneath it, and no height is reserved:
- * this page has nothing sized from a constant, so the advert can be whatever Google fills it
- * with without pushing anything off a screen.
+ * as part of the page rather than as something bolted underneath it. Nothing on this page is
+ * sized from a constant, so the advert may be whatever height Google fills it with without
+ * pushing anything off a screen.
+ *
+ * `min-height` is there for layout shift rather than for layout. An `auto` slot starts at
+ * zero and grows to whatever arrives, and everything below it moves the moment it does —
+ * Lighthouse measured 0.335 of CLS on the live site against 0.000 locally, where no advert
+ * fills, which is what points at this. 100px is the height the play pages already budget for
+ * their banner, so it is the number this codebase already trusts: it absorbs a leaderboard
+ * without leaving a large hole on a page whose adverts are not serving yet. A taller fill
+ * still shifts, and the alternative — a fixed height with the overflow clipped — is against
+ * AdSense's own policy.
  */
 .page-ad {
     max-width: 800px;
+    min-height: 100px;
     margin: 30px auto 0 auto;
     padding: 0 20px;
 }

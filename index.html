@@ -71,6 +71,13 @@
          replies, so the handshake is a round trip in the critical path. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
+         than named in the markup, so the browser cannot know about it until that script
+         runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
+         in front of the first thing a European visitor sees. Lighthouse measures 300ms of
+         LCP in it. Third of four: the budget is four preconnects and this site now uses
+         three. -->
+    <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 
@@ -91,7 +98,7 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo">
-            <img src="assets/logo.svg" alt="Artivy Logo" width="290" height="100">
+            <img src="assets/logo.svg" alt="Artivy Logo" width="290" height="100" fetchpriority="high">
         </div>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
@@ -416,6 +423,6 @@
 
     <!-- Scripts. No library and nothing that gates content: the speckle field behind the
          page is CSS, and this file only builds the card strip's arrows. -->
-    <script src="js/main.js"></script>
+    <script src="js/main.js" defer></script>
 </body>
 </html>

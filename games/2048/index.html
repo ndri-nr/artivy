@@ -149,6 +149,13 @@
          replies, so the handshake is a round trip in the critical path. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
+         than named in the markup, so the browser cannot know about it until that script
+         runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
+         in front of the first thing a European visitor sees. Lighthouse measures 300ms of
+         LCP in it. Third of four: the budget is four preconnects and this site now uses
+         three. -->
+    <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/styles.css">
     <style>
@@ -261,7 +268,7 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo">
-            <a href="../index.html" style="text-decoration: none;"><img src="../assets/logo.svg" alt="Artivy Logo" width="290" height="100"></a>
+            <a href="../index.html" style="text-decoration: none;"><img src="../assets/logo.svg" alt="Artivy Logo" width="290" height="100" fetchpriority="high"></a>
         </div>
         <ul class="nav-links">
             <li><a href="../index.html">Home</a></li>
