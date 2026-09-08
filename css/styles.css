@@ -1069,7 +1069,6 @@ section[id] {
         height: 30px;
     }
 }
-}
 
 /* ---------------------------------------------------------------------------
    Long-form prose: the how-to-play guides on the game pages, and the About and
@@ -1084,7 +1083,10 @@ section[id] {
     text-align: left;
     margin-top: 45px;
     padding-top: 35px;
-    border-top: 1px solid var(--glass-border);
+    /* Not var(--glass-border): that is a near-white highlight meant for the edge of a
+       card floating over the page, and on the card's own pale ground it is invisible —
+       the divider was there and could not be seen. */
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .guide h2 {
@@ -1116,7 +1118,11 @@ section[id] {
 
 .guide ul,
 .guide ol {
-    margin: 0 0 18px 22px;
+    /* Indent with padding, not margin. A margin moves the list box and leaves the
+       browser's own 40px padding-inline-start in place, so the markers ended up 62px
+       in with the text starting after them. */
+    margin: 0 0 18px;
+    padding-left: 24px;
 }
 
 .guide li {
