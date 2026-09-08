@@ -824,21 +824,27 @@ footer {
 .card-play,
 .card-info,
 .card-store {
-    flex: 1 1 0;
     /*
-     * Each pill centres its own label and declares its height, so the three are equal by
-     * construction. Left to the flex line's own stretch they came out 54, 54 and 42 with
-     * identical box properties — one line box of 20px, 10px of padding either side — and
-     * the third floated in the middle of a row taller than itself. 44px is also the floor
-     * for a comfortable touch target.
+     * Sized by their labels, not by an even split of the row.
+     *
+     * `flex: 1 1 0` divided the row between however many pills a card happened to have, so
+     * PawDoku — the one game with a live listing, and so the one card with three — drew Play
+     * at 87px while the other five drew it at 154px. Reading down the strip, the same button
+     * changed size on every card. Content-sized, they match everywhere, and the row centres
+     * whatever it holds.
+     *
+     * Each pill also centres its own label and declares its height: left to the flex line
+     * they came out 54, 54 and 42 with identical box properties. 44px is the floor for a
+     * comfortable touch target.
      */
+    flex: 0 1 auto;
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 44px;
     padding-block: 0 !important;
+    padding-inline: 16px !important;
     text-align: center;
-    padding-inline: 0 !important;
     box-sizing: border-box;
     /*
      * About carries a 1px border and Play does not, and that alone made the two halves 2px
@@ -962,12 +968,7 @@ footer {
  * abbreviated.
  */
 .card-store {
-    /* "Google Play" is the longest of the three and cannot be shortened — their guidelines
-       do not allow it abbreviated — so it takes a larger share of the row rather than
-       forcing all three narrow enough to wrap. */
-    flex-grow: 1.45;
     text-align: center;
-    padding-inline: 0 !important;
     box-sizing: border-box;
     background: transparent !important;
     color: #4a5568 !important;
