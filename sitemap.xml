@@ -4,25 +4,20 @@
   the site root before uploading, so games/2048/play.html is served at /artivy/2048/play.html.
   Write the served path here, never the repo path.
 
+  Every URL here is under /artivy/, which is this sitemap's own directory. The domain root
+  is a different repo and has its own sitemap.xml beside its robots.txt — cross-submitting it
+  from here is legal but pointlessly ambiguous, and ambiguity is not worth one URL.
+
   selftest.html is left out on purpose. It is a developer harness that prints pass/fail lines
   for each game's rules, and it carries a noindex tag of its own — nothing about it belongs in
   a search result.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <!-- The domain root, which lives in the ndri-nr.github.io repo rather than this one.
-             Listing it here is legal because robots.txt at the domain root names this
-             sitemap, and a cross-submitted sitemap may cover any URL on the domain. -->
-        <loc>https://ndri-nr.github.io/</loc>
-        <lastmod>2026-09-08</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>1.0</priority>
-    </url>
-    <url>
         <loc>https://ndri-nr.github.io/artivy/</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
-        <priority>0.9</priority>
+        <priority>1.0</priority>
     </url>
     <url>
         <loc>https://ndri-nr.github.io/artivy/about.html</loc>
