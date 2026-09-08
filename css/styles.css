@@ -1567,7 +1567,14 @@ section[id] {
     margin-top: 5px;
     font-size: 0.86rem;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.8);
+    /*
+     * 0.90, not 0.80. An alpha blends toward the tile, so the effective colour is not white
+     * and checking white against the fill is the wrong sum: at 0.80 over PawDoku's amber it
+     * lands on 4.12:1, and 13.8px at regular weight needs 4.5. The amber is the lightest of
+     * the six and the only one that failed; 0.90 puts the worst of them at 4.76:1 and the
+     * hook is still plainly secondary to a name in full white.
+     */
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* The two smallest cells carry a name and the art, and let the game's own page do the
