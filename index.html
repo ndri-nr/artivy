@@ -71,7 +71,7 @@
          replies, so the handshake is a round trip in the critical path. -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
 
     <!-- AdSense, on every page as Google's setup requires. The meta tag is what links the
@@ -133,16 +133,74 @@
     </nav>
 
     <!-- Main Content -->
-    <main id="home" class="hero">
-        <div class="hero-content">
-            <h1>Little Games, Big Joy</h1>
-            <p>Artivy crafts relaxing, beautifully designed mobile games — the kind you actually look forward to opening. Simple to pick up, easy on the eyes, and free to play.</p>
-            <a href="#games" class="cta-button">Explore Games</a>
-            <div class="hero-badges">
-                <span>✦ Beautifully designed</span>
-                <span>✦ Play offline</span>
-                <span>✦ Free to play</span>
+    <!--
+      The board. A 6x4 Shikaku partition — one 3x4 pitch block and six rectangles of four
+      sizes, tiling the grid exactly — because that is Rekta's own mechanic and four of the
+      six games are grids of coloured cells. It replaces a 100vh section that held one glass
+      card in a lot of empty gradient and put every game below the fold.
+
+      Each tile carries its `--tile` fill inline: the colour belongs to the game, so it
+      belongs next to the game rather than in six near-identical CSS rules. Grid areas are
+      inline for the same reason — the partition is the layout, and reading it here beside
+      the names is how anyone will check it still tiles.
+    -->
+    <main id="home" class="board">
+        <div class="board-grid">
+            <div class="board-pitch">
+                <h1>Six puzzles. Nothing to install.</h1>
+                <p>Artivy is one person making small logic games. No purchases, no timers, no
+                   coins — and every board is checked solvable before you see it.</p>
+                <a href="about.html">How these are made</a>
             </div>
+
+            <a class="board-tile" style="grid-area: paw; --art: 112px; --tile: #a0561f"
+               href="pawdoku/play.html">
+                <img src="assets/pawdoku-icon.webp" alt="" width="512" height="512" decoding="async">
+                <div class="board-text">
+                    <b>PawDoku</b>
+                    <span>One cat per row. No numbers.</span>
+                </div>
+            </a>
+            <a class="board-tile" style="grid-area: kata; --art: 76px; --tile: #4a6b2e"
+               href="kata_word/play.html">
+                <img src="assets/kata_word-icon.webp" alt="" width="512" height="512" decoding="async">
+                <div class="board-text">
+                    <b>Kata·Word</b>
+                    <span>Six guesses, English or Indonesian.</span>
+                </div>
+            </a>
+            <a class="board-tile" style="grid-area: stac; --art: 76px; --tile: #5a2a86"
+               href="stacko/play.html">
+                <img src="assets/stacko-icon.png" alt="" width="512" height="512" decoding="async">
+                <div class="board-text">
+                    <b>StackO!</b>
+                    <span>Timing, one slab at a time.</span>
+                </div>
+            </a>
+            <a class="board-tile" style="grid-area: t2048; --art: 72px; --tile: #5a3a1f"
+               href="2048/play.html">
+                <img src="assets/2048-icon.webp" alt="" width="512" height="512" decoding="async">
+                <div class="board-text">
+                    <b>2048</b>
+                    <span>Slide, merge, keep going past 2048.</span>
+                </div>
+            </a>
+            <a class="board-tile is-small" style="grid-area: rek; --art: 56px; --tile: #2d6b46"
+               href="rekta/play.html">
+                <img src="assets/rekta-icon.webp" alt="" width="512" height="512" decoding="async">
+                <div class="board-text">
+                    <b>Rekta</b>
+                    <span>Cut the grid into rectangles.</span>
+                </div>
+            </a>
+            <a class="board-tile is-small" style="grid-area: pour; --art: 56px; --tile: #2b4c8c"
+               href="pourfect/play.html">
+                <img src="assets/pourfect-icon.webp" alt="" width="512" height="512" decoding="async">
+                <div class="board-text">
+                    <b>PourFect!</b>
+                    <span>Sort the colours between bottles.</span>
+                </div>
+            </a>
         </div>
     </main>
 
@@ -155,22 +213,7 @@
     -->
     <!-- Games Section -->
     <section id="games" class="games-section">
-        <h2>Featured Games</h2>
-        <!--
-          Straight to a game, without crossing the strip. The strip is the showcase and it works,
-          but finding one title among six already means swiping, and this row is the part that
-          keeps working at twelve: it wraps rather than scrolling, and each tile is a plain link
-          so it needs no script to be useful.
-        -->
-        <nav class="game-quick" aria-label="All games">
-            <a href="pawdoku/play.html"><img src="assets/pawdoku-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async"><span>PawDoku</span></a>
-            <a href="kata_word/play.html"><img src="assets/kata_word-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async"><span>Kata·Word</span></a>
-            <a href="stacko/play.html"><img src="assets/stacko-icon.png" alt="" width="512" height="512" loading="lazy" decoding="async"><span>StackO!</span></a>
-            <a href="2048/play.html"><img src="assets/2048-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async"><span>2048</span></a>
-            <a href="rekta/play.html"><img src="assets/rekta-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async"><span>Rekta</span></a>
-            <a href="pourfect/play.html"><img src="assets/pourfect-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async"><span>PourFect!</span></a>
-        </nav>
-
+        <h2>More about each game</h2>
         <!--
           The two arrows are added by js/main.js rather than written here: without the script
           they would be buttons that scroll nothing, and a control that does not work is worse
@@ -186,13 +229,11 @@
                     <h3>PawDoku</h3>
                     <p>A purr-fect blend of logic and calm. Place one cat in every row, column and colour region — no two touching, and never a number in sight. Every puzzle has exactly one solution, so you can always reason it out.</p>
                     <div class="card-links">
-                        <a href="pawdoku/play.html" class="card-play">▶ Play</a>
+                        <a href="pawdoku/play.html" class="card-play">Play</a>
                         <a href="pawdoku/index.html" class="card-info">About</a>
                         <a href="https://play.google.com/store/apps/details?id=id.artivy.pawdoku"
                            class="card-store" target="_blank" rel="noopener"
-                           aria-label="Get PawDoku on Google Play">
-                            <img src="assets/google-play-badge.webp" alt="Get it on Google Play" width="564" height="168" loading="lazy" decoding="async">
-                        </a>
+                           aria-label="Get PawDoku on Google Play">Google Play</a>
                     </div>
                 </div>
             </div>
@@ -204,7 +245,7 @@
                     <h3>Kata·Word</h3>
                     <p>Crack a new word every day, or play as long as you like. Guess in 4–6 letters across English and Bahasa Indonesia — with streaks, trophies, and unlockable themes.</p>
                     <div class="card-links">
-                        <a href="kata_word/play.html" class="card-play">▶ Play</a>
+                        <a href="kata_word/play.html" class="card-play">Play</a>
                         <a href="kata_word/index.html" class="card-info">About</a>
                         <!-- READY, BUT NOT LIVE: Kata·Word's listing answers 404 today. Delete the
                              two comment markers below on the day it goes live, and confirm the
@@ -212,9 +253,7 @@
                         <!--
                         <a href="https://play.google.com/store/apps/details?id=id.artivy.wordle"
                            class="card-store" target="_blank" rel="noopener"
-                           aria-label="Get Kata·Word on Google Play">
-                            <img src="assets/google-play-badge.webp" alt="Get it on Google Play" width="564" height="168" loading="lazy" decoding="async">
-                        </a>
+                           aria-label="Get Kata·Word on Google Play">Google Play</a>
                         -->
                     </div>
                 </div>
@@ -227,7 +266,7 @@
                     <h3>StackO!</h3>
                     <p>A neon isometric block stacker. Tap to drop each sliding slab — miss and the overhang is sliced off, so the next one is narrower. Three modes, gems, and unlockable neon themes.</p>
                     <div class="card-links">
-                        <a href="stacko/play.html" class="card-play">▶ Play</a>
+                        <a href="stacko/play.html" class="card-play">Play</a>
                         <a href="stacko/index.html" class="card-info">About</a>
                         <!-- READY, BUT NOT LIVE: StackO!'s listing answers 404 today. Delete the
                              two comment markers below on the day it goes live, and confirm the
@@ -235,9 +274,7 @@
                         <!--
                         <a href="https://play.google.com/store/apps/details?id=id.artivy.stacko"
                            class="card-store" target="_blank" rel="noopener"
-                           aria-label="Get StackO! on Google Play">
-                            <img src="assets/google-play-badge.webp" alt="Get it on Google Play" width="564" height="168" loading="lazy" decoding="async">
-                        </a>
+                           aria-label="Get StackO! on Google Play">Google Play</a>
                         -->
                     </div>
                 </div>
@@ -250,7 +287,7 @@
                     <h3>2048</h3>
                     <p>The sliding-tile classic in warm ochre on ink. Swipe to slide the whole board; equal tiles merge and double. Hitting 2048 is the start, not the end — undo a slip, chase your own top-10, and play in English or Bahasa Indonesia.</p>
                     <div class="card-links">
-                        <a href="2048/play.html" class="card-play">▶ Play</a>
+                        <a href="2048/play.html" class="card-play">Play</a>
                         <a href="2048/index.html" class="card-info">About</a>
                         <!-- READY, BUT NOT LIVE: 2048's listing answers 404 today. Delete the
                              two comment markers below on the day it goes live, and confirm the
@@ -258,9 +295,7 @@
                         <!--
                         <a href="https://play.google.com/store/apps/details?id=id.artivy.puzzle2048"
                            class="card-store" target="_blank" rel="noopener"
-                           aria-label="Get 2048 on Google Play">
-                            <img src="assets/google-play-badge.webp" alt="Get it on Google Play" width="564" height="168" loading="lazy" decoding="async">
-                        </a>
+                           aria-label="Get 2048 on Google Play">Google Play</a>
                         -->
                     </div>
                 </div>
@@ -273,7 +308,7 @@
                     <h3>Rekta</h3>
                     <p>Shikaku in cold neon. Drag to cut the grid into rectangles — each holds one number, and that number is how many cells it covers. Three grid sizes, each with its own endless run, and every level is the same puzzle on every device.</p>
                     <div class="card-links">
-                        <a href="rekta/play.html" class="card-play">▶ Play</a>
+                        <a href="rekta/play.html" class="card-play">Play</a>
                         <a href="rekta/index.html" class="card-info">About</a>
                         <!-- READY, BUT NOT LIVE: Rekta's listing answers 404 today. Delete the
                              two comment markers below on the day it goes live, and confirm the
@@ -281,9 +316,7 @@
                         <!--
                         <a href="https://play.google.com/store/apps/details?id=id.artivy.rekta"
                            class="card-store" target="_blank" rel="noopener"
-                           aria-label="Get Rekta on Google Play">
-                            <img src="assets/google-play-badge.webp" alt="Get it on Google Play" width="564" height="168" loading="lazy" decoding="async">
-                        </a>
+                           aria-label="Get Rekta on Google Play">Google Play</a>
                         -->
                     </div>
                 </div>
@@ -297,7 +330,7 @@
                     <h3>PourFect!</h3>
                     <p>Water sort with one bottle that takes a single colour and never gives it back. Pour like onto like until every bottle holds one colour. Endless levels, each one checked to be solvable before you get it.</p>
                     <div class="card-links">
-                        <a href="pourfect/play.html" class="card-play">▶ Play</a>
+                        <a href="pourfect/play.html" class="card-play">Play</a>
                         <a href="pourfect/index.html" class="card-info">About</a>
                         <!-- READY, BUT NOT LIVE: PourFect!'s listing answers 404 today. Delete the
                              two comment markers below on the day it goes live, and confirm the
@@ -305,9 +338,7 @@
                         <!--
                         <a href="https://play.google.com/store/apps/details?id=id.artivy.pourfect"
                            class="card-store" target="_blank" rel="noopener"
-                           aria-label="Get PourFect! on Google Play">
-                            <img src="assets/google-play-badge.webp" alt="Get it on Google Play" width="564" height="168" loading="lazy" decoding="async">
-                        </a>
+                           aria-label="Get PourFect! on Google Play">Google Play</a>
                         -->
                     </div>
                 </div>
