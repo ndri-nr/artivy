@@ -613,7 +613,18 @@ h1, h2, h3 {
 }
 
 .card-links a {
-    display: inline-block;
+    /*
+     * Flex and centred *here*, on the selector that wins.
+     *
+     * `.card-play` set `display: flex; align-items: center` and it never applied: this
+     * rule is one class plus a type (0,1,1) and beats a lone class (0,1,0), so the pills
+     * stayed inline-block and `align-items` meant nothing. With `min-height` on an
+     * inline-block the line box sits at the top, which is why every label had 1px above it
+     * and 24px below.
+     */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 10px 25px;
     background: var(--secondary-color);
     color: white;
@@ -838,9 +849,6 @@ footer {
      * comfortable touch target.
      */
     flex: 0 1 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     min-height: 44px;
     padding-block: 0 !important;
     padding-inline: 16px !important;
@@ -859,7 +867,9 @@ footer {
    browser and the shortest path from the front door to a game should be one tap. */
 .card-play {
     background: var(--accent-deep) !important;
-    box-shadow: 0 5px 15px rgba(112, 72, 232, 0.3) !important;
+    /* Softer than the 0 5px 15px it had: beside two flat siblings that much lift made the
+       primary action look like it was hovering off the card. */
+    box-shadow: 0 2px 8px rgba(112, 72, 232, 0.25) !important;
 }
 
 /*
@@ -884,11 +894,24 @@ footer {
     background: #5c34d4 !important;
 }
 
-.card-info {
-    background: transparent !important;
-    color: #4a5568 !important;
-    border: 1px solid var(--glass-border);
+/*
+ * The secondary pills need a body you can see. Their border was var(--glass-border) —
+ * rgba(255,255,255,.5), a highlight for the edge of a panel floating over the page — which
+ * on the card's own white ground is invisible. Both read as bare text beside a solid Play
+ * button, so a row of three sibling controls looked like one button and two links.
+ */
+.card-info,
+.card-store {
+    background: #eef0f5 !important;
+    color: #414b5f !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
     box-shadow: none !important;
+}
+
+.card-info:hover,
+.card-store:hover {
+    background: #e3e7ef !important;
+    color: #22293a !important;
 }
 
 .card-info:hover {
@@ -970,16 +993,6 @@ footer {
 .card-store {
     text-align: center;
     box-sizing: border-box;
-    background: transparent !important;
-    color: #4a5568 !important;
-    border: 1px solid var(--glass-border);
-    box-shadow: none !important;
-    font-size: 0.86rem;
-}
-
-.card-store:hover {
-    background: rgba(255, 255, 255, 0.9) !important;
-    color: #2c3444 !important;
 }
 
 /* Below this the three labels stop fitting side by side, and a cramped row reads worse
