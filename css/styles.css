@@ -12,25 +12,33 @@ body {
     overflow-x: hidden;
 }
 
-/* Animated gradient mesh, sits behind the Three.js canvas (canvas is z-index:-1) */
+/*
+ * The gradient mesh behind every page.
+ *
+ * It animates `transform`, not `background-position`. Moving a background repaints the
+ * layer on every frame, and this layer is the size of the viewport with four gradients in
+ * it — a full-screen repaint at 60fps, on every page, forever. A transform is handed to the
+ * compositor and costs nothing per frame.
+ *
+ * `inset: -25%` is the room that makes it possible: the layer is wider than the screen, so
+ * it can slide without an edge ever coming into view.
+ */
 body::before {
     content: "";
     position: fixed;
-    inset: -20%;
+    inset: -25%;
     z-index: -2;
     background:
         radial-gradient(40vw 40vw at 15% 20%, rgba(255, 107, 107, 0.35), transparent 60%),
         radial-gradient(45vw 45vw at 85% 25%, rgba(78, 205, 196, 0.32), transparent 60%),
         radial-gradient(50vw 50vw at 50% 90%, rgba(254, 202, 87, 0.30), transparent 60%),
         linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
-    background-size: 200% 200%;
-    animation: meshShift 18s ease-in-out infinite;
+    animation: meshDrift 34s ease-in-out infinite alternate;
 }
 
-@keyframes meshShift {
-    0%   { background-position: 0% 0%, 100% 0%, 50% 100%, 0 0; }
-    50%  { background-position: 100% 50%, 0% 60%, 40% 0%, 0 0; }
-    100% { background-position: 0% 0%, 100% 0%, 50% 100%, 0 0; }
+@keyframes meshDrift {
+    from { transform: translate3d(-2%, -1.5%, 0) scale(1.04); }
+    to   { transform: translate3d(2.5%, 2%, 0) scale(1.09); }
 }
 
 /* Typography and Variables */
@@ -79,19 +87,48 @@ h1, h2, h3 {
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background-image:
-        radial-gradient(rgba(255, 107, 107, 0.30) 1.5px, transparent 1.6px),
-        radial-gradient(rgba(78, 205, 196, 0.26) 1.2px, transparent 1.3px),
-        radial-gradient(rgba(254, 202, 87, 0.30) 1px, transparent 1.1px);
-    background-size: 96px 96px, 64px 64px, 132px 132px;
-    background-position: 0 0, 32px 24px, 68px 52px;
-    animation: dotDrift 48s linear infinite;
+    /* The layers inside are oversized so their travel never shows an edge; this clips it. */
+    overflow: hidden;
 }
 
-@keyframes dotDrift {
-    to {
-        background-position: 96px 96px, -32px 88px, 200px -80px;
-    }
+/*
+ * Two tiled dot layers, each translated rather than scrolled by background-position — the
+ * same reason the mesh above moves by transform. They travel in different directions at
+ * different speeds, which is the parallax the mouse-tracked WebGL camera used to give, and
+ * each moves exactly one tile per cycle so the loop has no seam.
+ *
+ * Two layers because an element has two pseudo-elements. The third dot size rides along with
+ * the second rather than earning a wrapper of its own.
+ */
+#canvas-container::before,
+#canvas-container::after {
+    content: "";
+    position: absolute;
+    /* More than one tile of slack on every side. */
+    inset: -160px;
+}
+
+#canvas-container::before {
+    background-image: radial-gradient(rgba(255, 107, 107, 0.30) 1.5px, transparent 1.6px);
+    background-size: 96px 96px;
+    animation: dotDriftA 42s linear infinite;
+}
+
+#canvas-container::after {
+    background-image:
+        radial-gradient(rgba(78, 205, 196, 0.26) 1.2px, transparent 1.3px),
+        radial-gradient(rgba(254, 202, 87, 0.30) 1px, transparent 1.1px);
+    background-size: 64px 64px, 132px 132px;
+    background-position: 0 0, 34px 26px;
+    animation: dotDriftB 66s linear infinite;
+}
+
+@keyframes dotDriftA {
+    to { transform: translate3d(96px, 96px, 0); }
+}
+
+@keyframes dotDriftB {
+    to { transform: translate3d(-64px, 64px, 0); }
 }
 
 /* Navigation Bar */
@@ -217,6 +254,12 @@ h1, h2, h3 {
     animation: gradientText 8s linear infinite;
 }
 
+/*
+ * The one animation here that still moves a background, and it has to: the colour is a
+ * gradient clipped to the glyphs, and there is no transform that slides a fill through
+ * text. It is affordable for the same reason the others were not — the repaint is one
+ * heading, not a layer the size of the screen.
+ */
 @keyframes gradientText {
     to { background-position: 300% 0; }
 }
