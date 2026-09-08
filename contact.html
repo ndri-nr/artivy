@@ -59,24 +59,19 @@
 }
     </script>
 
-    <!-- Nunito only. Quicksand was requested at three weights and named just once
-         in the stack, *after* Nunito — so it was three font files fetched on a
-         render-blocking request for a face that never rendered. It stays in the CSS
-         stack, where a locally installed copy is a real fallback and costs nothing.
-    
-         preconnect for both hosts: the stylesheet comes from one and the font files
-         from the other, and the second host is only discovered after the first
-         replies, so the handshake is a round trip in the critical path. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
          than named in the markup, so the browser cannot know about it until that script
          runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
          in front of the first thing a European visitor sees. Lighthouse measures 300ms of
-         LCP in it. Third of four: the budget is four preconnects and this site now uses
-         three. -->
+         LCP in it, and it is the only origin left worth a hint now the type is served from
+         here — the two font hosts it sat beside are gone. -->
     <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- The type is on this origin now, so it is preloaded rather than discovered inside a
+         stylesheet on another one. `crossorigin` is not optional even same-origin: a font is
+         always fetched in CORS mode, and a preload without it fetches the file a second time
+         instead of matching. Only the latin subsets are hinted — latin-ext is declared in the
+         CSS and `unicode-range` keeps it unfetched until a page needs it. -->
+    <link rel="preload" href="assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="css/styles.css">
     <style>
         .page-container {

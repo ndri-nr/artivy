@@ -63,19 +63,19 @@
 
     <meta name="theme-color" content="#3b3e63">
     <title>Play PourFect! - Artivy</title>
-    <!-- The stylesheet comes from one host and the font files from another, and the second
-         is only discovered once the first replies — so the handshake sits in the critical
-         path of a page whose board cannot be drawn until the type settles. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
          than named in the markup, so the browser cannot know about it until that script
          runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
          in front of the first thing a European visitor sees. Lighthouse measures 300ms of
-         LCP in it. Third of four: the budget is four preconnects and this site now uses
-         three. -->
+         LCP in it, and it is the only origin left worth a hint now the type is served from
+         here — the two font hosts it sat beside are gone. -->
     <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- The type is on this origin now, so it is preloaded rather than discovered inside a
+         stylesheet on another one. `crossorigin` is not optional even same-origin: a font is
+         always fetched in CORS mode, and a preload without it fetches the file a second time
+         instead of matching. Only the latin subsets are hinted — latin-ext is declared in the
+         CSS and `unicode-range` keeps it unfetched until a page needs it. -->
+    <link rel="preload" href="../assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/play.css?v=BUILD">
     <link rel="stylesheet" href="game.css?v=BUILD">

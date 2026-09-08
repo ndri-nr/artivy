@@ -31,24 +31,19 @@
     <meta name="twitter:description" content="What this website stores, what Google AdSense does here, and what Artivy does not collect. The privacy policy for artivy on the web, separate from the Android apps.">
     <meta name="twitter:image" content="https://ndri-nr.github.io/artivy/assets/og-artivy.png">
 
-    <!-- Nunito only. Quicksand was requested at three weights and named just once
-         in the stack, *after* Nunito — so it was three font files fetched on a
-         render-blocking request for a face that never rendered. It stays in the CSS
-         stack, where a locally installed copy is a real fallback and costs nothing.
-    
-         preconnect for both hosts: the stylesheet comes from one and the font files
-         from the other, and the second host is only discovered after the first
-         replies, so the handshake is a round trip in the critical path. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
          than named in the markup, so the browser cannot know about it until that script
          runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
          in front of the first thing a European visitor sees. Lighthouse measures 300ms of
-         LCP in it. Third of four: the budget is four preconnects and this site now uses
-         three. -->
+         LCP in it, and it is the only origin left worth a hint now the type is served from
+         here — the two font hosts it sat beside are gone. -->
     <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- The type is on this origin now, so it is preloaded rather than discovered inside a
+         stylesheet on another one. `crossorigin` is not optional even same-origin: a font is
+         always fetched in CORS mode, and a preload without it fetches the file a second time
+         instead of matching. Only the latin subsets are hinted — latin-ext is declared in the
+         CSS and `unicode-range` keeps it unfetched until a page needs it. -->
+    <link rel="preload" href="assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="css/styles.css">
     <style>
         .page-container {
@@ -245,13 +240,9 @@
 
             <p>We do not run Google Auto ads, we place no advert within reach of a game board, and no advert on this site is a video you are asked to watch in exchange for anything. Every advert here is a plain display banner, loaded once when the page loads and never refreshed.</p>
 
-            <h2>Other things loaded from third parties</h2>
+            <h2>Nothing else is loaded from anywhere else</h2>
 
-            <ul>
-                <li><strong>Google Fonts</strong> supplies the two typefaces the site is set in. Loading a font sends your IP address and browser details to Google's font servers, as any request to any server does.</li>
-            </ul>
-
-            <p>Nothing else is loaded from anywhere else — not even a JavaScript library. The home page used to pull one from a public code CDN for its background animation; that animation is plain CSS now and the request is gone. There are no social widgets, no tracking pixels, no comment system, no embedded video and no tag manager.</p>
+            <p>Google's advertising, described above, is the only third party this site contacts. Not a JavaScript library, and no longer a typeface: the two faces the site is set in are served from this site, so fetching them reaches no one but us. They came from Google Fonts until now, which meant your IP address and browser details went to Google's font servers to get them. The home page also used to pull a JavaScript library from a public code CDN for its background animation; that animation is plain CSS now and the request is gone. There are no social widgets, no tracking pixels, no comment system, no embedded video and no tag manager.</p>
 
             <h2>What we do not do</h2>
 
