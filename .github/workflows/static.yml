@@ -54,6 +54,12 @@ jobs:
           ! grep -rq '?v=BUILD' games
       - name: Flatten games/ to the site root
         run: cp -R games/. . && rm -rf games
+      # The whole repository is what gets uploaded, so anything tracked here is
+      # also served. The Play Console art and the script that draws it are kept
+      # in git but are not part of the website, and 650 KB of header JPEG has no
+      # reason to sit at /artivy/store/ waiting for nobody.
+      - name: Keep the store art and the tools out of the site
+        run: rm -rf store tools
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
