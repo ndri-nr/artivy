@@ -1,0 +1,50 @@
+name: InstaBox watchdog
+
+on:
+  schedule:
+    # The free machine hard-pauses after eight running hours. This request is
+    # deliberately made through InstaBox's public-port gateway, not Cloudflare:
+    # that gateway can wake a paused machine while its cloudflared process cannot.
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: instabox-watchdog
+  cancel-in-progress: true
+
+jobs:
+  wake-and-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Wake the machine through its InstaBox public port
+        shell: bash
+        run: |
+          set -euo pipefail
+          response="$({
+            curl --fail --silent --show-error \
+              --retry 5 --retry-delay 2 --retry-all-errors \
+              --connect-timeout 20 --max-time 60 \
+              https://8080-agqwhvxr3js25e53humkaoehei.instabox.tech/healthz
+          })"
+          test "$response" = "ok"
+
+      - name: Check both Cloudflare Tunnel hostnames
+        shell: bash
+        run: |
+          set -euo pipefail
+          for endpoint in \
+            https://duel.bug.ai.id/healthz \
+            https://artiverse.bug.ai.id/healthz
+          do
+            response="$({
+              curl --fail --silent --show-error \
+                --retry 3 --retry-delay 2 --retry-all-errors \
+                --connect-timeout 10 --max-time 30 \
+                "$endpoint"
+            })"
+            test "$response" = "ok"
+          done
