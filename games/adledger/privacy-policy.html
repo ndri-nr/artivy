@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - AdLedger | Artivy</title>
+    <meta name="description" content="What AdLedger, the read-only AdMob dashboard, accesses from your Google account and what stays on your device.">
+    <link rel="canonical" href="https://ndri-nr.github.io/artivy/adledger/privacy-policy.html">
+
+    <link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="apple-touch-icon" href="../assets/icon-180.png">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Artivy">
+    <meta property="og:locale" content="en">
+    <meta property="og:title" content="Privacy Policy - AdLedger">
+    <meta property="og:description" content="What AdLedger, the read-only AdMob dashboard, accesses from your Google account and what stays on your device.">
+    <meta property="og:url" content="https://ndri-nr.github.io/artivy/adledger/privacy-policy.html">
+
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .policy-container {
+            max-width: 800px;
+            margin: 120px auto 50px auto;
+            padding: 40px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .policy-container h1 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .policy-container h2 {
+            color: var(--secondary-color);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .policy-container p,
+        .policy-container li {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .policy-container ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation. AdLedger is a developer tool, not a game, so the games dropdown
+         and AdSense the game pages carry are left off. The shell keeps the Artivy
+         branding and a route home. -->
+    <nav class="navbar">
+        <div class="logo">
+            <a href="../index.html" style="text-decoration: none;"><img src="../assets/logo.svg" alt="Artivy Logo" width="290" height="100" fetchpriority="high"></a>
+        </div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+        </ul>
+
+        <details class="nav-menu">
+            <summary aria-label="Menu"><span class="nav-burger"></span></summary>
+            <ul>
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../about.html">About</a></li>
+                <li><a href="../contact.html">Contact</a></li>
+            </ul>
+        </details>
+    </nav>
+
+    <div class="policy-container">
+        <a href="../index.html" class="back-button">← Back to Artivy</a>
+        <h1>Privacy Policy for AdLedger</h1>
+        <p><strong>Effective Date:</strong> October 29, 2026</p>
+
+        <p>AdLedger is a native Android app, published by Artivy, that shows you your own
+            Google AdMob earnings as a read-only dashboard. It has no Artivy server and no
+            account of its own: you sign in with the Google account that owns your AdMob data,
+            and the figures are read straight from Google and shown on your phone. This policy
+            explains exactly what AdLedger touches, where it goes, and what never leaves your
+            device.</p>
+
+        <h2>1. The Google account data AdLedger accesses</h2>
+        <p>When you sign in, AdLedger asks Google for a single, <strong>read-only</strong>
+            permission:</p>
+        <ul>
+            <li><strong>View your AdMob data</strong> (the <code>https://www.googleapis.com/auth/admob.readonly</code>
+                scope). This lets AdLedger read, and only read, your AdMob account
+                information: the account's identifier and currency, your list of apps, and
+                estimated-earnings and performance reports (impressions, clicks, and similar
+                metrics) for the date ranges you pick.</li>
+        </ul>
+        <p>AdLedger cannot change anything in your AdMob account. The scope grants no write
+            access, so it can never create, edit, or delete your apps, ad units, payment
+            details, or any other setting. It reads your email address only to show which
+            account you are signed in as.</p>
+
+        <h2>2. Where your AdMob data goes</h2>
+        <p>Nowhere but your device. AdLedger has <strong>no backend</strong>: your earnings
+            and reports are fetched directly from Google's AdMob API to your phone and
+            displayed there. Artivy never receives, stores, or sees your revenue data.</p>
+        <ul>
+            <li><strong>Access token (in memory only):</strong> The token that authorises the
+                read requests lives in memory while the app is running and is never written to
+                disk. It is gone when the app closes.</li>
+            <li><strong>Cached dashboard (on your device only):</strong> The last report AdLedger
+                loaded is kept in the app's private storage so the dashboard can open without a
+                round-trip. It is readable only by AdLedger, it is <strong>cleared when you sign
+                out</strong>, and Android's cloud backup is switched off for the app, so this
+                cache is never carried off the device.</li>
+        </ul>
+        <p>Your AdMob figures are never sent to Artivy, never shared with any third party, and
+            never used for advertising. AdLedger contains no advertising SDK and shows no ads.</p>
+
+        <h2>3. Google API Services User Data Policy</h2>
+        <p>AdLedger's use of information received from Google APIs adheres to the
+            <a href="https://developers.google.com/terms/api-services-user-data-policy">Google
+                API Services User Data Policy</a>, including the Limited Use requirements. The
+            AdMob data AdLedger reads is used only to show you your dashboard on your own device;
+            it is not transferred to anyone else, not used for advertising, and not read by humans.</p>
+
+        <h2>4. Analytics and crash reports</h2>
+        <p>AdLedger uses <strong>Google Firebase Analytics</strong> and <strong>Google Firebase
+                Crashlytics</strong> for diagnostics — to understand which screens are used and
+            to receive crash reports so the app can be fixed. These send app-usage events and
+            technical crash details (device model, operating-system version, and the state at
+            the moment of a crash).</p>
+        <p><strong>They never carry your AdMob revenue figures, your reports, your email
+                address, or your access token.</strong> No earnings data is ever attached to an
+            analytics event or a crash report.</p>
+
+        <h2>5. Permissions</h2>
+        <p>AdLedger requests only internet and network-state access, which it needs to reach the
+            AdMob API. It asks for no access to your contacts, files, location, camera,
+            microphone, or any other sensitive part of the device.</p>
+
+        <h2>6. Revoking access and removing data</h2>
+        <ul>
+            <li><strong>Sign out</strong> inside AdLedger to clear the cached dashboard from your
+                device and discard the in-memory token.</li>
+            <li><strong>Revoke AdLedger's access to your Google account</strong> at any time at
+                <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>.
+                After that, AdLedger can no longer read your AdMob data.</li>
+            <li><strong>Uninstall the app</strong> to remove everything it stored on your device.</li>
+        </ul>
+        <p>Because Artivy holds none of your data, there is nothing on an Artivy server to
+            request or delete.</p>
+
+        <h2>7. Children's privacy</h2>
+        <p>AdLedger is a tool for AdMob account holders and is not directed to children. It does
+            not knowingly collect any information from children.</p>
+
+        <h2>8. Changes to this Privacy Policy</h2>
+        <p>We may update this Privacy Policy from time to time. Changes are published on this page
+            and marked by a new "Effective Date" above. Please review it periodically.</p>
+
+        <h2>9. Contact Us</h2>
+        <p>If you have any questions about this Privacy Policy, contact us at 4ndri.nr@gmail.com.</p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <nav class="footer-links" aria-label="Site">
+            <a href="../index.html">Home</a>
+            <a href="../about.html">About Artivy</a>
+            <a href="../contact.html">Contact</a>
+            <a href="../privacy.html">Website privacy</a>
+        </nav>
+        <p>&copy; 2026 Artivy. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>
