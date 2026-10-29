@@ -18,188 +18,206 @@
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://ndri-nr.github.io/artivy/</loc>
+        <loc>https://artivy.id/</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/about.html</loc>
+        <loc>https://artivy.id/about.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/privacy.html</loc>
+        <loc>https://artivy.id/privacy.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/contact.html</loc>
+        <loc>https://artivy.id/contact.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/pawdoku/</loc>
+        <loc>https://artivy.id/games/pawdoku/</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/pawdoku/play.html</loc>
+        <loc>https://artivy.id/games/pawdoku/play.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/pawdoku/privacy-policy.html</loc>
+        <loc>https://artivy.id/games/pawdoku/privacy-policy.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/pawdoku/terms-and-conditions.html</loc>
+        <loc>https://artivy.id/games/pawdoku/terms-and-conditions.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/kata_word/</loc>
+        <loc>https://artivy.id/games/kata_word/</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/kata_word/play.html</loc>
+        <loc>https://artivy.id/games/kata_word/play.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/kata_word/privacy-policy.html</loc>
+        <loc>https://artivy.id/games/kata_word/privacy-policy.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/kata_word/terms-and-conditions.html</loc>
+        <loc>https://artivy.id/games/kata_word/terms-and-conditions.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/stacko/</loc>
+        <loc>https://artivy.id/games/stacko/</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/stacko/play.html</loc>
+        <loc>https://artivy.id/games/stacko/play.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/stacko/privacy-policy.html</loc>
+        <loc>https://artivy.id/games/stacko/privacy-policy.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/stacko/terms-and-conditions.html</loc>
+        <loc>https://artivy.id/games/stacko/terms-and-conditions.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/2048/</loc>
+        <loc>https://artivy.id/games/2048/</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/2048/play.html</loc>
+        <loc>https://artivy.id/games/2048/play.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/2048/privacy-policy.html</loc>
+        <loc>https://artivy.id/games/2048/privacy-policy.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/2048/terms-and-conditions.html</loc>
+        <loc>https://artivy.id/games/2048/terms-and-conditions.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/rekta/</loc>
+        <loc>https://artivy.id/games/rekta/</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/rekta/play.html</loc>
+        <loc>https://artivy.id/games/rekta/play.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/rekta/privacy-policy.html</loc>
+        <loc>https://artivy.id/games/rekta/privacy-policy.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/rekta/terms-and-conditions.html</loc>
+        <loc>https://artivy.id/games/rekta/terms-and-conditions.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/pourfect/</loc>
+        <loc>https://artivy.id/games/pourfect/</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/pourfect/play.html</loc>
+        <loc>https://artivy.id/games/pourfect/play.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/pourfect/privacy-policy.html</loc>
+        <loc>https://artivy.id/games/pourfect/privacy-policy.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/pourfect/terms-and-conditions.html</loc>
+        <loc>https://artivy.id/games/pourfect/terms-and-conditions.html</loc>
         <lastmod>2026-09-08</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/game_center/privacy-policy.html</loc>
+        <loc>https://artivy.id/games/game_center/privacy-policy.html</loc>
         <lastmod>2026-09-29</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/game_center/delete-account.html</loc>
+        <loc>https://artivy.id/games/game_center/delete-account.html</loc>
         <lastmod>2026-09-29</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>
     <url>
-        <loc>https://ndri-nr.github.io/artivy/game_center/terms-and-conditions.html</loc>
+        <loc>https://artivy.id/games/game_center/terms-and-conditions.html</loc>
         <lastmod>2026-09-29</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
+    <url>
+        <loc>https://artivy.id/apps/adledger/</loc>
+        <lastmod>2026-10-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://artivy.id/apps/adledger/privacy-policy.html</loc>
+        <lastmod>2026-10-29</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.4</priority>
+    </url>
+    <url>
+        <loc>https://artivy.id/apps/adledger/terms-and-conditions.html</loc>
+        <lastmod>2026-10-29</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.3</priority>
     </url>

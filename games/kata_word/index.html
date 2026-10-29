@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kata·Word — rules, tips and free browser word game | Artivy</title>
     <meta name="description" content="How Kata·Word scores duplicate letters, why greys matter as much as greens, and opening-word strategy in English and Bahasa Indonesia. Play free in your browser.">
-    <link rel="canonical" href="https://ndri-nr.github.io/artivy/kata_word/">
+    <link rel="canonical" href="https://artivy.id/games/kata_word/">
 
     <!-- Icons. SVG first so the mark stays sharp at any size; the PNGs are for the
          places that will not take one, including Google's own search results. -->
-    <link rel="icon" type="image/svg+xml" href="../assets/logo-mark.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
-    <link rel="apple-touch-icon" href="../assets/icon-180.png">
+    <link rel="icon" type="image/svg+xml" href="../../assets/logo-mark.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../assets/favicon-32.png">
+    <link rel="apple-touch-icon" href="../../assets/icon-180.png">
 
     <!-- What a link to this page looks like when someone shares it. Absolute URLs
          throughout: a scraper fetches these on their own and has no document to
@@ -21,15 +21,15 @@
     <meta property="og:locale" content="en">
     <meta property="og:title" content="Kata·Word — rules, tips and free browser word game">
     <meta property="og:description" content="How Kata·Word scores duplicate letters, why greys matter as much as greens, and opening-word strategy in English and Bahasa Indonesia. Play free in your browser.">
-    <meta property="og:url" content="https://ndri-nr.github.io/artivy/kata_word/">
-    <meta property="og:image" content="https://ndri-nr.github.io/artivy/assets/kata_word-feature.png">
+    <meta property="og:url" content="https://artivy.id/games/kata_word/">
+    <meta property="og:image" content="https://artivy.id/assets/kata_word-feature.png">
     <meta property="og:image:width" content="1024">
     <meta property="og:image:height" content="500">
     <meta property="og:image:alt" content="Kata·Word by Artivy">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Kata·Word — rules, tips and free browser word game">
     <meta name="twitter:description" content="How Kata·Word scores duplicate letters, why greys matter as much as greens, and opening-word strategy in English and Bahasa Indonesia. Play free in your browser.">
-    <meta name="twitter:image" content="https://ndri-nr.github.io/artivy/assets/kata_word-feature.png">
+    <meta name="twitter:image" content="https://artivy.id/assets/kata_word-feature.png">
 
     <script type="application/ld+json">
 {
@@ -37,11 +37,11 @@
   "@graph": [
     {
       "@type": "VideoGame",
-      "@id": "https://ndri-nr.github.io/artivy/kata_word/#game",
+      "@id": "https://artivy.id/games/kata_word/#game",
       "name": "Kata·Word",
-      "url": "https://ndri-nr.github.io/artivy/kata_word/",
+      "url": "https://artivy.id/games/kata_word/",
       "description": "How Kata·Word scores duplicate letters, why greys matter as much as greens, and opening-word strategy in English and Bahasa Indonesia. Play free in your browser.",
-      "image": "https://ndri-nr.github.io/artivy/assets/kata_word-feature.png",
+      "image": "https://artivy.id/assets/kata_word-feature.png",
       "genre": [
         "Puzzle",
         "Word game"
@@ -62,7 +62,7 @@
         "availability": "https://schema.org/InStock"
       },
       "publisher": {
-        "@id": "https://ndri-nr.github.io/#artivy"
+        "@id": "https://artivy.id/#artivy"
       }
     },
     {
@@ -72,13 +72,13 @@
           "@type": "ListItem",
           "position": 1,
           "name": "Games",
-          "item": "https://ndri-nr.github.io/artivy/"
+          "item": "https://artivy.id/"
         },
         {
           "@type": "ListItem",
           "position": 2,
           "name": "Kata·Word",
-          "item": "https://ndri-nr.github.io/artivy/kata_word/"
+          "item": "https://artivy.id/games/kata_word/"
         }
       ]
     },
@@ -151,8 +151,8 @@
          always fetched in CORS mode, and a preload without it fetches the file a second time
          instead of matching. Only the latin subsets are hinted — latin-ext is declared in the
          CSS and `unicode-range` keeps it unfetched until a page needs it. -->
-    <link rel="preload" href="../assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="preload" href="../../assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="../../css/styles.css">
     <style>
         .game-info-container {
             position: relative;
@@ -258,17 +258,18 @@
     <script async
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/brand-pages.css">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="logo">
-            <a href="../index.html" style="text-decoration: none;"><img src="../assets/logo.svg" alt="Artivy Logo" width="290" height="100" fetchpriority="high"></a>
+            <a href="../../index.html" style="text-decoration: none;"><img src="../../assets/logo.svg" alt="Artivy Logo" width="290" height="100" fetchpriority="high"></a>
         </div>
         <ul class="nav-links">
-            <li><a href="../index.html">Home</a></li>
+            <li><a href="../../index.html">Home</a></li>
             <li class="dropdown">
-                <a href="../index.html#games" class="dropbtn">Games ▾</a>
+                <a href="../../index.html#games" class="dropbtn">Games ▾</a>
                 <div class="dropdown-content">
                     <a href="../pawdoku/play.html">PawDoku</a>
                     <a href="play.html">Kata·Word</a>
@@ -278,8 +279,8 @@
                     <a href="../pourfect/play.html">PourFect!</a>
                 </div>
             </li>
-            <li><a href="../about.html">About</a></li>
-            <li><a href="../contact.html">Contact</a></li>
+            <li><a href="../../about.html">About</a></li>
+            <li><a href="../../contact.html">Contact</a></li>
         </ul>
 
         <!-- The phone menu, the same <details> the home page uses. Below 768px .nav-links is
@@ -287,15 +288,15 @@
         <details class="nav-menu">
             <summary aria-label="Menu"><span class="nav-burger"></span></summary>
             <ul>
-                <li><a href="../index.html">Home</a></li>
+                <li><a href="../../index.html">Home</a></li>
                 <li><a href="../pawdoku/play.html">PawDoku</a></li>
                 <li><a href="play.html">Kata·Word</a></li>
                 <li><a href="../stacko/play.html">StackO!</a></li>
                 <li><a href="../2048/play.html">2048</a></li>
                 <li><a href="../rekta/play.html">Rekta</a></li>
                 <li><a href="../pourfect/play.html">PourFect!</a></li>
-                <li><a href="../about.html">About</a></li>
-                <li><a href="../contact.html">Contact</a></li>
+                <li><a href="../../about.html">About</a></li>
+                <li><a href="../../contact.html">Contact</a></li>
             </ul>
         </details>
     </nav>
@@ -319,9 +320,9 @@
         }
     </script>
     <div class="game-info-container">
-        <a href="../index.html" class="back-button">← All games</a>
+        <a href="../../index.html" class="back-button">← All games</a>
         <div class="game-icon-wrapper">
-            <img src="../assets/kata_word-icon.webp" alt="Kata·Word" class="game-icon" width="512" height="512">
+            <img src="../../assets/kata_word-icon.webp" alt="Kata·Word" class="game-icon" width="512" height="512">
         </div>
         <h1>Kata·Word</h1>
         <p>A minimalist word-guessing game that works fully offline. Crack a new word every day in the calendar Daily Challenge, or play unlimited rounds in Free Play. Guess in 4, 5, or 6 letters across English and Bahasa Indonesia, build streaks, earn trophies and coins, and unlock themes — all with clean, distraction-free visuals.</p>
@@ -335,7 +336,7 @@
 
         <a href="https://play.google.com/store/apps/details?id=id.artivy.wordle"
            class="play-badge" target="_blank" rel="noopener">
-            <img src="../assets/google-play-badge.webp" alt="Get it on Google Play" width="564" height="168" loading="lazy" decoding="async">
+            <img src="../../assets/google-play-badge.webp" alt="Get it on Google Play" width="564" height="168" loading="lazy" decoding="async">
         </a>
 
         <section class="guide" id="how-to-play">
@@ -466,10 +467,10 @@
 
     <footer>
         <nav class="footer-links" aria-label="Site">
-            <a href="../index.html">Home</a>
-            <a href="../about.html">About Artivy</a>
-            <a href="../contact.html">Contact</a>
-            <a href="../privacy.html">Website privacy</a>
+            <a href="../../index.html">Home</a>
+            <a href="../../about.html">About Artivy</a>
+            <a href="../../contact.html">Contact</a>
+            <a href="../../privacy.html">Website privacy</a>
         </nav>
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>

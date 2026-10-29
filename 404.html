@@ -20,15 +20,15 @@
          always fetched in CORS mode, and a preload without it fetches the file a second time
          instead of matching. Only the latin subsets are hinted — latin-ext is declared in the
          CSS and `unicode-range` keeps it unfetched until a page needs it. -->
-    <link rel="preload" href="/artivy/assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" href="/artivy/css/styles.css">
-    <link rel="icon" type="image/svg+xml" href="/artivy/assets/logo-mark.svg">
-    <link rel="icon" type="image/png" sizes="32x32" href="/artivy/assets/favicon-32.png">
-    <link rel="apple-touch-icon" href="/artivy/assets/icon-180.png">
+    <link rel="preload" href="/assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="icon" type="image/svg+xml" href="/assets/logo-mark.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+    <link rel="apple-touch-icon" href="/assets/icon-180.png">
     <style>
         /* Absolute paths everywhere in this file, unlike every other page. GitHub Pages
-           serves this one document for a miss at *any* depth — /artivy/nope.html and
-           /artivy/rekta/nope.html both land here — so a relative asset path would resolve
+           serves this one document for a miss at *any* depth — /nope.html and
+           /rekta/nope.html both land here — so a relative asset path would resolve
            against whatever the visitor mistyped. */
         .page-container {
             max-width: 640px;
@@ -94,23 +94,23 @@
         <p>That address does not lead anywhere. If you followed a link from inside one of our games, it may have moved — the games below are all still here.</p>
 
         <div class="miss-games">
-            <a href="/artivy/pawdoku/play.html"><img src="/artivy/assets/pawdoku-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">PawDoku</a>
-            <a href="/artivy/kata_word/play.html"><img src="/artivy/assets/kata_word-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">Kata&middot;Word</a>
-            <a href="/artivy/stacko/play.html"><img src="/artivy/assets/stacko-icon.png" alt="" width="512" height="512" loading="lazy" decoding="async">StackO!</a>
-            <a href="/artivy/2048/play.html"><img src="/artivy/assets/2048-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">2048</a>
-            <a href="/artivy/rekta/play.html"><img src="/artivy/assets/rekta-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">Rekta</a>
-            <a href="/artivy/pourfect/play.html"><img src="/artivy/assets/pourfect-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">PourFect!</a>
+            <a href="/games/pawdoku/play.html"><img src="/assets/pawdoku-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">PawDoku</a>
+            <a href="/games/kata_word/play.html"><img src="/assets/kata_word-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">Kata&middot;Word</a>
+            <a href="/games/stacko/play.html"><img src="/assets/stacko-icon.png" alt="" width="512" height="512" loading="lazy" decoding="async">StackO!</a>
+            <a href="/games/2048/play.html"><img src="/assets/2048-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">2048</a>
+            <a href="/games/rekta/play.html"><img src="/assets/rekta-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">Rekta</a>
+            <a href="/games/pourfect/play.html"><img src="/assets/pourfect-icon.webp" alt="" width="512" height="512" loading="lazy" decoding="async">PourFect!</a>
         </div>
 
-        <p class="play-now"><a href="/artivy/">All games</a></p>
+        <p class="play-now"><a href="/">All games</a></p>
     </main>
 
     <footer>
         <nav class="footer-links" aria-label="Site">
-            <a href="/artivy/">Home</a>
-            <a href="/artivy/about.html">About Artivy</a>
-            <a href="/artivy/contact.html">Contact</a>
-            <a href="/artivy/privacy.html">Website privacy</a>
+            <a href="/">Home</a>
+            <a href="/about.html">About Artivy</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/privacy.html">Website privacy</a>
         </nav>
         <p>&copy; 2026 Artivy. All rights reserved.</p>
     </footer>

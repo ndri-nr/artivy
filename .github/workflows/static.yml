@@ -33,10 +33,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      # The game pages are grouped under games/ in the repo for tidiness, but
-      # every shipped app has /artivy/<game>/privacy-policy.html hard-coded in
-      # its binary. Flatten them back to the root so the published URLs never
-      # move. Deleting this step 404s the legal links in five released games.
+      # Product pages now publish at their canonical, human-readable paths:
+      # /games/<slug>/ and /apps/<slug>/. Older Android builds still contain
+      # /<slug>/ legal URLs, so compatibility copies remain at the root. These
+      # aliases can only be removed after every shipped build has moved to the
+      # canonical URL.
       # A play page and its script are separate files with separate cache lifetimes, so a
       # browser can hold a new play.html beside a play.js from the previous deploy. When a
       # change spans both — a button removed from the HTML that the old script still reaches
@@ -49,11 +50,21 @@ jobs:
       - name: Stamp the asset version
         run: |
           STAMP=$(git log -1 --format=%ct)
-          grep -rl '?v=BUILD' games | xargs -r sed -i "s/?v=BUILD/?v=$STAMP/g"
+          grep -rl '?v=BUILD' games apps | xargs -r sed -i "s/?v=BUILD/?v=$STAMP/g"
           echo "stamped v=$STAMP"
-          ! grep -rq '?v=BUILD' games
-      - name: Flatten games/ to the site root
-        run: cp -R games/. . && rm -rf games
+          ! grep -rq '?v=BUILD' games apps
+      - name: Publish legacy product URL aliases
+        run: |
+          for product in games/* apps/*; do
+            [ -d "$product" ] || continue
+            slug=$(basename "$product")
+            [ ! -e "$slug" ] || { echo "legacy alias collision: $slug" >&2; exit 1; }
+            cp -R "$product" "$slug"
+          done
+      - name: Add publisher declarations at the domain root
+        run: |
+          cp publisher/app-ads.txt app-ads.txt
+          cp publisher/ads.txt ads.txt
       # The whole repository is what gets uploaded, so anything tracked here is
       # also served. The Play Console art and the script that draws it are kept
       # in git but are not part of the website, and 650 KB of header JPEG has no

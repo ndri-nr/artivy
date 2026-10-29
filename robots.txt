@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://artivy.id/sitemap.xml
