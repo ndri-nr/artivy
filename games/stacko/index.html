@@ -130,14 +130,6 @@
   ]
 }
     </script>
-
-    <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
-         than named in the markup, so the browser cannot know about it until that script
-         runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
-         in front of the first thing a European visitor sees. Lighthouse measures 300ms of
-         LCP in it, and it is the only origin left worth a hint now the type is served from
-         here — the two font hosts it sat beside are gone. -->
-    <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
     <!-- The type is on this origin now, so it is preloaded rather than discovered inside a
          stylesheet on another one. `crossorigin` is not optional even same-origin: a font is
          always fetched in CORS mode, and a preload without it fetches the file a second time
@@ -241,16 +233,7 @@
             }
         }
     </style>
-
-    <!-- AdSense, on every page as Google's setup requires. The meta tag is what links the
-         site to the account; the script is what would serve an advert. Neither places one by
-         itself: Auto ads are off, and the game pages take a hand-placed unit in the slot
-         play.css reserves below the board. -->
-    <meta name="google-adsense-account" content="ca-pub-8668013395284480">
-    <script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/css/brand-pages.css">
+<link rel="stylesheet" href="/css/brand-pages.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -294,24 +277,7 @@
     </nav>
 
     <div class="page-with-rails">
-    <aside class="ad-rail ad-rail-left" id="rail-left" aria-label="Advertisement"></aside>
-    <script>
-        /*
-          The <ins> is created here rather than written above, and only when the rail is wide
-          enough to exist. adsbygoogle.push() does not fill the slot nearest the call — it fills
-          the next uninitialised <ins> in document order. With a hidden rail left in the markup,
-          the banner below the board pushed and AdSense handed that push to the hidden rail
-          instead, so the rail failed on availableWidth=0 and the banner was never filled at all.
-          No element, no misdirected push.
-        */
-        if (matchMedia('(min-width: 1280px)').matches) {
-            document.getElementById('rail-left').innerHTML =
-                '<ins class="adsbygoogle" style="display:block;width:160px;height:600px"'
-                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="7431283902"></ins>';
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        }
-    </script>
-    <div class="game-info-container">
+<div class="game-info-container">
         <a href="../../index.html" class="back-button">← All games</a>
         <div class="game-icon-wrapper">
             <img src="../../assets/stacko-icon.png" alt="StackO!" class="game-icon" width="512" height="512">
@@ -409,47 +375,10 @@
                 </details>
             </div>
         </section>
-
-        <!--
-          The same unit as this game's play page, deliberately: reports stay per-game rather
-          than splitting into play-versus-about, which is not a distinction worth having.
-
-          `data-ad-format="auto"` here, unlike the play page. Nothing on this page is sized
-          from a chrome constant, so Google is free to pick a taller and better-paying shape.
-          The advert is last, below the actions, so it cannot come between a reader and the
-          play button.
-        -->
-        <div class="page-ad">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-8668013395284480"
-                 data-ad-slot="7431283902"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-        </div>
-
-    </div>
+</div>
 
     <!-- Footer -->
-    <aside class="ad-rail ad-rail-right" id="rail-right" aria-label="Advertisement"></aside>
-    <script>
-        /*
-          The <ins> is created here rather than written above, and only when the rail is wide
-          enough to exist. adsbygoogle.push() does not fill the slot nearest the call — it fills
-          the next uninitialised <ins> in document order. With a hidden rail left in the markup,
-          the banner below the board pushed and AdSense handed that push to the hidden rail
-          instead, so the rail failed on availableWidth=0 and the banner was never filled at all.
-          No element, no misdirected push.
-        */
-        if (matchMedia('(min-width: 1280px)').matches) {
-            document.getElementById('rail-right').innerHTML =
-                '<ins class="adsbygoogle" style="display:block;width:160px;height:600px"'
-                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="7431283902"></ins>';
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        }
-    </script>
-    </div>
+</div>
 
     <footer>
         <nav class="footer-links" aria-label="Site">

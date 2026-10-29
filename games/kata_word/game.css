@@ -34,10 +34,8 @@
      * which is not negotiable — a word game with no keys is not playable on a phone.
      *
      * 498 rather than 476: measured on a 375x812 phone the parts add up to 479 — bar 60,
-     * panel 123, keys 144, ad slot 100, gaps 48 — and declaring less than that lets the board
-     * grow into space the page does not have. It was overflowing by 3px. The remaining 16px is
-     * the wider gap now kept between the board and the advert; every other game had the slack
-     * for that already, this one did not.
+     * panel 123, keys 144 and gaps 48. The shared layout now subtracts the former ad reserve
+     * before using this value, returning that space to the game board.
      */
     --play-chrome-stacked: 498px;
 }

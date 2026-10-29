@@ -58,14 +58,6 @@
   ]
 }
     </script>
-
-    <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
-         than named in the markup, so the browser cannot know about it until that script
-         runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
-         in front of the first thing a European visitor sees. Lighthouse measures 300ms of
-         LCP in it, and it is the only origin left worth a hint now the type is served from
-         here — the two font hosts it sat beside are gone. -->
-    <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
     <!-- The type is on this origin now, so it is preloaded rather than discovered inside a
          stylesheet on another one. `crossorigin` is not optional even same-origin: a font is
          always fetched in CORS mode, and a preload without it fetches the file a second time
@@ -128,15 +120,7 @@
             .contact-email { font-size: 1rem; padding: 13px 22px; }
         }
     </style>
-
-    <!-- AdSense, on every page as Google's setup requires. This page carries the loader and
-         no advert unit: it is a support page, and a thin page with an advert on it is exactly
-         what the low-value-content policy is about. -->
-    <meta name="google-adsense-account" content="ca-pub-8668013395284480">
-    <script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/css/brand-pages.css">
+<link rel="stylesheet" href="/css/brand-pages.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -220,8 +204,6 @@
             </ul>
 
             <p>If your question is about <strong>advertising consent</strong> on one of the Android apps, you can change your answer yourself without writing to anyone: each app has an <em>Ad privacy options</em> entry that reopens the consent form — in Settings for most of them, and beside the Privacy and Terms links on the home screen in PawDoku.</p>
-
-            <p>The same applies to <strong>this website</strong>: the <a href="privacy.html">website privacy policy</a> carries a button that reopens the consent message, so you can change or withdraw your answer without asking us to do it.</p>
 
             <h2>Press, business and everything else</h2>
 

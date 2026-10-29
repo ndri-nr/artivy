@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Privacy Policy | Artivy</title>
-    <meta name="description" content="What this website stores, what Google AdSense does here, and what Artivy does not collect. The privacy policy for artivy on the web, separate from the Android apps.">
+    <meta name="description" content="What the Artivy website stores in your browser and what it does not collect, separate from the Android apps.">
     <link rel="canonical" href="https://artivy.id/privacy.html">
 
     <!-- Icons. SVG first so the mark stays sharp at any size; the PNGs are for the
@@ -20,7 +20,7 @@
     <meta property="og:site_name" content="Artivy">
     <meta property="og:locale" content="en">
     <meta property="og:title" content="Website Privacy Policy">
-    <meta property="og:description" content="What this website stores, what Google AdSense does here, and what Artivy does not collect. The privacy policy for artivy on the web, separate from the Android apps.">
+    <meta property="og:description" content="What the Artivy website stores in your browser and what it does not collect, separate from the Android apps.">
     <meta property="og:url" content="https://artivy.id/privacy.html">
     <meta property="og:image" content="https://artivy.id/assets/og-artivy.png">
     <meta property="og:image:width" content="1200">
@@ -28,16 +28,8 @@
     <meta property="og:image:alt" content="The Artivy wordmark above the icons of the Artivy puzzle games">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Website Privacy Policy">
-    <meta name="twitter:description" content="What this website stores, what Google AdSense does here, and what Artivy does not collect. The privacy policy for artivy on the web, separate from the Android apps.">
+    <meta name="twitter:description" content="What the Artivy website stores in your browser and what it does not collect, separate from the Android apps.">
     <meta name="twitter:image" content="https://artivy.id/assets/og-artivy.png">
-
-    <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
-         than named in the markup, so the browser cannot know about it until that script
-         runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
-         in front of the first thing a European visitor sees. Lighthouse measures 300ms of
-         LCP in it, and it is the only origin left worth a hint now the type is served from
-         here — the two font hosts it sat beside are gone. -->
-    <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
     <!-- The type is on this origin now, so it is preloaded rather than discovered inside a
          stylesheet on another one. `crossorigin` is not optional even same-origin: a font is
          always fetched in CORS mode, and a preload without it fetches the file a second time
@@ -79,33 +71,6 @@
             padding-top: 0;
         }
 
-        /* The consent button. Shares the contact page's shape rather than inventing a
-           second button style for the one control on this page. */
-        .contact-email {
-            display: inline-block;
-            background: var(--secondary-color);
-            color: #fff;
-            font-weight: 800;
-            font-size: 1rem;
-            font-family: inherit;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            padding: 13px 26px;
-            border-radius: 30px;
-            box-shadow: 0 5px 15px rgba(78, 205, 196, 0.3);
-            transition: all 0.3s ease;
-        }
-        .contact-email:hover {
-            background: #3db8b0;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(78, 205, 196, 0.4);
-        }
-        #consent-unavailable {
-            display: inline-block;
-            color: #3d4657;
-            line-height: 1.75;
-        }
         @media (max-width: 600px) {
             .page-container {
                 margin: 90px 15px 30px 15px;
@@ -115,14 +80,7 @@
             .page-lede { font-size: 1.02rem; }
         }
     </style>
-
-    <!-- AdSense, on every page as Google's setup requires. Loader only — no advert unit on a
-         policy page. -->
-    <meta name="google-adsense-account" content="ca-pub-8668013395284480">
-    <script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/css/brand-pages.css">
+<link rel="stylesheet" href="/css/brand-pages.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -167,14 +125,12 @@
         <a href="index.html" class="back-button">← Home</a>
         <h1>Website Privacy Policy</h1>
         <p class="page-lede">This policy covers <strong>this website</strong> — the pages you are reading and the browser versions of our games. The Android apps are covered separately, one policy each, because they genuinely collect different things.</p>
-        <p class="page-meta">Last updated 8 September 2026.</p>
+        <p class="page-meta">Last updated 29 October 2026.</p>
 
         <div class="guide">
             <h2>The short version</h2>
 
-            <p>We do not ask who you are and we have nowhere to put an answer. There is no account, no sign-in and no server holding your data: this site is a set of static files. Your game progress is saved by your own browser, on your own device, and is never sent to us. We run no analytics and no crash reporting on this website.</p>
-
-            <p>The one third party involved is <strong>Google AdSense</strong>, which serves the adverts on some pages and does set cookies of its own. That part is described in full below.</p>
+            <p>We do not ask who you are and we have nowhere to put an answer. There is no website account, sign-in, analytics, crash reporting, advertising, or server holding visitor data. This site is a set of static files. Browser-game progress stays in your own browser and is never sent to Artivy.</p>
 
             <h2>What this site stores on your device</h2>
 
@@ -184,66 +140,11 @@
 
             <p>Some browsers refuse to allow storage at all — a private window, or storage switched off. In that case the games fall back to keeping their state in memory for as long as the page is open, and the page tells you that your progress will not survive a reload rather than losing it silently.</p>
 
-            <h2>Advertising</h2>
+            <h2>No advertising or tracking</h2>
 
-            <p>Adverts on this site are served by <strong>Google AdSense</strong>. We place the ad slots; Google decides which advert appears in them. We never see who you are, and we receive no personal information about any visitor from Google — only aggregate reports of how many adverts were shown.</p>
+            <p>The Artivy website does not load Google AdSense or any other advertising network. It does not use advertising cookies, a consent-management platform, analytics, tracking pixels, social widgets, embedded video, or a tag manager.</p>
 
-            <p>What this means in practice, in Google's own terms:</p>
-
-            <ul>
-                <li>Third-party vendors, including Google, use cookies to serve adverts based on a user's prior visits to this website or other websites.</li>
-                <li>Google's use of advertising cookies enables it and its partners to serve adverts to you based on your visit to this and/or other sites on the internet.</li>
-                <li>You may opt out of personalised advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a>. Opting out does not remove adverts; it removes the personalisation.</li>
-                <li>You can also opt out of a third-party vendor's use of cookies for personalised advertising at <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener">aboutads.info</a>.</li>
-            </ul>
-
-            <p>Google's own description of how it handles data when you use its partners' sites is at <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">policies.google.com/technologies/partner-sites</a>.</p>
-
-            <h3>Consent, if you are in the EEA, the UK or Switzerland</h3>
-
-            <p>Advertising cookies require your consent in those regions. It is collected by Google's own certified consent message, which appears before any personalised advert is served — not by us, and we never receive your answer. The message offers three choices: <strong>Consent</strong>, <strong>Do not consent</strong>, and <strong>Manage options</strong>, which lets you accept or refuse each purpose and each advertising partner individually.</p>
-
-            <p>Refusing changes which adverts you see and nothing else. Every game on this site remains completely playable, with no feature withheld and nothing asked of you a second time.</p>
-
-            <p>You can change your mind at any time:</p>
-
-            <p>
-                <button type="button" id="consent-revoke" class="contact-email" hidden>Manage advertising consent</button>
-                <span id="consent-unavailable">The consent message applies only where the law requires it. If you are outside those regions, no consent was asked for and there is nothing here to change — you can still switch off personalisation through <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a>.</span>
-            </p>
-
-            <!--
-              Google's CMP does not place a "change your choices" control on the page by
-              itself — the publisher has to, or the answer a visitor gave is final and this
-              policy's promise that it can be changed would be untrue.
-
-              googlefc arrives with the AdSense tag, but only where a consent message applies,
-              so the button starts hidden and is revealed by the CMP's own ready callback.
-              A visitor who was never asked for consent therefore never sees a button that
-              would do nothing.
-            -->
-            <script>
-                window.googlefc = window.googlefc || {};
-                window.googlefc.callbackQueue = window.googlefc.callbackQueue || [];
-                window.googlefc.callbackQueue.push({
-                    CONSENT_DATA_READY: function () {
-                        var button = document.getElementById('consent-revoke');
-                        var note = document.getElementById('consent-unavailable');
-                        if (typeof window.googlefc.showRevocationMessage !== 'function') return;
-                        button.addEventListener('click', function () {
-                            window.googlefc.showRevocationMessage();
-                        });
-                        button.hidden = false;
-                        note.hidden = true;
-                    },
-                });
-            </script>
-
-            <p>We do not run Google Auto ads, we place no advert within reach of a game board, and no advert on this site is a video you are asked to watch in exchange for anything. Every advert here is a plain display banner, loaded once when the page loads and never refreshed.</p>
-
-            <h2>Nothing else is loaded from anywhere else</h2>
-
-            <p>Google's advertising, described above, is the only third party this site contacts. Not a JavaScript library, and no longer a typeface: the two faces the site is set in are served from this site, so fetching them reaches no one but us. They came from Google Fonts until now, which meant your IP address and browser details went to Google's font servers to get them. The home page also used to pull a JavaScript library from a public code CDN for its background animation; that animation is plain CSS now and the request is gone. There are no social widgets, no tracking pixels, no comment system, no embedded video and no tag manager.</p>
+            <p>The fonts, styles, scripts, images, and game files used by the site are served from this domain. Following an external link—such as Google Play—takes you to that service, where its own privacy policy applies.</p>
 
             <h2>What we do not do</h2>
 
@@ -260,7 +161,7 @@
 
             <h2>The Android apps are different</h2>
 
-            <p>The apps on Google Play are not covered by this page. They carry Google AdMob rather than AdSense, several of them include Firebase Crashlytics and Analytics, and they back progress up through Android's own backup service — none of which applies here. Each app therefore has its own policy, which names what that specific app collects:</p>
+            <p>The apps on Google Play are not covered by this page. Some use Google AdMob, Firebase Crashlytics, or Analytics, and some back progress up through Android's own backup service. None of those services is loaded by this website. Each app has its own policy naming what that specific product uses:</p>
 
             <ul>
                 <li><a href="games/game_center/privacy-policy.html">Artiverse</a></li>
@@ -275,7 +176,7 @@
 
             <h2>Your choices</h2>
 
-            <p>You can clear everything this site has stored at any time through your browser's settings for this domain, and you can block or clear advertising cookies through the links above. Neither breaks the games; the first resets your progress, the second only changes which adverts you see.</p>
+            <p>You can clear everything this site has stored at any time through your browser's settings for this domain. Doing so resets browser-game progress and preferences. There is no Artivy website account or server-side copy to delete.</p>
 
             <h2>Changes to this policy</h2>
 

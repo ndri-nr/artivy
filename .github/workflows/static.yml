@@ -62,9 +62,7 @@ jobs:
             cp -R "$product" "$slug"
           done
       - name: Add publisher declarations at the domain root
-        run: |
-          cp publisher/app-ads.txt app-ads.txt
-          cp publisher/ads.txt ads.txt
+        run: cp publisher/app-ads.txt app-ads.txt
       # The whole repository is what gets uploaded, so anything tracked here is
       # also served. The Play Console art and the script that draws it are kept
       # in git but are not part of the website, and 650 KB of header JPEG has no

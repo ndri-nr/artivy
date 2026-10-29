@@ -1,8 +1,8 @@
 /*
  * Shared layout for the playable browser versions, loaded on every games/<slug>/play.html
  * alongside styles.css. Everything game-specific (tile colours, board texture) belongs in
- * the game's own file — this one only decides how a board, a score row and an ad slot share
- * a screen without any of them scrolling out of reach.
+ * the game's own file — this one only decides how a board and its controls share a screen
+ * without any of them scrolling out of reach.
  *
  * Sizing rule: the board is a square that fits the smaller of the width left over and the
  * height left over. `dvh` rather than `vh` on purpose — mobile browser chrome slides away as
@@ -13,7 +13,7 @@
 body.playing {
     /*
      * Height of everything on the page that is not the board: the top bar, the score and
-     * button rows, the hint, and the ad slot. The board is whatever is left over, so this
+     * button rows and the hint. The board is whatever is left over, so this
      * single number is what decides how large it can be.
      *
      * It is deliberately a declared constant rather than something JavaScript measures.
@@ -23,7 +23,9 @@ body.playing {
      * existed. A constant cannot be stale. If it is a little generous the board is a little
      * small, which is a much cheaper way to be wrong.
      */
-    --play-chrome: var(--play-chrome-stacked, 310px);
+    /* The per-game values originally reserved 120px for a website ad unit. Keep their
+       carefully tuned differences, but return that space to the board now ads are gone. */
+    --play-chrome: calc(var(--play-chrome-stacked, 310px) - 120px);
 
     /* No pull-to-refresh and no rubber-band while a finger is dragging tiles around. The page
        can still scroll: if the constant above turns out to be too small on some screen, the
@@ -191,35 +193,6 @@ body.playing::before {
 }
 
 /*
- * Ad slot. Empty until an AdSense account exists — the height is reserved now so that
- * switching ads on later does not shove the board down the page on first paint, and so
- * the gap between the board and the ad is designed rather than discovered.
- *
- * The gap is the point: a game is the worst possible surround for an ad, because a missed
- * swipe that lands on one is an accidental click, and enough of those close a publisher
- * account. Nothing here may sit within a thumb's width of the board.
- */
-.play-ad {
-    width: min(520px, 100%);
-    min-height: 100px;
-    /*
-     * 20px on top of the stage's own 12px gap, so there are 32px between the board and the
-     * advert. It was 16, which is thinner than a thumb: a drag that runs off the bottom of
-     * Rekta's grid, or a swipe that overshoots 2048's, ends inside the advert. The cost is
-     * 16px of board height, and every game had at least that much slack except Kata·Word,
-     * whose constant is raised to match.
-     */
-    margin: 20px auto 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.play-ad:empty::after {
-    content: "";
-}
-
-/*
  * Landscape phones. Height is the binding constraint, so the chrome moves beside the board
  * rather than stacking above it, and the ad slot steps out entirely — there is no room for
  * it that is not either on top of the board or under a thumb.
@@ -248,9 +221,6 @@ body.playing::before {
         font-size: 1.2rem;
     }
 
-    .play-ad {
-        display: none;
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {

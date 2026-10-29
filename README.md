@@ -10,7 +10,7 @@ declarations.
 games/<slug>/              game page, browser build, privacy, and terms
 apps/<slug>/               app page, privacy, and terms
 assets/                    shared brand and product art
-publisher/                 ads.txt and app-ads.txt source files
+publisher/                 app-ads.txt source file for Android AdMob apps
 ```
 
 Public URLs preserve that structure:
@@ -40,6 +40,7 @@ repository. If a new product is added:
 ## Domain and publishing
 
 GitHub Actions publishes this repository to GitHub Pages at `artivy.id`. The
-Cloudflare DNS zone points the apex domain at GitHub Pages. `publisher/ads.txt`
-and `publisher/app-ads.txt` are copied to the public domain root during deploy;
-do not move them into an individual product folder.
+Cloudflare DNS zone points the apex domain at GitHub Pages.
+`publisher/app-ads.txt` is copied to the public domain root during deploy for
+the Android apps that use AdMob; do not move it into a product folder. The
+website itself does not load AdSense or display advertising.

@@ -62,14 +62,6 @@
   ]
 }
     </script>
-
-    <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
-         than named in the markup, so the browser cannot know about it until that script
-         runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
-         in front of the first thing a European visitor sees. Lighthouse measures 300ms of
-         LCP in it, and it is the only origin left worth a hint now the type is served from
-         here — the two font hosts it sat beside are gone. -->
-    <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
     <!-- The type is on this origin now, so it is preloaded rather than discovered inside a
          stylesheet on another one. `crossorigin` is not optional even same-origin: a font is
          always fetched in CORS mode, and a preload without it fetches the file a second time
@@ -113,16 +105,7 @@
             margin-bottom: 15px;
         }
     </style>
-
-    <!-- AdSense, on every page as Google's setup requires. The meta tag is what links the
-         site to the account; the script is what would serve an advert. Neither places one by
-         itself: Auto ads are off, and a legal page carries no ad unit at all — thin pages with
-         adverts on them are what the low-value-content policy is about. -->
-    <meta name="google-adsense-account" content="ca-pub-8668013395284480">
-    <script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/css/brand-pages.css">
+<link rel="stylesheet" href="/css/brand-pages.css">
 </head>
 
 <body>
@@ -183,12 +166,6 @@
             <li>Your level number and the board in front of you are kept in your browser's <strong>local
                 storage</strong> on the device you played on. They are never sent anywhere, and there is no way
                 for us to read them.</li>
-            <li><strong>Google AdSense</strong> shows <strong>one banner advert</strong> in the browser version,
-                below the board and clear of it. It is a plain display advert: it is not rewarded, it gives you
-                nothing in the game, and there is no full-screen or between-levels advert anywhere in the browser
-                version. The advert loads once when the page opens and is never refreshed while you play. Google
-                may set cookies or use similar identifiers to serve it, under their own privacy policy rather than
-                ours. AdMob, described further down, is the Android app's advertising and is a separate thing.</li>
             <li>There is <strong>no analytics and no crash reporting</strong> in the browser version, so none of
                 the events listed below are recorded when you play in a browser.</li>
             <li>There are <strong>no rewarded adverts</strong> in the browser version. Nothing is locked behind
@@ -262,8 +239,6 @@
                 AdMob</a></li>
             <li><a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Firebase
                 Analytics and Crashlytics</a></li>
-            <li><a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google
-                AdSense</a>, for the browser version only</li>
         </ul>
 
         <h2>6. Children's Privacy</h2>
@@ -284,8 +259,7 @@
             <strong>Google's &ldquo;G&rdquo; rating &mdash; suitable for general audiences</strong>, and sensitive
             advert categories are excluded.</p>
         <p><strong>The browser version is a different case, and it is not aimed at children.</strong> It asks no age
-            question, shows one ordinary display advert served by Google AdSense under Google's own policies, and
-            reads nothing about who is playing. The age gate and the child treatment described above belong to the
+            question, shows no advertising and reads nothing about who is playing. The age gate and the child treatment described above belong to the
             Android app.</p>
 
         <h2>7. Your Rights</h2>

@@ -63,13 +63,6 @@
 
     <meta name="theme-color" content="#3b3e63">
     <title>Play PourFect! - Artivy</title>
-    <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
-         than named in the markup, so the browser cannot know about it until that script
-         runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
-         in front of the first thing a European visitor sees. Lighthouse measures 300ms of
-         LCP in it, and it is the only origin left worth a hint now the type is served from
-         here — the two font hosts it sat beside are gone. -->
-    <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
     <!-- The type is on this origin now, so it is preloaded rather than discovered inside a
          stylesheet on another one. `crossorigin` is not optional even same-origin: a font is
          always fetched in CORS mode, and a preload without it fetches the file a second time
@@ -79,15 +72,6 @@
     <link rel="stylesheet" href="../../css/styles.css">
     <link rel="stylesheet" href="../../css/play.css?v=BUILD">
     <link rel="stylesheet" href="game.css?v=BUILD">
-
-    <!-- AdSense, on every page as Google's setup requires. The meta tag is what links the
-         site to the account; the script is what would serve an advert. Neither places one by
-         itself: Auto ads are off, and the game pages take a hand-placed unit in the slot
-         play.css reserves below the board. -->
-    <meta name="google-adsense-account" content="ca-pub-8668013395284480">
-    <script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
-        crossorigin="anonymous"></script>
 </head>
 <!-- main.js is deliberately not loaded: it is the home page's Three.js particle field, a
      continuous repaint that would compete with the board for frames. -->
@@ -127,23 +111,6 @@
       would change the number the whole board-sizing model is built on. Out of flow, it cannot.
     -->
     <div class="play-with-rails">
-    <aside class="ad-rail ad-rail-left" id="rail-left" aria-label="Advertisement"></aside>
-    <script>
-        /*
-          The <ins> is created here rather than written above, and only when the rail is wide
-          enough to exist. adsbygoogle.push() does not fill the slot nearest the call — it fills
-          the next uninitialised <ins> in document order. With a hidden rail left in the markup,
-          the banner below the board pushed and AdSense handed that push to the hidden rail
-          instead, so the rail failed on availableWidth=0 and the banner was never filled at all.
-          No element, no misdirected push.
-        */
-        if (matchMedia('(min-width: 1024px)').matches) {
-            document.getElementById('rail-left').innerHTML =
-                '<ins class="adsbygoogle" style="display:block;width:160px;height:600px"'
-                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="0000000000"></ins>';
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        }
-    </script>
     <main class="play-stage" id="stage">
         <div class="play-panel">
             <!-- Stats and actions share one row. Every row above the board is height the board
@@ -175,50 +142,7 @@
                 <div class="bottles" id="bottles"></div>
             </div>
         </div>
-
-        <!--
-          One display unit per game, so AdSense reports which game earns what — a single unit
-          shared across six pages would merge the figures, and that cannot be split later.
-
-          data-ad-slot is a placeholder until a unit is created for PourFect!. It must not be
-          filled in with another game's slot: that is precisely the merge this arrangement
-          exists to avoid.
-
-          The size is fixed rather than `data-ad-format="auto"`, which is what AdSense hands you
-          and which lets Google choose the height at runtime. It cannot be that here: the board
-          is sized `100dvh - var(--play-chrome)`, --play-chrome is a constant we declare, and it
-          has exactly this 100px budgeted into it. An advert arriving 280px tall would push the
-          page off the bottom of the screen and nothing in the layout could see it coming.
-        -->
-        <div class="play-ad" id="ad">
-            <ins class="adsbygoogle"
-                 style="display:block;width:100%;height:100px"
-                 data-ad-client="ca-pub-8668013395284480"
-                 data-ad-slot="0000000000"
-                 data-ad-format="horizontal"
-                 data-full-width-responsive="false"></ins>
-            <script>
-                /* Landscape phones hide this slot outright — there is no room for an advert
-                   there that is not either over the board or under a thumb (see play.css) —
-                   and pushing into a hidden container throws "No slot size for
-                   availableWidth=0". Ask whether the slot has a width before filling it. */
-                if (document.getElementById('ad').offsetWidth > 0) {
-                    (adsbygoogle = window.adsbygoogle || []).push({});
-                }
-            </script>
-        </div>
     </main>
-    <aside class="ad-rail ad-rail-right" id="rail-right" aria-label="Advertisement"></aside>
-    <script>
-        /* Same reasoning as the left rail: no element until the media query matches, so the
-           banner's push cannot be handed to a hidden slot. */
-        if (matchMedia('(min-width: 1024px)').matches) {
-            document.getElementById('rail-right').innerHTML =
-                '<ins class="adsbygoogle" style="display:block;width:160px;height:600px"'
-                + ' data-ad-client="ca-pub-8668013395284480" data-ad-slot="0000000000"></ins>';
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        }
-    </script>
     </div>
 
     <script type="module" src="play.js?v=BUILD"></script>

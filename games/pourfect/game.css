@@ -52,9 +52,7 @@ body.gpourfect {
 }
 
 .gpourfect .play-board {
-    /* Centred in whatever the panel and the advert leave, rather than pushed against the
-       panel with the gap dumped underneath. The advert stays at the far edge, which is where
-       it belongs anyway — a banner near a board is a banner under a missed swipe. */
+    /* Centred in the space left by the controls rather than pushed against the panel. */
     margin-block: auto;
 }
 
@@ -256,8 +254,8 @@ body.gpourfect::before {
 
 @media (max-height: 520px) and (orientation: landscape) {
     :root {
-        /* play.css swaps to --play-chrome-beside here and hides the ad slot; the panel is one
-           row, so the chrome above the board is most of what is left. */
+        /* play.css swaps to --play-chrome-beside here; the panel is one row, so the chrome
+           above the board is most of what is left. */
         --play-chrome-stacked: 96px;
     }
 

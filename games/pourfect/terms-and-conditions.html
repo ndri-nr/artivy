@@ -62,14 +62,6 @@
   ]
 }
     </script>
-
-    <!-- The consent message's own host. It is fetched by adsbygoogle.js at runtime rather
-         than named in the markup, so the browser cannot know about it until that script
-         runs and asks — which puts a fresh DNS lookup, TCP handshake and TLS negotiation
-         in front of the first thing a European visitor sees. Lighthouse measures 300ms of
-         LCP in it, and it is the only origin left worth a hint now the type is served from
-         here — the two font hosts it sat beside are gone. -->
-    <link rel="preconnect" href="https://fundingchoicesmessages.google.com">
     <!-- The type is on this origin now, so it is preloaded rather than discovered inside a
          stylesheet on another one. `crossorigin` is not optional even same-origin: a font is
          always fetched in CORS mode, and a preload without it fetches the file a second time
@@ -113,16 +105,7 @@
             margin-bottom: 15px;
         }
     </style>
-
-    <!-- AdSense, on every page as Google's setup requires. The meta tag is what links the
-         site to the account; the script is what would serve an advert. Neither places one by
-         itself: Auto ads are off, and a legal page carries no ad unit at all — thin pages with
-         adverts on them are what the low-value-content policy is about. -->
-    <meta name="google-adsense-account" content="ca-pub-8668013395284480">
-    <script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8668013395284480"
-        crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="/css/brand-pages.css">
+<link rel="stylesheet" href="/css/brand-pages.css">
 </head>
 
 <body>
@@ -204,9 +187,7 @@
                 back a move costs one, and unlocking the extra bottle costs two. A dialog tells you what the
                 advert buys before it plays, and declining costs nothing.</li>
         </ul>
-        <p>The first five levels show no adverts at all. Adverts come from Google AdMob, and the browser version
-            uses Google AdSense instead — one plain display banner, with no rewarded or full-screen adverts of any
-            kind, which is why undo and the extra bottle are free there.</p>
+        <p>The first five Android levels show no adverts at all. Later Android adverts come from Google AdMob. The browser version contains no advertising, which is why undo and the extra bottle are free there.</p>
 
         <h2>5. No Purchases, No Virtual Currency</h2>
         <p>There is nothing to buy. PourFect! has no in-app purchases, no coins, no store and no subscription. The
