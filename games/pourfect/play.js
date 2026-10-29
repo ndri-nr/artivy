@@ -11,7 +11,7 @@ import {
     CAPACITY, EXTRA_BOTTLE_FROM, UNSOLVABLE, advise, apply, clone, generate, grantExtra, isStuck,
     isSettled, isWon, paramsFor, pourAmount, undo as undoMove,
 } from './model.js';
-import { isPersistent, storage } from '../js/storage.js';
+import { isPersistent, storage } from '../../js/storage.js';
 
 const save = storage('pourfect');
 

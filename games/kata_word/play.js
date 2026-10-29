@@ -8,7 +8,7 @@
  * consecutive days.
  */
 
-import { storage, isPersistent } from '../js/storage.js';
+import { storage, isPersistent } from '../../js/storage.js';
 import {
     LANGUAGES,
     MAX_GUESSES,

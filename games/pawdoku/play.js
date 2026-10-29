@@ -16,7 +16,7 @@
  * red cross that cannot be cleared.
  */
 
-import { storage, isPersistent } from '../js/storage.js';
+import { storage, isPersistent } from '../../js/storage.js';
 import {
     BLOCKED,
     CAT,

@@ -3,7 +3,7 @@
  * generator are in model.js, which has no DOM in it and is checked by selftest.html.
  */
 
-import { storage, isPersistent } from '../js/storage.js';
+import { storage, isPersistent } from '../../js/storage.js';
 import {
     DIFFICULTIES,
     area,

@@ -7,7 +7,7 @@
  * and nothing rotates, so three faces per block is the whole of it. No WebGL, no 3D library.
  */
 
-import { storage, isPersistent } from '../js/storage.js';
+import { storage, isPersistent } from '../../js/storage.js';
 import {
     BASE_SIZE,
     BLOCK_HEIGHT,
