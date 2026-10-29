@@ -31,3 +31,4 @@ footer{padding:48px max(24px,calc((100% - 900px)/2))!important;color:#d8dbde!imp
 @media(max-width:850px){.standalone-product-art,.product-logo{min-height:0!important;aspect-ratio:1024/500}}
 .standalone-product-art.has-feature img{display:block}
 @media(max-width:850px){.standalone-product-art img,.product-logo img{width:clamp(120px,28vw,150px)!important;border-radius:32px!important}}
+.standalone-product-art.has-feature,.product-logo{position:relative;isolation:isolate;overflow:hidden}.standalone-product-art.has-feature::before,.product-logo::before{content:"";position:absolute;inset:0;background:rgba(14,16,20,.26);z-index:0}.standalone-product-art.has-feature img,.product-logo img{position:relative;z-index:1}
