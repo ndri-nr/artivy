@@ -172,50 +172,42 @@
     <main class="page-container">
         <a href="index.html" class="back-button">← Home</a>
         <h1>About Artivy</h1>
-        <p class="page-lede">Artivy is an independent, one-person software studio based in Indonesia. It makes focused Android games, browser puzzles, and practical apps—and it is run by the developer who builds them.</p>
+        <p class="page-lede">Artivy is an independent software studio from Indonesia, creating thoughtful games and useful apps for Android.</p>
 
         <div class="guide">
-            <h2>What we make</h2>
+            <h2>Games and apps, under one name</h2>
 
-            <p>Artivy began with games and now also makes small, focused apps. The first is <a href="apps/adledger/index.html">AdLedger</a>, a read-only AdMob revenue dashboard that keeps a developer's account data between Google and their own phone. Games and tools serve different needs, but they follow the same rule: do one useful thing clearly and leave unnecessary complexity out.</p>
+            <p>Artivy started with compact puzzle and arcade games. Today it also builds practical software for creators. The category can change; the standard does not. Every product should have a clear purpose, feel considered in daily use, and explain honestly how it handles data.</p>
 
-            <p>The games are puzzles and arcade puzzles made for short sittings. <a href="games/game_center/index.html">Artiverse</a> brings a growing collection of them together in one Android app. The standalone titles each focus on one idea: <a href="games/pawdoku/index.html">PawDoku</a> is a one-cat-per-row logic puzzle with a guaranteed unique solution. <a href="games/kata_word/index.html">Kata·Word</a> is a word game in English and Bahasa Indonesia at three word lengths. <a href="games/stacko/index.html">StackO!</a> is a block-stacking arcade game about precision. <a href="games/2048/index.html">2048</a> is the sliding-tile classic. <a href="games/rekta/index.html">Rekta</a> is Shikaku, a Japanese pencil puzzle of rectangles and clues. <a href="games/pourfect/index.html">PourFect!</a> is a water-sorting puzzle with a solver behind it.</p>
+            <p><a href="games/game_center/index.html">Artiverse</a> is the home for Artivy's growing game collection on Android, bringing puzzles, board games, solo play, local multiplayer, achievements, themes, and leaderboards into one app. The standalone games remain available for players who prefer a focused experience, and selected titles can also be played directly in the browser.</p>
 
-            <p>Each standalone game exists in two forms: an Android app on Google Play and a browser version on this site. Artiverse is the deliberate exception: it is a connected collection with points, achievements, themes, and leaderboards, so its page explains the app and links to Google Play rather than presenting a reduced web imitation. The standalone browser versions are separate JavaScript implementations, keeping the website from breaking the Android apps or the other way around.</p>
+            <p><a href="apps/adledger/index.html">AdLedger</a> is the first Artivy utility app. It gives AdMob publishers a fast, read-only view of earnings and per-app performance on their phone. It cannot modify an AdMob account, and revenue data travels directly between Google and the user's device rather than through an Artivy server.</p>
 
-            <h2>How the games get made</h2>
+            <h2>How Artivy works</h2>
 
-            <h3>Puzzles are generated, then proved</h3>
+            <p>Artivy is independently designed, developed, published, and supported. That keeps responsibility close to the product: the person making a design decision is also the person implementing it, reading feedback, maintaining the store listing, and fixing the result.</p>
 
-            <p>Several of them generate their own puzzles rather than shipping a list of hand-made levels, which means the levels never run out. But a generator that can hand out an impossible board is worse than no generator at all, so generation is only half the job: PawDoku checks every board for a <em>second</em> solution and throws it away if one exists, and PourFect! runs a solver over every board and deals another if the solver cannot finish it. In both cases the level you are given has been proved solvable before you see it.</p>
+            <p>The goal is not to imitate a large studio. It is to make focused software with fewer layers between an idea and the person using it. New features have to earn their place through usefulness, clarity, or genuine enjoyment—not by making a screen busier.</p>
 
-            <p>The reason to care is not tidiness. In a logic puzzle with two solutions, a player can reason perfectly, arrive somewhere consistent, and be told they are wrong — and there is no way for them to tell whether the fault was theirs. A puzzle has to be trustworthy before it can be enjoyable.</p>
+            <h2>Principles</h2>
 
-            <h3>Difficulty is measured where it can be</h3>
+            <h3>Focused by default</h3>
+            <p>A product should make its main job obvious. Games should get players into play quickly; tools should surface the information or action they were opened for.</p>
 
-            <p>"Harder" is easy to fake by making a board bigger and easy to get wrong by guessing. PourFect! counts <em>forced moves</em> — the positions where exactly one pour keeps the board winnable — because that is much closer to what difficulty feels like than solution length is, and its early levels are declared to contain none rather than merely happening to. Rekta raises the largest block it hands out as levels climb, which reduces the number of clues and therefore the number of things to anchor a deduction on; it stops raising it at a point past which the puzzles stop being harder and start being guesswork.</p>
+            <h3>Native where it matters</h3>
+            <p>Android is the primary platform. Products are designed around the way people actually use a phone: short sessions, touch input, intermittent connections, and limited attention.</p>
 
-            <h3>Colour is a constraint, not decoration</h3>
+            <h3>Privacy should be specific</h3>
+            <p>There is no vague, shared promise standing in for product details. Every game and app has its own privacy policy describing the services it uses, the data involved, and the controls available to the user. AdLedger receives particular care because it works with private Google AdMob data and uses read-only access.</p>
 
-            <p>PourFect!'s palette is built on the Okabe–Ito set, chosen so the colours stay distinguishable under the common forms of colour blindness, and the game caps itself at nine liquid colours for that reason alone — a tenth would be identical to another for some players. Wider boards get harder by giving each colour more bottles instead. The ordering of hues per level was searched rather than eyeballed, so no two consecutive levels give the collector tube the same colour.</p>
+            <h3>No manipulative monetisation</h3>
+            <p>Artivy games do not use in-app purchases, loot boxes, paid energy, or real-money currencies. Some free games use advertising; when an optional rewarded ad is offered, the reward is stated before the user chooses to watch it. AdLedger is free and contains no ads.</p>
 
-            <h2>What we deliberately leave out</h2>
-
-            <p>None of the games has an in-app purchase. There is no real-money currency anywhere in any of them, no loot box, no energy meter that refills over time, and no bottomless timer designed to make waiting unpleasant. The Android builds carry advertising, and where a game offers a reward for watching one it always asks first and names the reward before any video plays — a labelled button is not consent.</p>
-
-            <p>The browser versions here are the games without the meta around them. No coins, no store, no trophies, no themes, no daily challenge, no hints. Kata·Word's daily word, PawDoku's timed daily and Rekta's rewarded hint are all absent. Each game's privacy page says so explicitly, because the app store listing describes purchases and rewarded adverts that simply do not exist on this site.</p>
-
-            <p>The games are also playable offline, on the phone entirely and in the browser once the page has loaded. Nothing waits for a server, because nothing is on a server.</p>
-
-            <h2>Privacy, plainly</h2>
-
-            <p>The browser versions store your progress in your own browser and nowhere else — no account, no sign-in, no upload. There is no analytics and no crash reporting on these web builds. If a browser refuses to store data, the page says so out loud rather than losing your run in silence.</p>
-
-            <p>The Android apps do differ, and they differ from each other, which is why each game has its own privacy page rather than one shared boilerplate: some carry Firebase Crashlytics only, some add Analytics, and one is a native game that needs crash reporting at the native level too. Every page lists what that specific app collects, and where a game reports named analytics events, the page names them. Advertising is served by Google AdMob on the apps and Google AdSense on this site.</p>
+            <h2>Current products</h2>
 
             <div class="guide-table-wrap">
                 <table>
-                    <thead><tr><th>Game</th><th>Type</th><th>Privacy</th><th>Terms</th></tr></thead>
+                    <thead><tr><th>Product</th><th>Type</th><th>Privacy</th><th>Terms</th></tr></thead>
                     <tbody>
                         <tr><td><a href="games/game_center/index.html">Artiverse</a></td><td>Game collection</td><td><a href="games/game_center/privacy-policy.html">Privacy</a></td><td><a href="games/game_center/terms-and-conditions.html">Terms</a></td></tr>
                         <tr><td><a href="games/pawdoku/index.html">PawDoku</a></td><td>Logic puzzle</td><td><a href="games/pawdoku/privacy-policy.html">Privacy</a></td><td><a href="games/pawdoku/terms-and-conditions.html">Terms</a></td></tr>
@@ -224,19 +216,14 @@
                         <tr><td><a href="games/2048/index.html">2048</a></td><td>Sliding tiles</td><td><a href="games/2048/privacy-policy.html">Privacy</a></td><td><a href="games/2048/terms-and-conditions.html">Terms</a></td></tr>
                         <tr><td><a href="games/rekta/index.html">Rekta</a></td><td>Shikaku puzzle</td><td><a href="games/rekta/privacy-policy.html">Privacy</a></td><td><a href="games/rekta/terms-and-conditions.html">Terms</a></td></tr>
                         <tr><td><a href="games/pourfect/index.html">PourFect!</a></td><td>Water sort</td><td><a href="games/pourfect/privacy-policy.html">Privacy</a></td><td><a href="games/pourfect/terms-and-conditions.html">Terms</a></td></tr>
+                        <tr><td><a href="apps/adledger/index.html">AdLedger</a></td><td>Developer tool</td><td><a href="apps/adledger/privacy-policy.html">Privacy</a></td><td><a href="apps/adledger/terms-and-conditions.html">Terms</a></td></tr>
                     </tbody>
                 </table>
             </div>
 
-            <h2>How this site is built</h2>
-
-            <p>No framework, no bundler, no build step. The pages are plain HTML with plain ES modules, served as files, which means the site can be checked by opening it. Each game's rules live in a <code>model.js</code> with no DOM in it, and beside each one is a self-test page that prints pass or fail for the rules that would otherwise cost a player their game quietly — duplicate-letter scoring, merge order, whether a generated board is actually solvable.</p>
-
-            <p>That is a deliberate ceiling rather than an unfinished state. A site whose deploy is "copy the files" cannot break in the ways a pipeline can, and a puzzle whose rules are testable without a browser is a puzzle whose rules can be trusted.</p>
-
             <h2>Get in touch</h2>
 
-            <p>Bug reports, questions about a game, or anything about privacy and data: see the <a href="contact.html">contact page</a>. Reports that name the game and the phone or browser get answered fastest.</p>
+            <p>For product support, privacy questions, feedback, or business enquiries, visit the <a href="contact.html">contact page</a>. Naming the product and device in the first message helps the issue get understood faster.</p>
         </div>
 
         <!--
