@@ -65,6 +65,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 Rekta: ['Shikaku puzzle', 'Generated boards', 'Offline play', 'No purchases'],
                 'PourFect!': ['Water sorting', 'Proven solvable', 'Offline play', 'No purchases'],
             };
+            const productDetails = {
+                PawDoku: {
+                    lede: 'Place one cat in every row, column, and colour region—with no two cats touching. Every board has one proven solution, so logic always beats guessing.',
+                    cards: [
+                        ['One rule set, real depth', 'Rows, columns, coloured regions, and the no-touching rule combine into compact puzzles that keep opening up.'],
+                        ['Every board verified', 'The generator searches for a second solution and rejects the board if one exists. What you receive is uniquely solvable.'],
+                        ['Play your way', 'Use the focused Android app or play immediately in the browser. Progress stays on the device you use.'],
+                    ],
+                },
+                'Kata·Word': {
+                    lede: 'Guess the hidden word in English or Bahasa Indonesia. Choose a short, standard, or longer board and use every colour clue carefully.',
+                    cards: [
+                        ['Two languages', 'Switch between English and Bahasa Indonesia, with word lists made for each language rather than translated guesses.'],
+                        ['Choose the pace', 'Play with four, five, or six-letter words depending on how quick—or demanding—you want the round to be.'],
+                        ['Clear feedback', 'Letter colours show what belongs, what moves, and what is absent, with duplicate letters scored consistently.'],
+                    ],
+                },
+                'StackO!': {
+                    lede: 'Drop moving blocks with precision, protect the width of your tower, and build a streak of perfect placements as the pace climbs.',
+                    cards: [
+                        ['Simple to start', 'One action controls the whole game: place the moving block. The challenge comes from timing it well.'],
+                        ['Precision is rewarded', 'Perfect drops preserve your platform and build momentum; misses cut away the part that did not overlap.'],
+                        ['Endless runs', 'There is no final level. Chase a cleaner rhythm, a taller stack, and a better personal score each time.'],
+                    ],
+                },
+                '2048': {
+                    lede: 'Slide every tile together, merge equal numbers, and keep one clean corner as the board fills. Reaching 2048 does not end the run.',
+                    cards: [
+                        ['The classic rules', 'Every swipe moves the full board. Equal neighbours merge once, creating space and a larger tile.'],
+                        ['Keep going', '2048 is a milestone, not a finish line. Continue toward 4096, 8192, and the best score your board can hold.'],
+                        ['Built-in recovery', 'Undo gives a bad swipe a second look, while your current board and personal scores stay saved locally.'],
+                    ],
+                },
+                Rekta: {
+                    lede: 'Divide the grid into rectangles so every region contains exactly one clue and its area matches that clue. Nothing needs guessing.',
+                    cards: [
+                        ['Pure Shikaku', 'Each clue describes the area of one rectangle. The finished board covers every cell without overlaps or gaps.'],
+                        ['Fresh boards', 'Levels are generated for continued play, with clue density and rectangle shapes changing as difficulty rises.'],
+                        ['Reasonable by design', 'The puzzle is built around deduction. Use dimensions, boundaries, and competing clues to find what must fit.'],
+                    ],
+                },
+                'PourFect!': {
+                    lede: 'Sort layered colours between bottles, plan around the one-way collector tube, and recover a clean solution without dead-ending the board.',
+                    cards: [
+                        ['Every board solvable', 'A solver checks each generated level before it reaches you, so the puzzle never depends on blind luck.'],
+                        ['A meaningful constraint', 'The collector tube accepts a colour but does not pour back, turning an ordinary water sort into a planning puzzle.'],
+                        ['Accessible colour', 'The palette is chosen for strong separation, and difficulty grows through the puzzle rather than indistinguishable hues.'],
+                    ],
+                },
+            };
+            const product = productDetails[title.textContent.trim()];
+            if (product) description.textContent = product.lede;
             for (const fact of factSets[title.textContent.trim()] || ['Android & web', 'Offline play', 'No purchases']) {
                 const tag = document.createElement('span');
                 tag.textContent = fact;
@@ -84,7 +136,19 @@ document.addEventListener('DOMContentLoaded', () => {
             copy.append(kicker, title, description, facts, actions, legal);
             icon.className = 'standalone-product-art';
             hero.append(copy, icon);
-            game.replaceChildren(back, hero, guide);
+
+            const detailGrid = document.createElement('section');
+            detailGrid.className = 'standalone-detail-grid';
+            for (const [heading, body] of product?.cards || []) {
+                const article = document.createElement('article');
+                const cardTitle = document.createElement('h2');
+                const cardBody = document.createElement('p');
+                cardTitle.textContent = heading;
+                cardBody.textContent = body;
+                article.append(cardTitle, cardBody);
+                detailGrid.append(article);
+            }
+            game.replaceChildren(back, hero, detailGrid, guide);
         }
     }
 });
