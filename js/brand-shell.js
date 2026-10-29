@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const hero = document.createElement('section');
             hero.className = 'standalone-product-hero';
             const copy = document.createElement('div');
+            copy.className = 'standalone-product-copy';
             const kicker = document.createElement('p');
             kicker.className = 'section-kicker';
             kicker.textContent = 'Standalone game · Android & web';
@@ -135,6 +136,19 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const link of legal.querySelectorAll('a')) link.removeAttribute('class');
             copy.append(kicker, title, description, facts, actions, legal);
             icon.className = 'standalone-product-art';
+            const featureImages = {
+                PawDoku: '/assets/pawdoku-feature.png',
+                'Kata·Word': '/assets/kata_word-feature.png',
+                'StackO!': '/assets/stacko-feature.png',
+                '2048': '/assets/2048-feature.png',
+                Rekta: '/assets/rekta-feature.png',
+                'PourFect!': '/assets/pourfect-feature.png',
+            };
+            const featureImage = featureImages[title.textContent.trim()];
+            if (featureImage) {
+                icon.classList.add('has-feature');
+                icon.style.backgroundImage = `url('${featureImage}')`;
+            }
             hero.append(copy, icon);
 
             const detailGrid = document.createElement('section');
