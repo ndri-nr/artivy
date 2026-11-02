@@ -13,24 +13,68 @@ permissions:
 
 concurrency:
   group: instabox-watchdog
-  cancel-in-progress: true
+  # Let a run finish its cooldown retry window instead of cancelling it when
+  # the next five-minute schedule fires.
+  cancel-in-progress: false
 
 jobs:
   wake-and-check:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    # InstaBox can impose a random cooldown of up to 20 minutes after the
+    # machine reaches its maximum runtime.
+    timeout-minutes: 23
     steps:
       - name: Wake the machine through its InstaBox public port
         shell: bash
         run: |
           set -euo pipefail
-          response="$({
-            curl --fail --silent --show-error \
-              --retry 5 --retry-delay 2 --retry-all-errors \
+          endpoint='https://8080-agqwhvxr3js25e53humkaoehei.instabox.tech/healthz'
+          deadline=$((SECONDS + 20 * 60))
+          headers_file="$(mktemp)"
+          body_file="$(mktemp)"
+          trap 'rm -f "$headers_file" "$body_file"' EXIT
+
+          while :; do
+            : > "$headers_file"
+            : > "$body_file"
+            status="$(curl --silent --show-error \
+              --dump-header "$headers_file" \
+              --output "$body_file" \
+              --write-out '%{http_code}' \
               --connect-timeout 20 --max-time 60 \
-              https://8080-agqwhvxr3js25e53humkaoehei.instabox.tech/healthz
-          })"
-          test "$response" = "ok"
+              "$endpoint")"
+
+            if [ "$status" = 200 ]; then
+              test "$(cat "$body_file")" = "ok"
+              exit 0
+            fi
+
+            if [ "$status" != 409 ] || ! jq -e '(.error == "machine_cooldown" or .code == "machine_cooldown" or .machine_cooldown == true)' "$body_file" >/dev/null 2>&1; then
+              echo "wake failed with HTTP $status:" >&2
+              cat "$body_file" >&2
+              exit 1
+            fi
+
+            now=$SECONDS
+            remaining=$((deadline - now))
+            if [ "$remaining" -le 0 ]; then
+              echo "machine cooldown did not end within 20 minutes" >&2
+              cat "$body_file" >&2
+              exit 1
+            fi
+
+            retry_after="$(jq -r '.retryAfterSeconds // empty' "$body_file")"
+            if ! [[ "$retry_after" =~ ^[0-9]+$ ]]; then
+              retry_after="$(awk 'BEGIN { IGNORECASE=1 } /^Retry-After:/ { gsub("\\r", "", $2); print $2; exit }' "$headers_file")"
+            fi
+            if ! [[ "$retry_after" =~ ^[0-9]+$ ]] || [ "$retry_after" -lt 1 ]; then
+              retry_after=30
+            fi
+            sleep_for=$retry_after
+            [ "$sleep_for" -le "$remaining" ] || sleep_for=$remaining
+            echo "machine_cooldown: retrying in ${sleep_for}s (${remaining}s left)"
+            sleep "$sleep_for"
+          done
 
       - name: Check both Cloudflare Tunnel hostnames
         shell: bash
