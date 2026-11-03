@@ -81,8 +81,8 @@ jobs:
         run: |
           set -euo pipefail
           for endpoint in \
-            https://duel.bug.ai.id/healthz \
-            https://artiverse.bug.ai.id/healthz
+            https://duel.artivy.id/healthz \
+            https://artiverse.artivy.id/healthz
           do
             response="$({
               curl --fail --silent --show-error \
