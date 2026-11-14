@@ -147,7 +147,7 @@
     <div class="policy-container">
         <a href="../../index.html" class="back-button">← Back to Artivy</a>
         <h1>Privacy Policy for Artiverse</h1>
-        <p><strong>Effective Date:</strong> October 2, 2026</p>
+        <p><strong>Effective Date:</strong> November 15, 2026</p>
 
         <p>Artiverse (published until September 2026 as &ldquo;Artivy Game Station&rdquo;) is a free,
             ad-supported Android app from Artivy that holds sixteen games in one place: 2048, PawDoku,
@@ -214,9 +214,10 @@
                 of how many times it has written each game's save and sends whichever copy has been played further,
                 so signing in on a second phone brings your games with it. We store this exactly as the app wrote
                 it and do not read inside it: the server scores rounds, it has no opinion about a board;</li>
-            <li>what happened in each round: which game, whether it was won, how many seconds it took, the
-                round's own figures (for example the level reached or the tiles matched), and whether you used
-                a second chance;</li>
+            <li>what happened in each round: which game, whether it was won, when the round ended (UTC time),
+                how many seconds it took, the round's own figures (for example the level reached or the tiles
+                matched), and whether you used a second chance. Pass-and-play rounds also send their UTC play
+                time so an offline sync credits the correct day;</li>
             <li>the hints you spend points on, the items you buy in the Store, the achievements you claim, and
                 the optional adverts you watched for a reward;</li>
             <li>which game you opened, each time you open one &mdash; one of the achievements is for trying every
@@ -264,13 +265,15 @@
             month closes; it also pays a small bonus for a daily check-in. These prizes are points only &mdash;
             they are added to your wallet, they buy nothing on the boards, and a record of them is kept with
             your account so the app can show you what you have won.</p>
-        <p>Board days, weeks and months are counted on our server's clock, in UTC &mdash; one global board for
-            everyone, and so a change to your phone's clock cannot buy a fresh day. Only what the server itself priced
+        <p>Board days, weeks and months use UTC &mdash; one global board for everyone. Rounds played offline
+            carry their UTC play time so their scores stay on the day they were played; future times use the
+            server's receipt time. Only what the server itself priced
             from a round reaches a board: points from achievements, from a doubling advert, or from the app's
             hidden bonus are paid into your wallet and add nothing to your score. If play from an account looks
             automated rather than played, the account keeps every point and is simply left off the boards.</p>
-        <p>Two-player and four-player rounds on one phone earn no points, no achievements and no score, and
-            nothing about them is sent to the server or to analytics.</p>
+        <p>Pass-and-play rounds on one phone can earn a small daily-capped participation award and score, without
+            win rewards or win achievements. Their game and play time are sent to our server for that award; they
+            are not sent as separate analytics events.</p>
 
         <h2>5. Points, Unlocks and Achievements</h2>
         <p>Points are earned by playing, by claiming achievements, by watching optional adverts, by a daily
