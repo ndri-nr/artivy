@@ -147,7 +147,7 @@
     <div class="policy-container">
         <a href="../../index.html" class="back-button">← Back to Artivy</a>
         <h1>Privacy Policy for Artiverse</h1>
-        <p><strong>Effective Date:</strong> November 23, 2026</p>
+        <p><strong>Effective Date:</strong> November 24, 2026</p>
 
         <p>Artiverse (published until September 2026 as &ldquo;Artivy Game Station&rdquo;) is a free,
             ad-supported Android app from Artivy that holds sixteen games in one place: 2048, PawDoku,
@@ -155,8 +155,9 @@
             Gomoku, Tic-Tac-Toe and Ultimate Tic-Tac-Toe. Some are played alone, some against a computer
             opponent, and some by two players &mdash; or four, in Memory &mdash; passing one phone between
             them.</p>
-        <p><strong>The computer opponent runs entirely on your device and no game is ever played over the
-            internet.</strong> What is online is the account, your progress and the leaderboards: the app keeps
+        <p><strong>The computer opponent runs entirely on your device.</strong> The one way to play against
+            another person over the internet is the optional <strong>Online Duel</strong> (section 5). Apart
+            from that, what is online is the account, your progress and the leaderboards: the app keeps
             your points, achievements, scores and each game&rsquo;s own saved progress on an
             Artivy server, so a board can rank them and so your games are still where you
             left them if you sign in on another phone. This page explains what the
@@ -277,15 +278,48 @@
             win rewards or win achievements. Their game and play time are sent to our server for that award; they
             are not sent as separate analytics events.</p>
 
-        <h2>5. Points, Unlocks and Achievements</h2>
+        <h2>5. Online Duel</h2>
+        <p>Online Duel is an optional best-of-five match against another player: five rounds drawn from the
+            games, first to three round wins takes it, and each round starts after a 3-second countdown. It is
+            matched and run by Artivy's duel server at <strong>duel.artivy.id</strong>, which is ours, and
+            the app connects to it only while you are in Online Duel. It uses your Artiverse account (guest or
+            Play Games) &mdash; there is no separate sign-in.</p>
+        <ul>
+            <li><strong>What the app sends when you join:</strong> your account's sign-in token (so the server
+                knows which account is playing), your <strong>display name, your icon and your Play Games
+                picture</strong> if you have one, which duel games this version of the app supports, and your
+                Kata&middot;Word word language (English or Indonesian). Your device's IP address is visible to
+                the server, as with any connection.</li>
+            <li><strong>What your opponent sees:</strong> your display name, your icon or Play Games picture,
+                your moves or progress in each round as it is played, and the result. There is no chat, and
+                nothing else about you is passed on. If one of you uses Indonesian and the other English for
+                Kata&middot;Word, a Kata&middot;Word round is played in English; if you share a language, that
+                one is used.</li>
+            <li><strong>The stake:</strong> a duel costs <strong>150 points</strong> to enter and the winner is
+                paid <strong>500</strong>. A draw, a timed-out or disputed match, or a server error before a
+                result refunds the 150; leaving or forfeiting part-way loses it. The duel server asks our
+                account server to take and pay the points, and both are recorded in your account's points
+                history like any other points. A duel also counts toward the duel achievements (played, won,
+                streaks). Nothing from a duel is added to your leaderboard score.</li>
+            <li><strong>What the duel server keeps:</strong> a record of each match &mdash; an internal id for
+                each player's account, the games and their round seeds, who won each round, the final score, how
+                the match ended (finished, disconnected, timed out or disputed) and when it started and ended
+                &mdash; plus, until it is settled, which match's stake is still owed. It does not store your name,
+                icon or picture; those are only passed to your opponent during the match.</li>
+            <li><strong>If no one is found:</strong> after a few seconds the app may offer a match against a
+                computer opponent instead. That match runs entirely on your device, sends nothing to the duel
+                server, and is staked and paid the same way.</li>
+        </ul>
+
+        <h2>6. Points, Unlocks and Achievements</h2>
         <p>Points are earned by playing, by claiming achievements, by watching optional adverts, by a daily
-            check-in, and as a prize for placing on a leaderboard. They are
-            spent inside the app on hints, themes and similar unlocks. <strong>Points cannot be bought with
+            check-in, as a prize for placing on a leaderboard, and by winning an Online Duel. They are
+            spent inside the app on hints, themes and similar unlocks, and staked to enter an Online Duel. <strong>Points cannot be bought with
             money, have no cash value, and cannot be transferred or exchanged outside the app.</strong> There
             are no in-app purchases of any kind. Points, unlocks, achievements and your progress in each game 
             are held on your device and on your account on our server.</p>
 
-        <h2>6. How Your Information Is Used</h2>
+        <h2>7. How Your Information Is Used</h2>
         <ul>
             <li>to keep your progress, points and settings where you left them;</li>
             <li>to run your account and rank you on the leaderboards;</li>
@@ -299,7 +333,7 @@
         <p>Your information is never sold, and it is never used to advertise to you off the back of what you
             played.</p>
 
-        <h2>7. Advertising Consent and Choices</h2>
+        <h2>8. Advertising Consent and Choices</h2>
         <p>The app shows adverts through <strong>Google AdMob</strong>. There are no banners. It shows:</p>
         <ul>
             <li>a <strong>full-screen advert</strong> after every third round ends — a level solved, a run lost or
@@ -313,11 +347,11 @@
             time from <strong>Ad privacy options</strong> in the app's Settings screen, which appears wherever Google
             reports it is required.</p>
 
-        <h2>8. App Updates</h2>
+        <h2>9. App Updates</h2>
         <p>When a newer version is available on Google Play, the app asks Google Play to install it before you
             continue. This runs inside the Google Play Store app and sends nothing to us.</p>
 
-        <h2>9. Third-Party Services</h2>
+        <h2>10. Third-Party Services</h2>
         <p>These services see data through the app and have their own privacy policies:</p>
         <ul>
             <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Play
@@ -328,10 +362,10 @@
             <li><a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Firebase
                 Analytics and Crashlytics</a></li>
         </ul>
-        <p>Our own server is one rented virtual machine, and it is the only place your account data is kept. It
-            is not shared with anyone.</p>
+        <p>Our own server is one rented virtual machine, and it is the only place your account data is kept; the
+            Online Duel server runs on the same machine. Neither is shared with anyone.</p>
 
-        <h2>10. Children's Privacy</h2>
+        <h2>11. Children's Privacy</h2>
         <p>Artiverse is built for children as well as adults, and we do not knowingly collect personally
             identifiable information from children.</p>
         <p>The first time you open the app it asks <strong>what year you were born</strong>, before any advert is
@@ -353,13 +387,14 @@
             Games needs a Google account, which Google's own rules govern. If you believe a child has given us
             something they should not have, write to the address below and we will remove it.</p>
 
-        <h2>11. How Long We Keep It</h2>
+        <h2>12. How Long We Keep It</h2>
         <p>Your account and its balance, achievements, saved progress and scores are kept while the account is in use. 
             Around it, the server clears up after itself: the log of individual rounds is deleted after 400 days, daily
             boards after 70 days, monthly boards after 24 months, and a sign-in token expires 180 days after it
-            was last used.</p>
+            was last used. Online Duel match records have no automatic expiry yet: they are kept until we delete
+            them, and you can ask us to delete yours at the address below.</p>
 
-        <h2>12. Your Rights, and Deleting Your Data</h2>
+        <h2>13. Your Rights, and Deleting Your Data</h2>
         <p>Everything the app keeps on the phone goes when you clear the app's data or uninstall it — along with
             your progress, points and unlocks, which cannot be recovered afterwards, because there is no backup
             of a guest account.</p>
@@ -370,7 +405,8 @@
             it was in when the app was installed, so the progress on it goes too. None of it can be recovered.</p>
         <p>One thing is outside our reach: if you signed in with Google Play Games, the achievements and time
             recorded on your Play Games profile stay with your Google account, and no developer can delete them —
-            remove that yourself from the Play Games app's Settings. The same steps, plus exactly what is removed
+            remove that yourself from the Play Games app's Settings. Deleting your account also does not yet
+            remove its Online Duel match records from the duel server; email us and we will delete them. The same steps, plus exactly what is removed
             and what is kept, are set out on <a href="delete-account.html">Delete your account</a>.</p>
         <p>If you would rather write to us, or would like a copy of what your account holds, email
             developer@artivy.id with the <strong>display name</strong> shown on your account card, saying whether
@@ -378,11 +414,11 @@
         <p>Advertising choices can be changed from Ad privacy options in Settings, and your Android advertising
             ID can be reset or deleted from your device's own settings.</p>
 
-        <h2>13. Changes to This Privacy Policy</h2>
+        <h2>14. Changes to This Privacy Policy</h2>
         <p>This policy is updated when the app changes what it collects. The effective date above is when the
             current version took effect.</p>
 
-        <h2>14. Contact Us</h2>
+        <h2>15. Contact Us</h2>
         <p>If you have any questions about this Privacy Policy, contact us at developer@artivy.id.</p>
     </div>
 

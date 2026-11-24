@@ -199,11 +199,17 @@
                 If you play a friend with a room code, the server also receives that code.</li>
             <li><strong>A match record.</strong> When a match ends the server keeps a record of it: the game, the
                 two random guest IDs, the round seeds, each side's final score, the winner, how the match ended
-                (finished, disconnected or timed out) and when it started and ended.</li>
+                (finished, disconnected, timed out or disputed) and when it started and ended. The record
+                holds no name, advertising ID or device identifier. It is kept until we delete it; there is no
+                automatic expiry yet. Because the guest ID is not linked to you, we cannot look records up by
+                person, but if you email developer@artivy.id with roughly when you played we will delete the
+                matching records.</li>
             <li><strong>Nothing else changes.</strong> A duel costs 100 in-game gems to enter and pays 300 to the
-                winner (a draw refunds the entry); gems are kept only on your device, never sent. Duels change none
-                of your saved progress and add no analytics events. If no opponent is found and you play a bot instead, that match runs
-                entirely on your device and nothing is sent.</li>
+                winner; a draw, a lost connection or a server error before the result refunds the entry, and
+                leaving a match part-way forfeits it. Your gems are kept only on your device and never sent. Apart
+                from the gems, duels change none of your saved progress and add no analytics events. If no opponent
+                is found and you play a bot instead (same entry and prize), that match runs entirely on your device
+                and nothing is sent.</li>
         </ul>
 
         <h2>1. Information We Collect</h2>
