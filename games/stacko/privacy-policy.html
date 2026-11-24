@@ -152,12 +152,13 @@
     <div class="policy-container">
         <a href="index.html" class="back-button">← Back to StackO!</a>
         <h1>Privacy Policy for StackO!</h1>
-        <p><strong>Effective Date:</strong> August 7, 2026</p>
+        <p><strong>Effective Date:</strong> November 24, 2026</p>
 
         <p>Welcome to StackO!, a neon isometric block-stacking game published by Artivy. Your privacy is important to
             us. This Privacy Policy explains what information is involved when you play StackO!. StackO! is a
             single-player, offline game: there is no account, no sign-in, and no Artivy server that collects your
-            personal data.</p>
+            personal data. The one exception is the optional Online Duel mode, which connects to an Artivy server
+            only while you use it and is described below.</p>
 
         <h2>This website</h2>
         <p>Everything else on this page describes the <strong>Android app</strong>. This page itself is served from the Artivy website. The website loads no advertising, analytics, or tracking services; that is separate from the Android app described below.</p>
@@ -180,6 +181,28 @@
                 kept.</li>
             <li>Progress does not follow you between devices, or between the browser and the Android app. They are
                 separate saves.</li>
+        </ul>
+
+        <h2>Online Duel</h2>
+        <p>The Android app has an optional <strong>Online Duel</strong> mode, where you race another player on
+            the same tower. It is the only part of StackO! that talks to an Artivy server, and only while you use
+            it: the app connects to our duel server at <strong>duel.artivy.id</strong> when you open Online Duel,
+            and not before. The browser version has no Online Duel.</p>
+        <ul>
+            <li><strong>A temporary guest ID.</strong> When you open Online Duel the server gives the app a random
+                guest ID. It is not an account, and it is not linked to a name, your advertising ID or any device
+                identifier. The app keeps it in memory only, so it is gone when the app closes.</li>
+            <li><strong>During a match</strong> the server receives your device's IP address, as any internet
+                connection does, which game you are playing, the shared round seed that gives both players the same
+                round, your progress &mdash; your score and whether your game is over &mdash; and your result when
+                you finish. It relays your progress to your opponent, so each of you can see how the other is doing.
+                If you play a friend with a room code, the server also receives that code.</li>
+            <li><strong>A match record.</strong> When a match ends the server keeps a record of it: the game, the
+                two random guest IDs, the round seeds, each side's final score, the winner, how the match ended
+                (finished, disconnected or timed out) and when it started and ended.</li>
+            <li><strong>Nothing else changes.</strong> Duels pay no rewards, change none of your saved progress and
+                add no analytics events. If no opponent is found and you play a bot instead, that match runs
+                entirely on your device and nothing is sent.</li>
         </ul>
 
         <h2>1. Information We Collect</h2>
@@ -207,10 +230,14 @@
                 record diagnostic information if the app crashes (such as device model, operating system version, and
                 the technical state at the time of the crash), so we can fix bugs. This is processed by Google in line
                 with Google's privacy policy.</li>
+            <li><strong>Online Duel (sent to Artivy, only if you use it):</strong> a temporary random guest ID,
+                your IP address, your in-match progress and result, and a match record, as described under
+                <strong>Online Duel</strong> above.</li>
         </ul>
         <p>StackO! requests no device permissions beyond what Google's advertising, analytics, and crash-reporting SDKs
-            require. Your records, gems, themes, and settings are still never uploaded — the analytics and crash data
-            above describe how the app behaves, not what you scored.</p>
+            require. Your records, gems, themes, and settings are still never uploaded (Online Duel sends only the
+            score of the match in progress) — the analytics and crash data above describe how the app behaves, not
+            what you scored.</p>
 
         <h2>2. How Your Information Is Used</h2>
         <p>The information above is used only to:</p>

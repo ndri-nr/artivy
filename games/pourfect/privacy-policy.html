@@ -152,7 +152,7 @@
     <div class="policy-container">
         <a href="index.html" class="back-button">← Back to PourFect!</a>
         <h1>Privacy Policy for PourFect!</h1>
-        <p><strong>Effective Date:</strong> August 22, 2026</p>
+        <p><strong>Effective Date:</strong> November 24, 2026</p>
 
         <p>Artivy built PourFect! as a free, ad-supported game. This page explains what it collects, what it does
             not, and what leaves your device. It covers both the Android app and the browser version on this site,
@@ -178,8 +178,31 @@
                 separate saves.</li>
         </ul>
 
+        <h2>Online Duel</h2>
+        <p>The Android app has an optional <strong>Online Duel</strong> mode, where you race another player on
+            the same level. It is the only part of PourFect! that talks to an Artivy server, and only while you use
+            it: the app connects to our duel server at <strong>duel.artivy.id</strong> when you open Online Duel,
+            and not before. The browser version has no Online Duel.</p>
+        <ul>
+            <li><strong>A temporary guest ID.</strong> When you open Online Duel the server gives the app a random
+                guest ID. It is not an account, and it is not linked to a name, your advertising ID or any device
+                identifier. The app keeps it in memory only, so it is gone when the app closes.</li>
+            <li><strong>During a match</strong> the server receives your device's IP address, as any internet
+                connection does, which game you are playing, the shared round seed that gives both players the same
+                level, your progress &mdash; how many bottles you have finished &mdash; and your result when you
+                finish. It relays your progress to your opponent, so each of you can see how the other is doing. If
+                you play a friend with a room code, the server also receives that code.</li>
+            <li><strong>A match record.</strong> When a match ends the server keeps a record of it: the game, the
+                two random guest IDs, the round seeds, each side's final score, the winner, how the match ended
+                (finished, disconnected or timed out) and when it started and ended.</li>
+            <li><strong>Nothing else changes.</strong> Duels pay no rewards, change none of your saved progress and
+                add no analytics events. If no opponent is found and you play a bot instead, that match runs
+                entirely on your device and nothing is sent.</li>
+        </ul>
+
         <h2>1. Information We Collect</h2>
-        <p>PourFect! has no accounts, no sign-in and no server of its own. Nothing you type is collected, because
+        <p>PourFect! has no accounts and no sign-in, and the only server of its own it ever talks to is the optional
+            Online Duel server described above, while you use it. Nothing you type is collected, because
             there is nothing to type. What the app keeps and what it sends are different lists.</p>
         <p><strong>Kept on your device only</strong>, in Android's app preferences:</p>
         <ul>
@@ -199,6 +222,9 @@
                 Google Mobile Ads to serve and measure adverts;</li>
             <li>analytics events and crash reports, described next.</li>
         </ul>
+        <p><strong>Sent to Artivy</strong>, only if you play Online Duel: a temporary random guest ID, your IP
+            address, your in-match progress and result, and a match record, as described under
+            <strong>Online Duel</strong> above.</p>
 
         <h2>2. Analytics and Crash Reports</h2>
         <p>PourFect! uses <strong>Firebase Analytics</strong> and <strong>Firebase Crashlytics</strong>, both from

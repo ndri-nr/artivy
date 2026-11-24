@@ -152,12 +152,13 @@
     <div class="policy-container">
         <a href="index.html" class="back-button">← Back to 2048</a>
         <h1>Privacy Policy for 2048</h1>
-        <p><strong>Effective Date:</strong> August 14, 2026</p>
+        <p><strong>Effective Date:</strong> November 24, 2026</p>
 
         <p>2048 is a single-player sliding-tile puzzle published by Artivy. This Privacy Policy explains what
-            information is involved when you play it. There is no account, no sign-in, and no Artivy server: the game
-            itself is played entirely offline, and the only data that leaves your device is sent to Google's
-            advertising, analytics and crash-reporting services described below.</p>
+            information is involved when you play it. There is no account and no sign-in. The game itself is played
+            entirely offline, and apart from the optional Online Duel mode, which connects to an Artivy server only
+            while you use it, the only data that leaves your device is sent to Google's advertising, analytics and
+            crash-reporting services described below.</p>
 
         <h2>Playing in a browser</h2>
         <p>There are two ways to play 2048, and they do not collect the same things. Everything else on this page
@@ -171,6 +172,28 @@
                 private window, or in a browser that blocks storage — the game will still run, but nothing is kept.</li>
             <li>Progress does not follow you between devices or between the browser and the Android app. They are
                 separate saves.</li>
+        </ul>
+
+        <h2>Online Duel</h2>
+        <p>The Android app has an optional <strong>Online Duel</strong> mode, where you race another player on
+            the same board. It is the only part of 2048 that talks to an Artivy server, and only while you use it:
+            the app connects to our duel server at <strong>duel.artivy.id</strong> when you open Online Duel, and
+            not before. The browser version has no Online Duel.</p>
+        <ul>
+            <li><strong>A temporary guest ID.</strong> When you open Online Duel the server gives the app a random
+                guest ID. It is not an account, and it is not linked to a name, your advertising ID or any device
+                identifier. The app keeps it in memory only, so it is gone when the app closes.</li>
+            <li><strong>During a match</strong> the server receives your device's IP address, as any internet
+                connection does, which game you are playing, the shared round seed that gives both players the same
+                board, your progress &mdash; your score and whether your game is over &mdash; and your result when
+                you finish. It relays your progress to your opponent, so each of you can see how the other is doing.
+                If you play a friend with a room code, the server also receives that code.</li>
+            <li><strong>A match record.</strong> When a match ends the server keeps a record of it: the game, the
+                two random guest IDs, the round seeds, each side's final score, the winner, how the match ended
+                (finished, disconnected or timed out) and when it started and ended.</li>
+            <li><strong>Nothing else changes.</strong> Duels pay no rewards, change none of your saved progress and
+                add no analytics events. If no opponent is found and you play a bot instead, that match runs
+                entirely on your device and nothing is sent.</li>
         </ul>
 
         <h2>1. Information We Collect</h2>
@@ -201,6 +224,9 @@
                 diagnostics if the app crashes — device model, operating system version, and the technical state at the
                 time — with the current score, highest tile and language attached, so a report shows how far the run had
                 progressed when it broke.</li>
+            <li><strong>Online Duel (sent to Artivy, only if you use it):</strong> a temporary random guest ID,
+                your IP address, your in-match progress and result, and a match record, as described under
+                <strong>Online Duel</strong> above.</li>
         </ul>
         <p>The app requests no device permissions beyond internet access and what Google's advertising, analytics and
             crash-reporting SDKs require, including the advertising ID permission those SDKs add.</p>
@@ -231,7 +257,9 @@
             gameplay analytics, and <strong>Google Firebase Crashlytics</strong> for crash diagnostics. Google may
             collect and process data as described in Google's Privacy Policy (<a
                 href="https://policies.google.com/privacy">https://policies.google.com/privacy</a>). We use no other
-            advertising network or analytics provider.</p>
+            advertising network or analytics provider.
+            The Online Duel connection uses the open-source <strong>OkHttp</strong> library, which runs inside the app
+            and collects nothing of its own.</p>
 
         <h2>5. Children's Privacy</h2>
         <p>2048 is built for children as well as adults, and we do not knowingly collect
