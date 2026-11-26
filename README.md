@@ -37,6 +37,10 @@ repository. If a new product is added:
 4. Add its canonical URLs to `sitemap.xml`.
 5. Set the Play listing website to the canonical product landing page.
 
+Kizuna (`apps/kizuna/`) has only a landing page: its privacy policy and terms
+are served by its own server at `https://kizuna.artivy.id/privacy` and `/terms`
+(source in the `kizuna-gateway` repo), so link there instead of copying them.
+
 ## Domain and publishing
 
 GitHub Actions publishes this repository to GitHub Pages at `artivy.id`. The
